@@ -1,2 +1,3 @@
-# azure-openai-sdk-proxy
-This provides a wrapper library of Azure.AI.OpenAI that offers the same development experience but round-robins multiple Azure OpenAI Service instances
+# Azure OpenAI Service Proxy
+
+This provides a proxy library of Azure OpenAI Service API that round-robins multiple Azure OpenAI Service instances.
