@@ -11,12 +11,17 @@ namespace AzureOpenAIProxy.ApiApp.Controllers;
 /// <summary>
 /// This represents the controller entity for chat completions.
 /// </summary>
+/// <param name="auth"><see cref="IAuthService"/> instance.</param>
 /// <param name="openai"><see cref="IOpenAIService"/> instance.</param>
 /// <param name="logger"><see cref="ILogger{TCategoryName}"/> instance.</param>
 [ApiController]
 [Route("openai")]
-public class CompletionsController(IOpenAIService openai, ILogger<CompletionsController> logger) : ControllerBase
+public class CompletionsController(
+    [FromKeyedServices("accesscode")] IAuthService auth,
+    IOpenAIService openai,
+    ILogger<CompletionsController> logger) : ControllerBase
 {
+    private readonly IAuthService _auth = auth ?? throw new ArgumentNullException(nameof(auth));
     private readonly IOpenAIService _openai = openai ?? throw new ArgumentNullException(nameof(openai));
     private readonly ILogger<CompletionsController> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
@@ -35,11 +40,32 @@ public class CompletionsController(IOpenAIService openai, ILogger<CompletionsCon
         [FromQuery(Name = "api-version")] string apiVersion,
         [FromBody] CompletionsOptions req)
     {
-        this.Request.Body.Position = 0;
-        var response = await this._openai.InvokeAsync(this.Request.Path, apiVersion, this.Request.Body);
-        var result = JsonSerializer.Deserialize<object>(response);
+        this._logger.LogInformation("Received a completion request");
 
-        return new OkObjectResult(result);
+        var validated = await this._auth.ValidateAsync(apiKey).ConfigureAwait(false);
+        if (validated == false)
+        {
+            this._logger.LogError("Invalid API key");
+
+            return new UnauthorizedResult();
+        }
+
+        try
+        {
+            this.Request.Body.Position = 0;
+            var response = await this._openai.InvokeAsync(this.Request.Path, apiVersion, this.Request.Body);
+            var result = JsonSerializer.Deserialize<object>(response);
+
+            this._logger.LogInformation("Completed the completion request");
+
+            return new OkObjectResult(result);
+        }
+        catch (Exception ex)
+        {
+            this._logger.LogError(ex, "Failed to invoke the completion API");
+
+            return new ObjectResult(ex.Message) { StatusCode = StatusCodes.Status500InternalServerError };
+        }
     }
 
     /// <summary>
@@ -57,10 +83,31 @@ public class CompletionsController(IOpenAIService openai, ILogger<CompletionsCon
         [FromQuery(Name = "api-version")] string apiVersion,
         [FromBody] CompletionsOptions req)
     {
-        this.Request.Body.Position = 0;
-        var response = await this._openai.InvokeAsync(this.Request.Path, apiVersion, this.Request.Body);
-        var result = JsonSerializer.Deserialize<object>(response);
+        this._logger.LogInformation("Received an extended completion request");
 
-        return new OkObjectResult(result);
+        var validated = await this._auth.ValidateAsync(apiKey).ConfigureAwait(false);
+        if (validated == false)
+        {
+            this._logger.LogError("Invalid API key");
+
+            return new UnauthorizedResult();
+        }
+
+        try
+        {
+            this.Request.Body.Position = 0;
+            var response = await this._openai.InvokeAsync(this.Request.Path, apiVersion, this.Request.Body);
+            var result = JsonSerializer.Deserialize<object>(response);
+
+            this._logger.LogInformation("Completed the extended completion request");
+
+            return new OkObjectResult(result);
+        }
+        catch (Exception ex)
+        {
+            this._logger.LogError(ex, "Failed to invoke the extended completion API");
+
+            return new ObjectResult(ex.Message) { StatusCode = StatusCodes.Status500InternalServerError };
+        }
     }
 }

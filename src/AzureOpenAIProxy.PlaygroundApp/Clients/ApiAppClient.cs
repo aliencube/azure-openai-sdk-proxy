@@ -49,7 +49,7 @@ public class ApiAppClient(OpenAISettings openai, HttpClient http) : IApiAppClien
         float? temperature = 0.7f)
     {
         var endpoint = new Uri(this._openai.Endpoint);
-        var credential = new AzureKeyCredential($"{accessToken}|{gitHubId}");
+        var credential = new AzureKeyCredential($"{accessToken}::{gitHubId}");
         var client = new OpenAIClient(endpoint, credential);
 
         var options = new ChatCompletionsOptions
