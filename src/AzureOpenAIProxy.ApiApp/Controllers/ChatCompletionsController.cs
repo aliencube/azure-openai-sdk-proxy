@@ -4,7 +4,7 @@ using Azure;
 using Azure.AI.OpenAI;
 
 using AzureOpenAIProxy.ApiApp.Configurations;
-using AzureOpenAIProxy.ApiApp.Options;
+using AzureOpenAIProxy.ApiApp.Models;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,15 +20,17 @@ public class ChatCompletionsController(AoaiSettings aoaiSettings, ILogger<ChatCo
     private readonly ILogger<ChatCompletionsController> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     [HttpPost("deployments/{deploymentName}/chat/completions", Name = "GetChatCompletions")]
-    [Consumes(typeof(ChatCompletionsOptionsWrapper), "application/json")]
     public async Task<IActionResult> GetChatCompletionsAsync(
         [FromRoute] string deploymentName,
         [FromHeader(Name = "api-key")] string apiKey,
-        [FromQuery(Name = "api-version")] string apiVersion)
+        [FromQuery(Name = "api-version")] string apiVersion
+        )
     {
         using var reader = new StreamReader(this.Request.Body);
         var payload = await reader.ReadToEndAsync();
-        var req = JsonSerializer.Deserialize<ChatCompletionsOptionsWrapper>(payload, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+        var req = JsonSerializer.Deserialize<ChatCompletionsOptionsModel>(payload, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+
+        req.DeploymentName = deploymentName;
 
         var aoai = this._aoaiSettings
                        .Instances
@@ -51,7 +53,9 @@ public class ChatCompletionsController(AoaiSettings aoaiSettings, ILogger<ChatCo
             options.Messages.Add(new ChatMessage(msg.Role, msg.Content));
         }
 
-        var result = await client.GetChatCompletionsAsync(options);
+        var response = await client.GetChatCompletionsAsync(options);
+        var converted = new ChatCompletionsModel(response.Value);
+        var result = Azure.Response.FromValue<ChatCompletionsModel>(converted, response.GetRawResponse());
 
         return new OkObjectResult(result);
     }
@@ -59,8 +63,9 @@ public class ChatCompletionsController(AoaiSettings aoaiSettings, ILogger<ChatCo
     [HttpPost("deployments/{deploymentName}/extensions/chat/completions", Name = "GetExtensionsChatCompletions")]
     public async Task<IActionResult> GetExtensionsChatCompletionsAsync(
         [FromRoute] string deploymentName,
+        [FromHeader(Name = "api-key")] string apiKey,
         [FromQuery(Name = "api-version")] string apiVersion,
-        [FromBody] ChatCompletionsOptions req)
+        [FromBody] ChatCompletionsOptionsModel req)
     {
         req.DeploymentName = deploymentName;
 
@@ -74,7 +79,18 @@ public class ChatCompletionsController(AoaiSettings aoaiSettings, ILogger<ChatCo
         var serviceVersion = Enum.TryParse<ServiceVersion>(apiVersion, true, out var parsed) ? parsed : ServiceVersion.V2023_09_01_Preview;
         var client = new OpenAIClient(endpoint, credential, new OpenAIClientOptions(serviceVersion));
 
-        var result = await client.GetChatCompletionsAsync(req);
+        var options = new ChatCompletionsOptions
+        {
+            DeploymentName = deploymentName,
+            MaxTokens = req.MaxTokens,
+            Temperature = req.Temperature,
+        };
+        foreach (var msg in req.Messages)
+        {
+            options.Messages.Add(new ChatMessage(msg.Role.ToString(), msg.Content));
+        }
+
+        var result = await client.GetChatCompletionsAsync(options);
 
         return new OkObjectResult(result);
     }
