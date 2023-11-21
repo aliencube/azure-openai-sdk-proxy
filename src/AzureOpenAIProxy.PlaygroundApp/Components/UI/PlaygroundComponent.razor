@@ -1,6 +1,4 @@
-﻿@inject IApiAppClient ApiApp
-
-<div class="container">
+﻿<div class="container">
     <div class="form-group">
         <label for="accessCode">Access Code:</label>
         <input type="text" id="accessCode" class="form-control" @bind="@AccessCode" />
@@ -36,33 +34,3 @@
 
     <textarea id="completionResult" class="form-control" readonly>@CompletionResult</textarea>
 </div>
-
-@code {
-    private string? AccessCode { get; set; }
-    private string? GitHubAlias { get; set; }
-    private string? DeploymentName { get; set; }
-    private int? MaxTokens { get; set; } = 2048;
-    private float? Temperature { get; set; } = 0.7f;
-    private string? Prompt { get; set; }
-    private string? CompletionResult { get; set; }
-
-    private async Task CompleteAsync()
-    {
-        var ping = await ApiApp.GetPingAsync();
-        var result = await ApiApp.GetChatCompletionsAsync(AccessCode, GitHubAlias, DeploymentName, Prompt, MaxTokens, Temperature);
-        CompletionResult = result;
-    }
-
-    private async Task ClearAsync()
-    {
-        AccessCode = string.Empty;
-        GitHubAlias = string.Empty;
-        DeploymentName = string.Empty;
-        MaxTokens = 2048;
-        Temperature = 0.7f;
-        Prompt = string.Empty;
-        CompletionResult = string.Empty;
-
-        await Task.CompletedTask;
-    }
-}

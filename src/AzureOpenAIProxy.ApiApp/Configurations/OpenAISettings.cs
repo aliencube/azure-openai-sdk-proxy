@@ -1,4 +1,4 @@
-﻿namespace AzureOpenAIProxy.PlaygroundApp.Configurations;
+﻿namespace AzureOpenAIProxy.ApiApp.Configurations;
 
 /// <summary>
 /// This represents the settings entity for OpenAI.
@@ -14,4 +14,9 @@ public class OpenAISettings
     /// Gets or sets the endpoint of the OpenAI API.
     /// </summary>
     public string? Endpoint { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the API key of the OpenAI API.
+    /// </summary>
+    public string? ApiKey { get; set; } = string.Empty;
 }
