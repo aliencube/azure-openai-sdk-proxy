@@ -9,18 +9,23 @@ namespace AzureOpenAIProxy.ApiApp.Services;
 /// </summary>
 /// <param name="client"><see cref="TableServiceClient"/> instance.</param>
 /// <param name="logger"><see cref="ILogger{TCategoryName}"/> instance.</param>
-public class ManagementAuthService(TableServiceClient client, ILogger<ManagementAuthService> logger) : AuthService(client, logger)
+public class ManagementAuthService(TableServiceClient client, ILogger<ManagementAuthService> logger) : AuthService
 {
     private const string TableName = "managements";
-    private const string PartitionKey = "management";
+    private const string PartitionKeys = "master,management";
 
-    private readonly TableClient _table = client.GetTableClient(TableName);
+    private readonly TableClient _table = client?.GetTableClient(TableName) ?? throw new ArgumentNullException(nameof(client));
+    private readonly ILogger<ManagementAuthService> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     /// <inheritdoc />
     public override async Task<bool> ValidateAsync(string apiKey)
     {
+        var partitionKeys = PartitionKeys.Split(',', StringSplitOptions.RemoveEmptyEntries);
+        var now = DateTimeOffset.UtcNow;
         var results = this._table
-                          .QueryAsync<ManagementRecord>(p => p.PartitionKey == PartitionKey && p.ApiKey == apiKey);
+                          .QueryAsync<ManagementRecord>(p => partitionKeys.Contains(p.PartitionKey)
+                                                          && p.ApiKey == apiKey
+                                                          && p.EventDateStart <= now && now <= p.EventDateEnd);
 
         var authenticated = false;
         await foreach (var result in results.AsPages())

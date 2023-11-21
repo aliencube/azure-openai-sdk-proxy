@@ -42,12 +42,12 @@ public class ManagementRecord : ITableEntity
     /// <summary>
     /// Gets or sets the event start date.
     /// </summary>
-    public DateTimeOffset? EventDateStart { get; set; }
+    public DateTimeOffset? EventDateStart { get; set; } = DateTimeOffset.MinValue;
 
     /// <summary>
     /// Gets or sets the event end date.
     /// </summary>
-    public DateTimeOffset? EventDateEnd { get; set; }
+    public DateTimeOffset? EventDateEnd { get; set; } = DateTimeOffset.MaxValue;
 
     /// <summary>
     /// Gets or sets the management API key.

@@ -484,3 +484,16 @@ $RECYCLE.BIN/
 *.swp
 
 appsettings.Development.json
+
+# azd
+.azure
+
+# azd infra synth
+manifests
+next-steps.md
+main.bicep
+main.parameters.json
+resources.bicep
+
+# Aspire
+aspire-manifest.json

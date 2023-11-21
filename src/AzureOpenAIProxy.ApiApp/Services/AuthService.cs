@@ -20,18 +20,8 @@ public interface IAuthService
 /// </summary>
 /// <param name="client"><see cref="TableServiceClient"/> instance.</param>
 /// <param name="logger"><see cref="ILogger"/> instance.</param>
-public abstract class AuthService(TableServiceClient client, ILogger logger) : IAuthService
+public abstract class AuthService : IAuthService
 {
-    /// <summary>
-    /// Gets or sets the <see cref="TableServiceClient"/> instance.
-    /// </summary>
-    protected TableServiceClient TableServiceClient { get; private set; } = client ?? throw new ArgumentNullException(nameof(client));
-
-    /// <summary>
-    /// Gets or sets the <see cref="ILogger"/> instance.
-    /// </summary>
-    protected ILogger Logger { get; set; } = logger ?? throw new ArgumentNullException(nameof(logger));
-
     /// <inheritdoc />
     public abstract Task<bool> ValidateAsync(string apiKey);
 }
