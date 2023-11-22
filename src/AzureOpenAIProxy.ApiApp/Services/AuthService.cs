@@ -10,9 +10,10 @@ public interface IAuthService
     /// <summary>
     /// Validates the API key.
     /// </summary>
+    /// <typeparam name="T">Type of response implementing <see cref="ITableEntity"/>.</typeparam>
     /// <param name="apiKey">API key.</param>
     /// <returns>Returns <c>true</c>, if the API key is valid; otherwise returns <c>false</c>.</returns>
-    Task<bool> ValidateAsync(string apiKey);
+    Task<T> ValidateAsync<T>(string apiKey) where T : ITableEntity;
 }
 
 /// <summary>
@@ -23,5 +24,5 @@ public interface IAuthService
 public abstract class AuthService : IAuthService
 {
     /// <inheritdoc />
-    public abstract Task<bool> ValidateAsync(string apiKey);
+    public abstract Task<T> ValidateAsync<T>(string apiKey) where T : ITableEntity;
 }

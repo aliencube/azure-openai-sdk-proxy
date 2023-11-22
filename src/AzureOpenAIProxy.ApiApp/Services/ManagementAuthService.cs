@@ -18,7 +18,7 @@ public class ManagementAuthService(TableServiceClient client, ILogger<Management
     private readonly ILogger<ManagementAuthService> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     /// <inheritdoc />
-    public override async Task<bool> ValidateAsync(string apiKey)
+    public override async Task<T> ValidateAsync<T>(string apiKey)
     {
         var partitionKeys = PartitionKeys.Split(',', StringSplitOptions.RemoveEmptyEntries);
         var now = DateTimeOffset.UtcNow;
@@ -27,7 +27,7 @@ public class ManagementAuthService(TableServiceClient client, ILogger<Management
                                                           && p.ApiKey == apiKey
                                                           && p.EventDateStart <= now && now <= p.EventDateEnd);
 
-        var authenticated = false;
+        var record = default(ManagementRecord);
         await foreach (var result in results.AsPages())
         {
             if (result.Values.Count != 1)
@@ -35,10 +35,10 @@ public class ManagementAuthService(TableServiceClient client, ILogger<Management
                 continue;
             }
 
-            authenticated = true;
+            record = result.Values.Single();
             break;
         }
 
-        return authenticated;
+        return (T)Convert.ChangeType(record, typeof(T));
     }
 }

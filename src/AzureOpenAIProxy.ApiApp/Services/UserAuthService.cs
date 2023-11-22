@@ -17,18 +17,18 @@ public class UserAuthService(TableServiceClient client, ILogger<UserAuthService>
     private readonly ILogger<UserAuthService> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     /// <inheritdoc />
-    public override async Task<bool> ValidateAsync(string apiKey)
+    public override async Task<T> ValidateAsync<T>(string apiKey)
     {
         var segments = apiKey.Split("::");
         var accessCode = segments[0];
         var githubAlias = segments[1];
         var now = DateTimeOffset.UtcNow;
         var results = this._table
-                          .QueryAsync<AccessCodeRecord>(p => p.RowKey == accessCode
+                          .QueryAsync<AccessCodeRecord>(p => p.ApiKey == accessCode
                                                           && p.GitHubAlias.Equals(githubAlias, StringComparison.InvariantCultureIgnoreCase)
                                                           && p.EventDateStart <= now && now <= p.EventDateEnd);
 
-        var authenticated = false;
+        var record = default(AccessCodeRecord);
         await foreach (var result in results.AsPages())
         {
             if (result.Values.Count != 1)
@@ -36,10 +36,10 @@ public class UserAuthService(TableServiceClient client, ILogger<UserAuthService>
                 continue;
             }
 
-            authenticated = true;
+            record = result.Values.Single();
             break;
         }
 
-        return authenticated;
+        return (T)Convert.ChangeType(record, typeof(T));
     }
 }

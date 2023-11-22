@@ -13,6 +13,12 @@ public partial class PlaygroundComponent : ComponentBase
     protected IApiAppClient ApiApp { get; set; }
 
     /// <summary>
+    /// Gets or sets the <see cref="ILogger{TCategoryName}"/> instance.
+    /// </summary>
+    [Inject]
+    protected ILogger<PlaygroundComponent> Logger { get; set; }
+
+    /// <summary>
     /// Gets or sets the API access code.
     /// </summary>
     protected string? AccessCode { get; set; }
@@ -52,15 +58,23 @@ public partial class PlaygroundComponent : ComponentBase
     /// </summary>
     protected async Task CompleteAsync()
     {
-        var result = await ApiApp.GetChatCompletionsAsync(
-            this.AccessCode,
-            this.GitHubAlias,
-            this.DeploymentName,
-            this.Prompt,
-            this.MaxTokens,
-            this.Temperature);
+        try
+        {
+            var result = await ApiApp.GetChatCompletionsAsync(
+                this.AccessCode,
+                this.GitHubAlias,
+                this.DeploymentName,
+                this.Prompt,
+                this.MaxTokens,
+                this.Temperature);
 
-        this.CompletionResult = result;
+            this.CompletionResult = result;
+        }
+        catch (Exception ex)
+        {
+            this.Logger.LogError(ex, ex.Message);
+            this.CompletionResult = ex.Message;
+        }
 
         await Task.CompletedTask;
     }

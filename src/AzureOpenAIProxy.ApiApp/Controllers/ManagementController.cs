@@ -68,8 +68,8 @@ public class ManagementController(
     {
         this._logger.LogInformation("Received a request to generate an access code");
 
-        var validated = await this._auth.ValidateAsync(apiKey);
-        if (validated == false)
+        var record = await this._auth.ValidateAsync<ManagementRecord>(apiKey);
+        if (record == null)
         {
             this._logger.LogError("Invalid API key");
 

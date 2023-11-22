@@ -1,4 +1,6 @@
-﻿using AzureOpenAIProxy.ApiApp.Configurations;
+﻿using System.Text.Json;
+
+using AzureOpenAIProxy.ApiApp.Configurations;
 using AzureOpenAIProxy.ApiApp.Services;
 
 namespace AzureOpenAIProxy.ApiApp.Builders;
@@ -53,6 +55,7 @@ public class OpenAIServiceRequestBuilder : IOpenAIServiceRequestBuilder
     private string? _path;
     private string? _apiVersion;
     private string? _payload;
+    private int? _maxTokens;
 
     /// <inheritdoc />
     public IOpenAIServiceRequestBuilder SetOpenAIInstance(AoaiSettings aoaiSettings)
@@ -87,8 +90,9 @@ public class OpenAIServiceRequestBuilder : IOpenAIServiceRequestBuilder
     /// <inheritdoc />
     public async Task<IOpenAIServiceRequestBuilder> SetRequestPayloadAsync(Stream stream)
     {
-        using var reader = new StreamReader(stream ?? throw new ArgumentNullException(nameof(stream)));
-        this._payload = await reader.ReadToEndAsync().ConfigureAwait(false);
+        using var jd = await JsonDocument.ParseAsync(stream ?? throw new ArgumentNullException(nameof(stream)));
+        this._payload = jd.RootElement.GetRawText();
+        this._maxTokens = jd.RootElement.GetProperty("max_tokens").GetInt32();
 
         return this;
     }
@@ -103,7 +107,8 @@ public class OpenAIServiceRequestBuilder : IOpenAIServiceRequestBuilder
             ApiVersion = this._apiVersion,
             RequestUri = $"{this._endpoint.TrimEnd('/')}/{this._path.Trim('/')}?api-version={this._apiVersion}",
             ApiKey = this._apiKey,
-            Payload = this._payload
+            Payload = this._payload,
+            MaxTokens = this._maxTokens,
         };
 
         return options;

@@ -28,6 +28,7 @@ public class AccessCodeResponse : AccessCodeRequest
         this.EventDateStart = record.EventDateStart;
         this.EventDateEnd = record.EventDateEnd;
         this.DateCreated = record.DateCreated;
+        this.MaxTokens = record.MaxTokens;
     }
 
     /// <summary>
@@ -41,4 +42,10 @@ public class AccessCodeResponse : AccessCodeRequest
     /// </summary>
     [JsonPropertyName("accessCode")]
     public string? AccessCode { get; set; }
+
+    /// <summary>
+    /// Gets or sets the maximum number of tokens to use.
+    /// </summary>
+    [JsonPropertyName("maxTokens")]
+    public int? MaxTokens { get; set; }
 }

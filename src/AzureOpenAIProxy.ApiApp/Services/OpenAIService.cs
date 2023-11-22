@@ -10,13 +10,20 @@ namespace AzureOpenAIProxy.ApiApp.Services;
 public interface IOpenAIService
 {
     /// <summary>
-    /// Invokes the OpenAI API.
+    /// Builds the <see cref="OpenAIServiceOptions"/> instance.
     /// </summary>
     /// <param name="path">OpenAI API path.</param>
     /// <param name="apiVersion">OpenAI API version.</param>
     /// <param name="body">Request payload.</param>
+    /// <returns>Returns the <see cref="OpenAIServiceOptions"/> instance.</returns>
+    Task<OpenAIServiceOptions> BuildServiceOptionsAsync(PathString path, string apiVersion, Stream body);
+
+    /// <summary>
+    /// Invokes the OpenAI API.
+    /// </summary>
+    /// <param name="options"><see cref="OpenAIServiceOptions"/> instance.</param>
     /// <returns>Returns the response payload.</returns>
-    Task<string> InvokeAsync(PathString path, string apiVersion, Stream body);
+    Task<string> InvokeAsync(OpenAIServiceOptions options);
 }
 
 /// <summary>
@@ -32,7 +39,7 @@ public class OpenAIService(AoaiSettings aoaiSettings, HttpClient http, ILogger<O
     private readonly ILogger<OpenAIService> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     /// <inheritdoc />
-    public async Task<string> InvokeAsync(PathString path, string apiVersion, Stream body)
+    public async Task<OpenAIServiceOptions> BuildServiceOptionsAsync(PathString path, string apiVersion, Stream body)
     {
         var options = await new OpenAIServiceRequestBuilder()
                                 .SetOpenAIInstance(this._aoaiSettings)
@@ -41,15 +48,28 @@ public class OpenAIService(AoaiSettings aoaiSettings, HttpClient http, ILogger<O
                                 .SetRequestPayloadAsync(body)
                                 .BuildAsync()
                                 .ConfigureAwait(false);
+        return options;
+    }
 
-        using var response = await this._http
-                                       .PostAsync(options)
+    /// <inheritdoc />
+    public async Task<string> InvokeAsync(OpenAIServiceOptions options)
+    {
+        try
+        {
+            using var response = await this._http
+                                           .PostAsync(options)
+                                           .ConfigureAwait(false);
+
+            var result = await response.Content
+                                       .ReadAsStringAsync()
                                        .ConfigureAwait(false);
 
-        var result = await response.Content
-                                   .ReadAsStringAsync()
-                                   .ConfigureAwait(false);
-
-        return result;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            this._logger.LogError(ex, ex.Message);
+            throw;
+        }
     }
 }

@@ -2,6 +2,7 @@
 
 using Azure.AI.OpenAI;
 
+using AzureOpenAIProxy.ApiApp.Models;
 using AzureOpenAIProxy.ApiApp.Services;
 
 using Microsoft.AspNetCore.Mvc;
@@ -42,18 +43,26 @@ public class ChatCompletionsController(
     {
         this._logger.LogInformation("Received a chat completion request");
 
-        var validated = await this._auth.ValidateAsync(apiKey).ConfigureAwait(false);
-        if (validated == false)
+        var record = await this._auth.ValidateAsync<AccessCodeRecord>(apiKey);
+        if (record == null)
         {
             this._logger.LogError("Invalid API key");
 
-            return new UnauthorizedResult();
+            return new UnauthorizedObjectResult("Invalid API key");
+        }
+
+        this.Request.Body.Position = 0;
+        var options = await this._openai.BuildServiceOptionsAsync(this.Request.Path, apiVersion, this.Request.Body);
+        if (options.MaxTokens > record.MaxTokens)
+        {
+            this._logger.LogError($"The maximum number of tokens must be less than or equal to {record.MaxTokens}");
+
+            return new BadRequestObjectResult($"The maximum number of tokens must be less than or equal to {record.MaxTokens}");
         }
 
         try
         {
-            this.Request.Body.Position = 0;
-            var response = await this._openai.InvokeAsync(this.Request.Path, apiVersion, this.Request.Body);
+            var response = await this._openai.InvokeAsync(options);
             var result = JsonSerializer.Deserialize<object>(response);
 
             this._logger.LogInformation("Completed the chat completion request");
@@ -85,18 +94,26 @@ public class ChatCompletionsController(
     {
         this._logger.LogInformation("Received an extended chat completion request");
 
-        var validated = await this._auth.ValidateAsync(apiKey).ConfigureAwait(false);
-        if (validated == false)
+        var record = await this._auth.ValidateAsync<AccessCodeRecord>(apiKey);
+        if (record == null)
         {
             this._logger.LogError("Invalid API key");
 
-            return new UnauthorizedResult();
+            return new UnauthorizedObjectResult("Invalid API key");
+        }
+
+        this.Request.Body.Position = 0;
+        var options = await this._openai.BuildServiceOptionsAsync(this.Request.Path, apiVersion, this.Request.Body);
+        if (options.MaxTokens > record.MaxTokens)
+        {
+            this._logger.LogError($"The maximum number of tokens must be less than or equal to {record.MaxTokens}");
+
+            return new BadRequestObjectResult($"The maximum number of tokens must be less than or equal to {record.MaxTokens}");
         }
 
         try
         {
-            this.Request.Body.Position = 0;
-            var response = await this._openai.InvokeAsync(this.Request.Path, apiVersion, this.Request.Body);
+            var response = await this._openai.InvokeAsync(options);
             var result = JsonSerializer.Deserialize<object>(response);
 
             this._logger.LogInformation("Completed the extended chat completion request");

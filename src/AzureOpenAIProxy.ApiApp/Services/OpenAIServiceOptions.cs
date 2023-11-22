@@ -34,4 +34,9 @@ public class OpenAIServiceOptions
     /// Gets or sets the OpenAI API request payload.
     /// </summary>
     public string? Payload { get; set; }
+
+    /// <summary>
+    /// Gets or sets the maximum number of tokens to generate.
+    /// </summary>
+    public int? MaxTokens { get; set; }
 }

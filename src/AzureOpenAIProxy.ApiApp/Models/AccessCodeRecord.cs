@@ -62,7 +62,7 @@ public class AccessCodeRecord : ITableEntity
     /// <summary>
     /// Gets or sets the maximum number of tokens to generate.
     /// </summary>
-    public int MaxTokens { get; set; }
+    public int? MaxTokens { get; set; }
 
     /// <inheritdoc />
     public DateTimeOffset? Timestamp { get; set; }
