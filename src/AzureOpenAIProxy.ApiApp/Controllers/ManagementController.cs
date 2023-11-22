@@ -8,17 +8,17 @@ namespace AzureOpenAIProxy.ApiApp.Controllers;
 /// <summary>
 /// This represents the controller entity for management.
 /// </summary>
-/// <param name="auth"><see cref="IAuthService"/> instance.</param>
+/// <param name="auth"><see cref="IAuthService{T}"/> instance.</param>
 /// <param name="management"><see cref="IManagementService"/> instance.</param>
 /// <param name="logger"><see cref="ILogger{TCategoryName}"/> instance.</param>
 [ApiController]
 [Route("management")]
 public class ManagementController(
-    [FromKeyedServices("management")] IAuthService auth,
+    [FromKeyedServices("management")] IAuthService<ManagementRecord> auth,
     IManagementService management,
     ILogger<ManagementController> logger) : ControllerBase
 {
-    private readonly IAuthService _auth = auth ?? throw new ArgumentNullException(nameof(auth));
+    private readonly IAuthService<ManagementRecord> _auth = auth ?? throw new ArgumentNullException(nameof(auth));
     private readonly IManagementService _management = management ?? throw new ArgumentNullException(nameof(management));
     private readonly ILogger<ManagementController> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
@@ -68,7 +68,7 @@ public class ManagementController(
     {
         this._logger.LogInformation("Received a request to generate an access code");
 
-        var record = await this._auth.ValidateAsync<ManagementRecord>(apiKey);
+        var record = await this._auth.ValidateAsync(apiKey);
         if (record == null)
         {
             this._logger.LogError("Invalid API key");

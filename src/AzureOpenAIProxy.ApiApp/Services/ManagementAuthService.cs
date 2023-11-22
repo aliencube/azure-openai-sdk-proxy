@@ -9,7 +9,7 @@ namespace AzureOpenAIProxy.ApiApp.Services;
 /// </summary>
 /// <param name="client"><see cref="TableServiceClient"/> instance.</param>
 /// <param name="logger"><see cref="ILogger{TCategoryName}"/> instance.</param>
-public class ManagementAuthService(TableServiceClient client, ILogger<ManagementAuthService> logger) : AuthService
+public class ManagementAuthService(TableServiceClient client, ILogger<ManagementAuthService> logger) : AuthService<ManagementRecord>
 {
     private const string TableName = "managements";
     private const string PartitionKeys = "master,management";
@@ -18,7 +18,7 @@ public class ManagementAuthService(TableServiceClient client, ILogger<Management
     private readonly ILogger<ManagementAuthService> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     /// <inheritdoc />
-    public override async Task<T> ValidateAsync<T>(string apiKey)
+    public override async Task<ManagementRecord> ValidateAsync(string apiKey)
     {
         var partitionKeys = PartitionKeys.Split(',', StringSplitOptions.RemoveEmptyEntries);
         var now = DateTimeOffset.UtcNow;
@@ -39,6 +39,6 @@ public class ManagementAuthService(TableServiceClient client, ILogger<Management
             break;
         }
 
-        return (T)Convert.ChangeType(record, typeof(T));
+        return record;
     }
 }

@@ -12,17 +12,17 @@ namespace AzureOpenAIProxy.ApiApp.Controllers;
 /// <summary>
 /// This represents the controller entity for chat completions.
 /// </summary>
-/// <param name="auth"><see cref="IAuthService"/> instance.</param>
+/// <param name="auth"><see cref="IAuthService{T}"/> instance.</param>
 /// <param name="openai"><see cref="IOpenAIService"/> instance.</param>
 /// <param name="logger"><see cref="ILogger{TCategoryName}"/> instance.</param>
 [ApiController]
 [Route("openai")]
 public class ChatCompletionsController(
-    [FromKeyedServices("accesscode")] IAuthService auth,
+    [FromKeyedServices("accesscode")] IAuthService<AccessCodeRecord> auth,
     IOpenAIService openai,
     ILogger<ChatCompletionsController> logger) : ControllerBase
 {
-    private readonly IAuthService _auth = auth ?? throw new ArgumentNullException(nameof(auth));
+    private readonly IAuthService<AccessCodeRecord> _auth = auth ?? throw new ArgumentNullException(nameof(auth));
     private readonly IOpenAIService _openai = openai ?? throw new ArgumentNullException(nameof(openai));
     private readonly ILogger<ChatCompletionsController> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
@@ -43,7 +43,7 @@ public class ChatCompletionsController(
     {
         this._logger.LogInformation("Received a chat completion request");
 
-        var record = await this._auth.ValidateAsync<AccessCodeRecord>(apiKey);
+        var record = await this._auth.ValidateAsync(apiKey);
         if (record == null)
         {
             this._logger.LogError("Invalid API key");
@@ -94,7 +94,7 @@ public class ChatCompletionsController(
     {
         this._logger.LogInformation("Received an extended chat completion request");
 
-        var record = await this._auth.ValidateAsync<AccessCodeRecord>(apiKey);
+        var record = await this._auth.ValidateAsync(apiKey);
         if (record == null)
         {
             this._logger.LogError("Invalid API key");

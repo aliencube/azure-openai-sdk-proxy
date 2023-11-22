@@ -9,7 +9,7 @@ namespace AzureOpenAIProxy.ApiApp.Services;
 /// </summary>
 /// <param name="client"><see cref="TableServiceClient"/> instance.</param>
 /// <param name="logger"><see cref="ILogger{TCategoryName}"/> instance.</param>
-public class UserAuthService(TableServiceClient client, ILogger<UserAuthService> logger) : AuthService
+public class UserAuthService(TableServiceClient client, ILogger<UserAuthService> logger) : AuthService<AccessCodeRecord>
 {
     private const string TableName = "accesscodes";
 
@@ -17,7 +17,7 @@ public class UserAuthService(TableServiceClient client, ILogger<UserAuthService>
     private readonly ILogger<UserAuthService> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     /// <inheritdoc />
-    public override async Task<T> ValidateAsync<T>(string apiKey)
+    public override async Task<AccessCodeRecord> ValidateAsync(string apiKey)
     {
         var segments = apiKey.Split("::");
         var accessCode = segments[0];
@@ -40,6 +40,6 @@ public class UserAuthService(TableServiceClient client, ILogger<UserAuthService>
             break;
         }
 
-        return (T)Convert.ChangeType(record, typeof(T));
+        return record;
     }
 }
