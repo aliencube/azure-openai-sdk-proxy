@@ -26,7 +26,7 @@ public class UserAuthService(TableServiceClient client, ILogger<UserAuthService>
         var results = this._table
                           .QueryAsync<AccessCodeRecord>(p => p.ApiKey == accessCode
                                                           && p.GitHubAlias.Equals(githubAlias, StringComparison.InvariantCultureIgnoreCase)
-                                                          && p.EventDateStart <= now && now <= p.EventDateEnd);
+                                                          && p.EventDateStart <= now && now < p.EventDateEnd);
 
         var record = default(AccessCodeRecord);
         await foreach (var result in results.AsPages())

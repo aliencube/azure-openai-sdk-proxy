@@ -484,6 +484,7 @@ $RECYCLE.BIN/
 *.swp
 
 appsettings.Development.json
+appsettings.Production.json
 
 # azd
 .azure
