@@ -41,6 +41,13 @@ jobs:
       run: |
         dotnet build
 
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        tenant-id: ${{ vars.AZURE_TENANT_ID }}
+        subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+        client-id: ${{ vars.AZURE_CLIENT_ID }}
+
     - name: Install azd
       uses: Azure/setup-azd@v0.1.0
 
@@ -48,17 +55,41 @@ jobs:
       shell: pwsh
       run: |
         azd auth login `
-          --tenant-id "${{ vars.AZURE_TENANT_ID }}" `
-          --client-id "${{ vars.AZURE_CLIENT_ID }}" `
-          --federated-credential-provider "${{ vars.AZD_PIPELINE_PROVIDER }}"
+            --tenant-id "${{ vars.AZURE_TENANT_ID }}" `
+            --client-id "${{ vars.AZURE_CLIENT_ID }}" `
+            --federated-credential-provider "${{ vars.AZD_PIPELINE_PROVIDER }}"
 
     - name: Setup environment
       shell: pwsh
       run: |
         New-Item -Type Directory .azure
-        New-Item -Type Directory .azure/${{ vars.AZURE_ENV_NAME }}
         $config = @{ version = 1; defaultEnvironment = "${{ vars.AZURE_ENV_NAME }}" }
         $config | ConvertTo-Json -Depth 100 | Out-File -Path ./.azure/config.json -Force 
+
+        New-Item -Type Directory .azure/${{ vars.AZURE_ENV_NAME }}
+        $config = @{ services = @{ app = @{ config = @{ exposedServices = "playground" } } } }
+        $config | ConvertTo-Json -Depth 100 | Out-File -Path ./.azure/${{ vars.AZURE_ENV_NAME }}/config.json -Force 
+
+    - name: Update appsettings.json
+      shell: pwsh
+      run: |
+        $instances = @()
+        $aoais = az resource list -g rg-${{ vars.AZURE_ENV_NAME }} --query "[?type=='Microsoft.CognitiveServices/accounts'].name"
+        $aoais | ForEach-Object {
+            $name = $_
+            $endpoint = az cognitiveservices account show -g rg-${{ vars.AZURE_ENV_NAME }} -n $name --query "properties.endpoint" -o tsv
+            $apiKey = az cognitiveservices account keys list -g rg-${{ vars.AZURE_ENV_NAME }} -n $name --query "key1" -o tsv
+
+            $instance = @{ Endpoint = $endpoint; ApiKey = $apiKey; }
+            $instances.Add($instance)
+        }
+
+        Copy-Item -Path ./src/AzureOpenAIProxy.AppHost/appsettings.Development.sample.json `
+            -Destination ./src/AzureOpenAIProxy.AppHost/appsettings.Development.json -Force
+
+        $appsettings = Get-Content -Path ./src/AzureOpenAIProxy.AppHost/appsettings.Development.json | ConvertFrom-Json
+        $appsettings.AOAI.Instances = $instances
+        $appsettings | ConvertTo-Json -Depth 100 | Out-File -Path ./src/AzureOpenAIProxy.AppHost/appsettings.Development.json -Force
 
     - name: Deploy to Azure Container Apps
       shell: pwsh
