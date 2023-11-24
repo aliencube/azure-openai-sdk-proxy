@@ -1,0 +1,51 @@
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - main
+    - 'feature/*'
+
+# https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#set-up-azure-login-with-openid-connect-authentication
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/azure-dev-cli-apps:latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        tenant-id: ${{ vars.AZURE_TENANT_ID }}
+        subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+        client-id: ${{ vars.AZURE_CLIENT_ID }}
+
+    - name: Login to Azure Developer CLI
+      shell: pwsh
+      run: |
+        azd auth login `
+          --tenant-id "$env:AZURE_TENANT_ID" `
+          --client-id "$env:AZURE_CLIENT_ID" `
+          --federated-credential-provider "github"
+
+    - name: Deploy changes to Azure Container Apps
+      run: azd deploy --no-prompt
+      env:
+        AZD_PIPELINE_PROVIDER: ${{ vars.AZD_PIPELINE_PROVIDER }}
+        AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN: ${{ vars.AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN }}
+        AZURE_CONTAINER_APPS_ENVIRONMENT_ID: ${{ vars.AZURE_CONTAINER_APPS_ENVIRONMENT_ID }}
+        AZURE_CONTAINER_REGISTRY_ENDPOINT: ${{ vars.AZURE_CONTAINER_REGISTRY_ENDPOINT }}
+        AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID: ${{ vars.AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID }}
+        AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+        AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+        AZURE_PIPELINE_CLIENT_ID: ${{ vars.AZURE_PIPELINE_CLIENT_ID }}
+        AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+        MANAGED_IDENTITY_CLIENT_ID: ${{ vars.MANAGED_IDENTITY_CLIENT_ID }}
+        SERVICE_BINDING_TABLE_ENDPOINT: ${{ vars.SERVICE_BINDING_TABLE_ENDPOINT }}

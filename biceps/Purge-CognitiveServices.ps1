@@ -81,14 +81,19 @@ function Purge-AllDeletedCognitiveServices {
 
     Process {
         $Instances | ForEach-Object {
-            Write-Output "Purging $($_.name)"
+            Write-Output "Purging $($_.name) ..."
+
             $url = "https://management.azure.com$($_.id)?api-version=$($ApiVersion)"
     
             $aoai = $(az rest -m get -u $url)
             if ($aoai -ne $null) {
                 $deleted = $(az rest -m delete -u $url)
             }
+
+            Write-Output "... $($_.name) purged"
         }
+
+        Write-Output "All soft-deleted Azure Cognitive Service instances purged"
     }
 }
 
@@ -115,6 +120,7 @@ function Purge-DeletedCognitiveServices {
 
         if ($input -eq "a") {
             Purge-AllDeletedCognitiveServices -ApiVersion $ApiVersion -Instances $result.aoais
+            break
         }
 
         $parsed = $input -as [int]

@@ -21,11 +21,9 @@ public class ManagementAuthService(TableServiceClient client, ILogger<Management
     public override async Task<ManagementRecord> ValidateAsync(string apiKey)
     {
         var partitionKeys = PartitionKeys.Split(',', StringSplitOptions.RemoveEmptyEntries);
-        var now = DateTimeOffset.UtcNow;
         var results = this._table
                           .QueryAsync<ManagementRecord>(p => partitionKeys.Contains(p.PartitionKey)
-                                                          && p.ApiKey == apiKey
-                                                          && p.EventDateStart <= now && now <= p.EventDateEnd);
+                                                          && p.ApiKey == apiKey);
 
         var record = default(ManagementRecord);
         await foreach (var result in results.AsPages())
@@ -39,6 +37,18 @@ public class ManagementAuthService(TableServiceClient client, ILogger<Management
             break;
         }
 
-        return record;
+        var now = DateTimeOffset.UtcNow;
+
+        if (record.PartitionKey == "master")
+        {
+            return record;
+        }
+
+        if (record.EventDateStart <= now && now < record.EventDateEnd)
+        {
+            return record;
+        }
+
+        return default(ManagementRecord);
     }
 }
