@@ -74,14 +74,14 @@ jobs:
       shell: pwsh
       run: |
         $instances = @()
-        $aoais = az resource list -g rg-${{ vars.AZURE_ENV_NAME }} --query "[?type=='Microsoft.CognitiveServices/accounts'].name"
+        $aoais = az resource list -g rg-${{ vars.AZURE_ENV_NAME }} --query "[?type=='Microsoft.CognitiveServices/accounts'].name" | ConvertFrom-Json
         $aoais | ForEach-Object {
             $name = $_
             $endpoint = az cognitiveservices account show -g rg-${{ vars.AZURE_ENV_NAME }} -n $name --query "properties.endpoint" -o tsv
             $apiKey = az cognitiveservices account keys list -g rg-${{ vars.AZURE_ENV_NAME }} -n $name --query "key1" -o tsv
 
             $instance = @{ Endpoint = $endpoint; ApiKey = $apiKey; }
-            $instances.Add($instance)
+            $instances += $instance
         }
 
         Copy-Item -Path ./src/AzureOpenAIProxy.AppHost/appsettings.Development.sample.json `
