@@ -20,45 +20,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 8.x
-
-    - name: Install Aspire workload
-      shell: pwsh
-      run: |
-        dotnet workload update
-        dotnet workload install aspire
-
-    - name: Restore NuGet packages
-      shell: bash
-      run: |
-        dotnet restore
-
-    - name: Build solution
-      shell: bash
-      run: |
-        dotnet build
-
-    - name: Login to Azure
-      uses: azure/login@v1
-      with:
-        tenant-id: ${{ vars.AZURE_TENANT_ID }}
-        subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-        client-id: ${{ vars.AZURE_CLIENT_ID }}
-
-    - name: Install azd
-      uses: Azure/setup-azd@v0.1.0
-
-    - name: Login to Azure Developer CLI
-      shell: pwsh
-      run: |
-        azd auth login `
-            --tenant-id "${{ vars.AZURE_TENANT_ID }}" `
-            --client-id "${{ vars.AZURE_CLIENT_ID }}" `
-            --federated-credential-provider "${{ vars.AZD_PIPELINE_PROVIDER }}"
-
     - name: Setup environment
       shell: pwsh
       run: |
@@ -90,6 +51,51 @@ jobs:
         $appsettings = Get-Content -Path ./src/AzureOpenAIProxy.AppHost/appsettings.Development.json | ConvertFrom-Json
         $appsettings.AOAI.Instances = $instances
         $appsettings | ConvertTo-Json -Depth 100 | Out-File -Path ./src/AzureOpenAIProxy.AppHost/appsettings.Development.json -Force
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.x
+
+    - name: Install Aspire workload
+      shell: pwsh
+      run: |
+        dotnet workload update
+        dotnet workload install aspire
+
+    - name: Restore NuGet packages
+      shell: bash
+      run: |
+        dotnet restore
+
+    - name: Build solution
+      shell: bash
+      run: |
+        dotnet build
+
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        tenant-id: ${{ vars.AZURE_TENANT_ID }}
+        subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+        client-id: ${{ vars.AZURE_CLIENT_ID }}
+
+    # - name: Install Azure Developer CLI
+    #   uses: Azure/setup-azd@v0.1.0
+
+    - name: Install Azure Developer CLI
+      shell: pwsh
+      run: |
+        Invoke-RestMethod 'https://aka.ms/install-azd.ps1' -OutFile ./install-azd.ps1
+        ./install-azd.ps1 -Version daily
+
+    - name: Login to Azure Developer CLI
+      shell: pwsh
+      run: |
+        azd auth login `
+            --tenant-id "${{ vars.AZURE_TENANT_ID }}" `
+            --client-id "${{ vars.AZURE_CLIENT_ID }}" `
+            --federated-credential-provider "${{ vars.AZD_PIPELINE_PROVIDER }}"
 
     - name: Deploy to Azure Container Apps
       shell: pwsh
