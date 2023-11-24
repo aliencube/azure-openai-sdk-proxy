@@ -1,0 +1,130 @@
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - main
+    - 'feature/*'
+
+# https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#set-up-azure-login-with-openid-connect-authentication
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Login to Azure
+      if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' 
+      uses: azure/login@v1
+      with:
+        tenant-id: ${{ vars.AZURE_TENANT_ID }}
+        subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+        client-id: ${{ vars.AZURE_CLIENT_ID }}
+
+    # - name: Install Azure Developer CLI
+    #   if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' 
+    #   uses: Azure/setup-azd@v0.1.0
+
+    - name: Install Azure Developer CLI (nightly build)
+      if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' 
+      shell: pwsh
+      run: |
+        Invoke-RestMethod 'https://aka.ms/install-azd.ps1' -OutFile ./install-azd.ps1
+        ./install-azd.ps1 -Version daily
+
+    - name: Login to Azure Developer CLI
+      if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' 
+      shell: pwsh
+      run: |
+        azd auth login `
+            --tenant-id "${{ vars.AZURE_TENANT_ID }}" `
+            --client-id "${{ vars.AZURE_CLIENT_ID }}" `
+            --federated-credential-provider "${{ vars.AZD_PIPELINE_PROVIDER }}"
+
+    - name: Setup environment
+      if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' 
+      shell: pwsh
+      run: |
+        # Create config.json under .azure
+        New-Item -Type Directory .azure
+        $config = @{ version = 1; defaultEnvironment = "${{ vars.AZURE_ENV_NAME }}" }
+        $config | ConvertTo-Json -Depth 100 | Out-File -Path ./.azure/config.json -Force 
+
+        # Create config.json under .azure/${{ vars.AZURE_ENV_NAME }}
+        New-Item -Type Directory .azure/${{ vars.AZURE_ENV_NAME }}
+        $config = @{ services = @{ app = @{ config = @{ exposedServices = @( "playground" ) } } } }
+        $config | ConvertTo-Json -Depth 100 | Out-File -Path ./.azure/${{ vars.AZURE_ENV_NAME }}/config.json -Force
+
+        # Create .env under .azure/${{ vars.AZURE_ENV_NAME }}
+        $dotenv = @()
+        $dotenv += "AZD_PIPELINE_PROVIDER=`"${{ vars.AZD_PIPELINE_PROVIDER }}`""
+        $dotenv += "AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN=`"${{ vars.AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN }}`""
+        $dotenv += "AZURE_CONTAINER_APPS_ENVIRONMENT_ID=`"${{ vars.AZURE_CONTAINER_APPS_ENVIRONMENT_ID }}`""
+        $dotenv += "AZURE_CONTAINER_REGISTRY_ENDPOINT=`"${{ vars.AZURE_CONTAINER_REGISTRY_ENDPOINT }}`""
+        $dotenv += "AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID=`"${{ vars.AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID }}`""
+        $dotenv += "AZURE_ENV_NAME=`"${{ vars.AZURE_ENV_NAME }}`""
+        $dotenv += "AZURE_LOCATION=`"${{ vars.AZURE_LOCATION }}`""
+        $dotenv += "AZURE_PIPELINE_CLIENT_ID=`"${{ vars.AZURE_PIPELINE_CLIENT_ID }}`""
+        $dotenv += "AZURE_SUBSCRIPTION_ID=`"${{ vars.AZURE_SUBSCRIPTION_ID }}`""
+        $dotenv += "MANAGED_IDENTITY_CLIENT_ID=`"${{ vars.MANAGED_IDENTITY_CLIENT_ID }}`""
+        $dotenv += "SERVICE_BINDING_TABLE_ENDPOINT=`"${{ vars.SERVICE_BINDING_TABLE_ENDPOINT }}`""
+        $dotenv | Out-File -Path ./.azure/${{ vars.AZURE_ENV_NAME }}/.env -Force
+
+    - name: Update appsettings.json
+      if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' 
+      shell: pwsh
+      run: |
+        $instances = @()
+        $aoais = az resource list -g rg-${{ vars.AZURE_ENV_NAME }} --query "[?type=='Microsoft.CognitiveServices/accounts'].name" | ConvertFrom-Json
+        $aoais | ForEach-Object {
+            $name = $_
+            $endpoint = az cognitiveservices account show -g rg-${{ vars.AZURE_ENV_NAME }} -n $name --query "properties.endpoint" -o tsv
+            $apiKey = az cognitiveservices account keys list -g rg-${{ vars.AZURE_ENV_NAME }} -n $name --query "key1" -o tsv
+
+            $instance = @{ Endpoint = $endpoint; ApiKey = $apiKey; }
+            $instances += $instance
+        }
+
+        Copy-Item -Path ./src/AzureOpenAIProxy.AppHost/appsettings.Development.sample.json `
+            -Destination ./src/AzureOpenAIProxy.AppHost/appsettings.Development.json -Force
+
+        $appsettings = Get-Content -Path ./src/AzureOpenAIProxy.AppHost/appsettings.Development.json | ConvertFrom-Json
+        $appsettings.AOAI.Instances = $instances
+        $appsettings | ConvertTo-Json -Depth 100 | Out-File -Path ./src/AzureOpenAIProxy.AppHost/appsettings.Development.json -Force
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.x
+
+    - name: Install Aspire workload
+      shell: pwsh
+      run: |
+        dotnet workload update
+        dotnet workload install aspire
+
+    - name: Restore NuGet packages
+      shell: bash
+      run: |
+        dotnet restore
+
+    - name: Build solution
+      shell: bash
+      run: |
+        dotnet build
+
+    - name: Test solution
+      shell: bash
+      run: |
+        dotnet test
+
+    - name: Deploy to Azure Container Apps
+      if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' 
+      shell: pwsh
+      run: |
+        azd deploy
