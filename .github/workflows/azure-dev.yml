@@ -21,6 +21,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Login to Azure
+      # if: github.ref == 'refs/heads/main'
       uses: azure/login@v1
       with:
         tenant-id: ${{ vars.AZURE_TENANT_ID }}
@@ -28,15 +29,18 @@ jobs:
         client-id: ${{ vars.AZURE_CLIENT_ID }}
 
     # - name: Install Azure Developer CLI
+    #   if: github.ref == 'refs/heads/main'
     #   uses: Azure/setup-azd@v0.1.0
 
     - name: Install Azure Developer CLI
+      # if: github.ref == 'refs/heads/main'
       shell: pwsh
       run: |
         Invoke-RestMethod 'https://aka.ms/install-azd.ps1' -OutFile ./install-azd.ps1
         ./install-azd.ps1 -Version daily
 
     - name: Login to Azure Developer CLI
+      # if: github.ref == 'refs/heads/main'
       shell: pwsh
       run: |
         azd auth login `
@@ -45,17 +49,36 @@ jobs:
             --federated-credential-provider "${{ vars.AZD_PIPELINE_PROVIDER }}"
 
     - name: Setup environment
+      # if: github.ref == 'refs/heads/main'
       shell: pwsh
       run: |
+        # Create config.json under .azure
         New-Item -Type Directory .azure
         $config = @{ version = 1; defaultEnvironment = "${{ vars.AZURE_ENV_NAME }}" }
         $config | ConvertTo-Json -Depth 100 | Out-File -Path ./.azure/config.json -Force 
 
+        # Create config.json under .azure/${{ vars.AZURE_ENV_NAME }}
         New-Item -Type Directory .azure/${{ vars.AZURE_ENV_NAME }}
         $config = @{ services = @{ app = @{ config = @{ exposedServices = "playground" } } } }
-        $config | ConvertTo-Json -Depth 100 | Out-File -Path ./.azure/${{ vars.AZURE_ENV_NAME }}/config.json -Force 
+        $config | ConvertTo-Json -Depth 100 | Out-File -Path ./.azure/${{ vars.AZURE_ENV_NAME }}/config.json -Force
+
+        # Create .env under .azure/${{ vars.AZURE_ENV_NAME }}
+        $dotenv = @()
+        $dotenv += "AZD_PIPELINE_PROVIDER=`"${{ vars.AZD_PIPELINE_PROVIDER }}`""
+        $dotenv += "AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN=`"${{ vars.AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN }}`""
+        $dotenv += "AZURE_CONTAINER_APPS_ENVIRONMENT_ID=`"${{ vars.AZURE_CONTAINER_APPS_ENVIRONMENT_ID }}`""
+        $dotenv += "AZURE_CONTAINER_REGISTRY_ENDPOINT=`"${{ vars.AZURE_CONTAINER_REGISTRY_ENDPOINT }}`""
+        $dotenv += "AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID=`"${{ vars.AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID }}`""
+        $dotenv += "AZURE_ENV_NAME=`"${{ vars.AZURE_ENV_NAME }}`""
+        $dotenv += "AZURE_LOCATION=`"${{ vars.AZURE_LOCATION }}`""
+        $dotenv += "AZURE_PIPELINE_CLIENT_ID=`"${{ vars.AZURE_PIPELINE_CLIENT_ID }}`""
+        $dotenv += "AZURE_SUBSCRIPTION_ID=`"${{ vars.AZURE_SUBSCRIPTION_ID }}`""
+        $dotenv += "MANAGED_IDENTITY_CLIENT_ID=`"${{ vars.MANAGED_IDENTITY_CLIENT_ID }}`""
+        $dotenv += "SERVICE_BINDING_TABLE_ENDPOINT=`"${{ vars.SERVICE_BINDING_TABLE_ENDPOINT }}`""
+        $dotenv | Out-File -Path ./.azure/${{ vars.AZURE_ENV_NAME }}/.env -Force
 
     - name: Update appsettings.json
+      # if: github.ref == 'refs/heads/main'
       shell: pwsh
       run: |
         $instances = @()
@@ -103,18 +126,19 @@ jobs:
         dotnet test
 
     - name: Deploy to Azure Container Apps
+      # if: github.ref == 'refs/heads/main'
       shell: pwsh
-      env:
-        AZD_PIPELINE_PROVIDER: ${{ vars.AZD_PIPELINE_PROVIDER }}
-        AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN: ${{ vars.AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN }}
-        AZURE_CONTAINER_APPS_ENVIRONMENT_ID: ${{ vars.AZURE_CONTAINER_APPS_ENVIRONMENT_ID }}
-        AZURE_CONTAINER_REGISTRY_ENDPOINT: ${{ vars.AZURE_CONTAINER_REGISTRY_ENDPOINT }}
-        AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID: ${{ vars.AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID }}
-        AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
-        AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
-        AZURE_PIPELINE_CLIENT_ID: ${{ vars.AZURE_PIPELINE_CLIENT_ID }}
-        AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-        MANAGED_IDENTITY_CLIENT_ID: ${{ vars.MANAGED_IDENTITY_CLIENT_ID }}
-        SERVICE_BINDING_TABLE_ENDPOINT: ${{ vars.SERVICE_BINDING_TABLE_ENDPOINT }}
+      # env:
+      #   AZD_PIPELINE_PROVIDER: ${{ vars.AZD_PIPELINE_PROVIDER }}
+      #   AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN: ${{ vars.AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN }}
+      #   AZURE_CONTAINER_APPS_ENVIRONMENT_ID: ${{ vars.AZURE_CONTAINER_APPS_ENVIRONMENT_ID }}
+      #   AZURE_CONTAINER_REGISTRY_ENDPOINT: ${{ vars.AZURE_CONTAINER_REGISTRY_ENDPOINT }}
+      #   AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID: ${{ vars.AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID }}
+      #   AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+      #   AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+      #   AZURE_PIPELINE_CLIENT_ID: ${{ vars.AZURE_PIPELINE_CLIENT_ID }}
+      #   AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      #   MANAGED_IDENTITY_CLIENT_ID: ${{ vars.MANAGED_IDENTITY_CLIENT_ID }}
+      #   SERVICE_BINDING_TABLE_ENDPOINT: ${{ vars.SERVICE_BINDING_TABLE_ENDPOINT }}
       run: |
         azd deploy
