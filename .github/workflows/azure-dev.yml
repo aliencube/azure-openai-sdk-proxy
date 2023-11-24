@@ -20,6 +20,27 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.x
+
+    - name: Install Aspire workload
+      shell: pwsh
+      run: |
+        dotnet workload update
+        dotnet workload install aspire
+
+    - name: Restore NuGet packages
+      shell: bash
+      run: |
+        dotnet restore
+
+    - name: Build solution
+      shell: bash
+      run: |
+        dotnet build
+
     - name: Install azd
       uses: Azure/setup-azd@v0.1.0
 
