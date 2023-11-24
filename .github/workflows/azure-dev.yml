@@ -20,6 +20,30 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        tenant-id: ${{ vars.AZURE_TENANT_ID }}
+        subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+        client-id: ${{ vars.AZURE_CLIENT_ID }}
+
+    # - name: Install Azure Developer CLI
+    #   uses: Azure/setup-azd@v0.1.0
+
+    - name: Install Azure Developer CLI
+      shell: pwsh
+      run: |
+        Invoke-RestMethod 'https://aka.ms/install-azd.ps1' -OutFile ./install-azd.ps1
+        ./install-azd.ps1 -Version daily
+
+    - name: Login to Azure Developer CLI
+      shell: pwsh
+      run: |
+        azd auth login `
+            --tenant-id "${{ vars.AZURE_TENANT_ID }}" `
+            --client-id "${{ vars.AZURE_CLIENT_ID }}" `
+            --federated-credential-provider "${{ vars.AZD_PIPELINE_PROVIDER }}"
+
     - name: Setup environment
       shell: pwsh
       run: |
@@ -73,29 +97,10 @@ jobs:
       run: |
         dotnet build
 
-    - name: Login to Azure
-      uses: azure/login@v1
-      with:
-        tenant-id: ${{ vars.AZURE_TENANT_ID }}
-        subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-        client-id: ${{ vars.AZURE_CLIENT_ID }}
-
-    # - name: Install Azure Developer CLI
-    #   uses: Azure/setup-azd@v0.1.0
-
-    - name: Install Azure Developer CLI
-      shell: pwsh
+    - name: Test solution
+      shell: bash
       run: |
-        Invoke-RestMethod 'https://aka.ms/install-azd.ps1' -OutFile ./install-azd.ps1
-        ./install-azd.ps1 -Version daily
-
-    - name: Login to Azure Developer CLI
-      shell: pwsh
-      run: |
-        azd auth login `
-            --tenant-id "${{ vars.AZURE_TENANT_ID }}" `
-            --client-id "${{ vars.AZURE_CLIENT_ID }}" `
-            --federated-credential-provider "${{ vars.AZD_PIPELINE_PROVIDER }}"
+        dotnet test
 
     - name: Deploy to Azure Container Apps
       shell: pwsh
