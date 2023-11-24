@@ -17,8 +17,8 @@ jobs:
       image: mcr.microsoft.com/azure-dev-cli-apps:latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v4
 
     - name: Login to Azure
       uses: azure/login@v1
@@ -31,9 +31,9 @@ jobs:
       shell: pwsh
       run: |
         azd auth login `
-          --tenant-id "$env:AZURE_TENANT_ID" `
-          --client-id "$env:AZURE_CLIENT_ID" `
-          --federated-credential-provider "github"
+          --tenant-id "${{ vars.AZURE_TENANT_ID }}" `
+          --client-id "${{ vars.AZURE_CLIENT_ID }}" `
+          --federated-credential-provider "${{ vars.AZD_PIPELINE_PROVIDER }}"
 
     - name: Deploy changes to Azure Container Apps
       run: azd deploy --no-prompt
