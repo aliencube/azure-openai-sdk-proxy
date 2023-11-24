@@ -13,19 +13,15 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/azure-dev-cli-apps:latest
+    # container:
+    #   image: mcr.microsoft.com/azure-dev-cli-apps:latest
 
     steps:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Login to Azure
-      uses: azure/login@v1
-      with:
-        tenant-id: ${{ vars.AZURE_TENANT_ID }}
-        subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-        client-id: ${{ vars.AZURE_CLIENT_ID }}
+    - name: Install azd
+      uses: Azure/setup-azd@v0.1.0
 
     - name: Login to Azure Developer CLI
       shell: pwsh
@@ -35,8 +31,8 @@ jobs:
           --client-id "${{ vars.AZURE_CLIENT_ID }}" `
           --federated-credential-provider "${{ vars.AZD_PIPELINE_PROVIDER }}"
 
-    - name: Deploy changes to Azure Container Apps
-      run: azd deploy --no-prompt
+    - name: Deploy to Azure Container Apps
+      shell: pwsh
       env:
         AZD_PIPELINE_PROVIDER: ${{ vars.AZD_PIPELINE_PROVIDER }}
         AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN: ${{ vars.AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN }}
@@ -49,3 +45,5 @@ jobs:
         AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
         MANAGED_IDENTITY_CLIENT_ID: ${{ vars.MANAGED_IDENTITY_CLIENT_ID }}
         SERVICE_BINDING_TABLE_ENDPOINT: ${{ vars.SERVICE_BINDING_TABLE_ENDPOINT }}
+      run: |
+        azd deploy
