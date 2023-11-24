@@ -59,7 +59,7 @@ jobs:
 
         # Create config.json under .azure/${{ vars.AZURE_ENV_NAME }}
         New-Item -Type Directory .azure/${{ vars.AZURE_ENV_NAME }}
-        $config = @{ services = @{ app = @{ config = @{ exposedServices = "playground" } } } }
+        $config = @{ services = @{ app = @{ config = @{ exposedServices = @( "playground" ) } } } }
         $config | ConvertTo-Json -Depth 100 | Out-File -Path ./.azure/${{ vars.AZURE_ENV_NAME }}/config.json -Force
 
         # Create .env under .azure/${{ vars.AZURE_ENV_NAME }}
