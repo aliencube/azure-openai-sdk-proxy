@@ -3,43 +3,34 @@
 @description('Name of the environment that can be used as part of naming resource convention, the name of the resource group for your application will use this name, prefixed with rg-')
 param environmentName string
 
-var tags = {
+@description('List of tags for Azure resources')
+param tags object = {
   'azd-env-name': environmentName
 }
 
-// GPT3.5 Turbo 16K available regions
-var locations = [
-  'australiaeast'
-  'canadaeast'
-  'eastus'
-  'eastus2'
-  'francecentral'
-  'japaneast'
-  'northcentralus'
-//   'norwayeast'
-//   'southindia'
-  'swedencentral'
-  'switzerlandnorth'
-  'uksouth'
-//   'westeurope'
-//   'westus'
-]
+@description('The location where the resources will be deployed')
+param location string = resourceGroup().location
 
-var openais = [for location in locations: {
-  name: 'aoai-${environmentName}-${location}'
+@description('The OpenAI model to deploy')
+param model object = {
+  name: 'model-name'
+  deploymentName: 'deployment-name'
+  version: 'version'
+  skuName: 'SKU'
+  skuCapacity: 4
+}
+
+var resourceToken = uniqueString(resourceGroup().id)
+
+var openai = {
+  name: 'aoai-${resourceToken}-${location}'
   location: location
   tags: tags
   skuName: 'S0'
-  model: {
-    name: 'gpt-35-turbo-16k'
-    deploymentName: 'model-gpt35turbo16k'
-    version: '0613'
-    skuName: 'Standard'
-    skuCapacity: 4
-  }
-}]
+  model: model
+}
 
-resource aoais 'Microsoft.CognitiveServices/accounts@2023-05-01' = [for openai in openais: {
+resource aoai 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   name: openai.name
   location: openai.location
   kind: 'OpenAI'
@@ -51,11 +42,11 @@ resource aoais 'Microsoft.CognitiveServices/accounts@2023-05-01' = [for openai i
     customSubDomainName: openai.name
     publicNetworkAccess: 'Enabled'
   }
-}]
+}
 
-resource aoaiDeployments 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = [for (openai, i) in openais : {
+resource deployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = {
   name: openai.model.deploymentName
-  parent: aoais[i]
+  parent: aoai
   sku: {
     name: openai.model.skuName
     capacity: openai.model.skuCapacity
@@ -67,12 +58,12 @@ resource aoaiDeployments 'Microsoft.CognitiveServices/accounts/deployments@2023-
       version: openai.model.version
     }
   }
-}]
+}
 
-output aoaiInstances array = [for i in range(0, length(openais)): {
-  id: aoais[i].id
-  name: aoais[i].name
-  endpoint: aoais[i].properties.endpoint
-  apiKey: listKeys(aoais[i].id, '2023-05-01').key1
-  deploymentName: aoaiDeployments[i].name
-}]
+output instance object = {
+  id: aoai.id
+  name: aoai.name
+  endpoint: aoai.properties.endpoint
+  apiKey: listKeys(aoai.id, '2023-05-01').key1
+  deploymentName: deployment.name
+}
