@@ -23,7 +23,7 @@ param model object = {
 var resourceToken = uniqueString(resourceGroup().id)
 
 var openai = {
-  name: 'aoai-${resourceToken}-${location}'
+  name: 'aoai-${resourceToken}-${model.deploymentName}-${location}'
   location: location
   tags: tags
   skuName: 'S0'

@@ -44,13 +44,13 @@ $rg = "rg-$env:AZURE_ENV_NAME"
 Write-Output "Provisioning Azure OpenAI instances ..."
 
 $provisioned = az deployment group create -n aoai -g $rg `
-    --template-file ./biceps/openAI.bicep `
+    --template-file ./biceps/openAIModels.bicep `
     --parameters environmentName=$env:AZURE_ENV_NAME | ConvertFrom-Json
 
 Write-Output "... Provisioned"
 
-$instances = $provisioned.properties.outputs.aoaiInstances.value | `
-    Select-Object -Property @{ Name = "Endpoint"; Expression = "endpoint" }, @{ Name = "ApiKey"; Expression = "apiKey" }
+$instances = $provisioned.properties.outputs.instances.value | `
+    Select-Object -Property @{ Name = "Endpoint"; Expression = "endpoint" }, @{ Name = "ApiKey"; Expression = "apiKey" }, @{ Name = "DeploymentName"; Expression = "deploymentName" }
 
 # Get resource token
 Write-Output "Updating Azure Table Storage ..."
