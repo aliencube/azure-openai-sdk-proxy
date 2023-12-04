@@ -56,8 +56,9 @@ $openAIs | ForEach-Object {
     $name = $_
     $endpoint = az cognitiveservices account show -g $rg -n $name --query "properties.endpoint" -o tsv
     $apiKey = az cognitiveservices account keys list -g $rg -n $name --query "key1" -o tsv
+    $deploymentName = az cognitiveservices account deployment list -g $rg -n $name --query "[].name" -o tsv
 
-    $instance = @{ Endpoint = $endpoint; ApiKey = $apiKey; DeploymentName = $DeploymentName }
+    $instance = @{ Endpoint = $endpoint; ApiKey = $apiKey; DeploymentName = $deploymentName }
     $instances += $instance
 }
 
