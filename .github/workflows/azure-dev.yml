@@ -85,8 +85,9 @@ jobs:
             $name = $_
             $endpoint = az cognitiveservices account show -g rg-${{ vars.AZURE_ENV_NAME }} -n $name --query "properties.endpoint" -o tsv
             $apiKey = az cognitiveservices account keys list -g rg-${{ vars.AZURE_ENV_NAME }} -n $name --query "key1" -o tsv
+            $deploymentName = az cognitiveservices account deployment list -g rg-${{ vars.AZURE_ENV_NAME }} -n $name --query "[].name" -o tsv
 
-            $instance = @{ Endpoint = $endpoint; ApiKey = $apiKey; }
+            $instance = @{ Endpoint = $endpoint; ApiKey = $apiKey; DeploymentName = $deploymentName }
             $instances += $instance
         }
 
