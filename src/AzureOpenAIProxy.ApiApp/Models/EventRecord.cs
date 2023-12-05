@@ -54,6 +54,11 @@ public class EventRecord : ITableEntity
     /// </summary>
     public string? ApiKey { get; set; }
 
+    /// <summary>
+    /// Gets or sets the maximum number of tokens for the event. Defaults to 4096.
+    /// </summary>
+    public int? MaxTokens { get; set; } = 4096;
+
     /// <inheritdoc />
     public DateTimeOffset? Timestamp { get; set; }
 

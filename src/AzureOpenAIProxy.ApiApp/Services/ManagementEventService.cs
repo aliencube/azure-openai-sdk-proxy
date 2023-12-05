@@ -7,7 +7,7 @@ namespace AzureOpenAIProxy.ApiApp.Services;
 /// <summary>
 /// This provides interfaces to the <see cref="ManagementService"/> class.
 /// </summary>
-public interface IManagementService
+public partial interface IManagementService
 {
     /// <summary>
     /// Gets the list of events.
@@ -25,18 +25,11 @@ public interface IManagementService
     Task<EventResponse> CreateEventAsync(EventRequest req);
 
     /// <summary>
-    /// Get the event by ID.
+    /// Gets the event by ID.
     /// </summary>
     /// <param name="eventId">Event ID.</param>
     /// <returns>Returns the <see cref="EventResponse"/> instance.</returns>
     Task<EventResponse> GetEvenByIdAsync(string eventId);
-
-    /// <summary>
-    /// Creates the access code.
-    /// </summary>
-    /// <param name="req"><see cref="AccessCodeRequest"/> instance.</param>
-    /// <returns>Returns the <see cref="AccessCodeResponse"/> instance.</returns>
-    Task<AccessCodeResponse> CreateAccessCodeAsync(AccessCodeRequest req);
 }
 
 /// <summary>
@@ -44,11 +37,12 @@ public interface IManagementService
 /// </summary>
 /// <param name="client"><see cref="TableServiceClient"/> instance.</param>
 /// <param name="logger"><see cref="ILogger{TCategoryName}"/> instance.</param>
-public class ManagementService(TableServiceClient client, ILogger<ManagementService> logger) : IManagementService
+public partial class ManagementService(TableServiceClient client, ILogger<ManagementService> logger) : IManagementService
 {
     private const string AccessCodesTableName = "accesscodes";
     private const string ManagementsTableName = "managements";
     private const string ManagementsTablePartitionKey = "management";
+    private const int DefaultMaxTokens = 4096;
 
     private readonly TableClient _accessCodes = client?.GetTableClient(AccessCodesTableName) ?? throw new ArgumentNullException(nameof(client));
     private readonly TableClient _managements = client?.GetTableClient(ManagementsTableName) ?? throw new ArgumentNullException(nameof(client));
@@ -96,6 +90,7 @@ public class ManagementService(TableServiceClient client, ILogger<ManagementServ
             EventDateStart = req.EventDateStart.Value.ToUniversalTime(),
             EventDateEnd = req.EventDateEnd.Value.ToUniversalTime(),
             ApiKey = apiKey,
+            MaxTokens = DefaultMaxTokens,
         };
 
         await this._managements.UpsertEntityAsync(record).ConfigureAwait(false);
@@ -110,37 +105,9 @@ public class ManagementService(TableServiceClient client, ILogger<ManagementServ
         var result = await this._managements.GetEntityIfExistsAsync<EventRecord>(
                                                 ManagementsTablePartitionKey,
                                                 eventId ?? throw new ArgumentNullException(nameof(eventId)))
-                                            .ConfigureAwait(false);
+                                            .ConfigureAwait(false)
+                           ?? throw new KeyNotFoundException($"Event ID not found: {eventId}");
 
         return new EventResponse(result.Value);
-    }
-
-    /// <inheritdoc />
-    public async Task<AccessCodeResponse> CreateAccessCodeAsync(AccessCodeRequest req)
-    {
-        var @event = await this._managements
-                               .GetEntityIfExistsAsync<EventRecord>(ManagementsTablePartitionKey, req.EventId)
-                               .ConfigureAwait(false)
-                           ?? throw new KeyNotFoundException($"Event ID not found: {req.EventId}");
-
-        var apiKey = Guid.NewGuid().ToString();
-        var record = new AccessCodeRecord()
-        {
-            PartitionKey = req.EventId,
-            RowKey = req.GitHubAlias,
-            EventId = req.EventId,
-            Name = req.Name,
-            Email = req.Email,
-            GitHubAlias = req.GitHubAlias,
-            ApiKey = apiKey,
-            EventDateStart = @event?.Value?.EventDateStart,
-            EventDateEnd = @event?.Value?.EventDateEnd,
-            DateCreated = DateTimeOffset.UtcNow,
-        };
-
-        await this._accessCodes.UpsertEntityAsync(record).ConfigureAwait(false);
-        var result = await this._accessCodes.GetEntityIfExistsAsync<AccessCodeRecord>(req.EventId, apiKey).ConfigureAwait(false);
-
-        return new AccessCodeResponse(result.Value);
     }
 }
