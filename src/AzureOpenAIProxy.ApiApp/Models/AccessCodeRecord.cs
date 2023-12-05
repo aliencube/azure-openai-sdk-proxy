@@ -45,17 +45,17 @@ public class AccessCodeRecord : ITableEntity
     public string? ApiKey { get; set; }
 
     /// <summary>
-    /// Gets or sets the date created.
+    /// Gets or sets the date created in UTC.
     /// </summary>
     public DateTimeOffset? DateCreated { get; set; }
 
     /// <summary>
-    /// Gets or sets the event date start.
+    /// Gets or sets the event date start in UTC.
     /// </summary>
     public DateTimeOffset? EventDateStart { get; set; }
 
     /// <summary>
-    /// Gets or sets the event date end.
+    /// Gets or sets the event date end in UTC.
     /// </summary>
     public DateTimeOffset? EventDateEnd { get; set; }
 

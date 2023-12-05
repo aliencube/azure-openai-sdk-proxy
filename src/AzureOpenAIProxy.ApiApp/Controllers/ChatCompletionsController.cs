@@ -16,7 +16,7 @@ namespace AzureOpenAIProxy.ApiApp.Controllers;
 /// <param name="openai"><see cref="IOpenAIService"/> instance.</param>
 /// <param name="logger"><see cref="ILogger{TCategoryName}"/> instance.</param>
 [ApiController]
-[Route("openai")]
+[Route("api/openai")]
 public class ChatCompletionsController(
     [FromKeyedServices("accesscode")] IAuthService<AccessCodeRecord> auth,
     IOpenAIService openai,
