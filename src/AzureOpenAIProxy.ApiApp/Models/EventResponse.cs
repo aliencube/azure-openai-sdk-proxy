@@ -5,7 +5,7 @@ namespace AzureOpenAIProxy.ApiApp.Models;
 /// <summary>
 /// This represents the response entity for event.
 /// </summary>
-public class EventResponse : EventRequest
+public class EventResponse : EventRequest, IEntityResponse
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="EventResponse"/> class.

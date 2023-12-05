@@ -5,7 +5,7 @@ namespace AzureOpenAIProxy.ApiApp.Models;
 /// <summary>
 /// This represents the response entity for access code.
 /// </summary>
-public class AccessCodeResponse : AccessCodeRequest
+public class AccessCodeResponse : AccessCodeRequest, IEntityResponse
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="AccessCodeResponse"/> class.

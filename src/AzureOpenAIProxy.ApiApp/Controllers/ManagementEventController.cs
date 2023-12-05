@@ -13,7 +13,7 @@ namespace AzureOpenAIProxy.ApiApp.Controllers;
 /// <param name="logger"><see cref="ILogger{TCategoryName}"/> instance.</param>
 [ApiController]
 [Route("api/management")]
-public class ManagementController(
+public partial class ManagementController(
     [FromKeyedServices("management")] IAuthService<EventRecord> auth,
     IManagementService management,
     ILogger<ManagementController> logger) : ControllerBase
@@ -22,12 +22,18 @@ public class ManagementController(
     private readonly IManagementService _management = management ?? throw new ArgumentNullException(nameof(management));
     private readonly ILogger<ManagementController> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
+    /// <summary>
+    /// Gets the list of events.
+    /// </summary>
+    /// <param name="apiKey">API key.</param>
+    /// <param name="page">Page number.</param>
+    /// <param name="size">Page size.</param>
+    /// <returns>Returns the <see cref="EventResponseCollection"/> instance.</returns>
     [HttpGet("events", Name = "GetListOfEvents")]
     public async Task<IActionResult> GetEventsAsync(
         [FromHeader(Name = "Authorization")] string apiKey,
         [FromQuery(Name = "page")] int? page = 0,
-        [FromQuery(Name = "size")] int? size = 20
-        )
+        [FromQuery(Name = "size")] int? size = 20)
     {
         this._logger.LogInformation("Received a request to get all events");
 
@@ -55,8 +61,14 @@ public class ManagementController(
         }
     }
 
+    /// <summary>
+    /// Creates the event.
+    /// </summary>
+    /// <param name="apiKey">API key.</param>
+    /// <param name="req"><see cref="EventRequest"/> instance.</param>
+    /// <returns>Returns the <see cref="EventResponse"/> instance.</returns>
     [HttpPost("events", Name = "CreateEvent")]
-    public async Task<IActionResult> CreateEvent(
+    public async Task<IActionResult> CreateEventAsync(
         [FromHeader(Name = "Authorization")] string apiKey,
         [FromBody] EventRequest req)
     {
@@ -93,6 +105,12 @@ public class ManagementController(
         }
     }
 
+    /// <summary>
+    /// Gets the event by ID.
+    /// </summary>
+    /// <param name="apiKey">API key.</param>
+    /// <param name="eventId">Event ID.</param>
+    /// <returns>Returns the <see cref="EventResponse"/> instance.</returns>
     [HttpGet("events/{eventId}", Name = "GetEventById")]
     public async Task<IActionResult> GetEventByEventIdAsync(
         [FromHeader(Name = "Authorization")] string apiKey,
@@ -129,73 +147,5 @@ public class ManagementController(
 
             return new ObjectResult(ex.Message) { StatusCode = StatusCodes.Status500InternalServerError };
         }
-    }
-
-    [HttpGet("events/{eventId}/access-codes", Name = "GetListOfEventAccessCodes")]
-    public async Task<IActionResult> GetAccessCodesByEventIdAsync(
-        [FromHeader(Name = "Authorization")] string apiKey,
-        [FromRoute] string eventId)
-    {
-        var result = new OkObjectResult("Pong");
-
-        return await Task.FromResult(result);
-    }
-
-    [HttpPost("events/{eventId}/access-codes", Name = "CreateEventAccessCode")]
-    public async Task<IActionResult> CreateEvent(
-        [FromHeader(Name = "Authorization")] string apiKey,
-        [FromRoute] string eventId,
-        [FromBody] AccessCodeRequest req)
-    {
-        this._logger.LogInformation("Received a request to generate an access code");
-
-        var record = await this._auth.ValidateAsync(apiKey);
-        if (record == null)
-        {
-            this._logger.LogError("Invalid API key");
-
-            return new UnauthorizedResult();
-        }
-
-        if (string.IsNullOrWhiteSpace(eventId))
-        {
-            this._logger.LogError("No event ID");
-
-            return new NotFoundResult();
-        }
-
-        if (req == null)
-        {
-            this._logger.LogError("No request payload");
-
-            return new BadRequestResult();
-        }
-
-        try
-        {
-            req.EventId = eventId;
-            var result = await this._management.CreateAccessCodeAsync(req);
-
-            this._logger.LogInformation("Completed the request to generate the access code");
-
-            return new OkObjectResult(result);
-        }
-        catch (Exception ex)
-        {
-            this._logger.LogError(ex, "Failed to generate the access code");
-
-            return new ObjectResult(ex.Message) { StatusCode = StatusCodes.Status500InternalServerError };
-        }
-    }
-
-    [HttpGet("events/{eventId}/access-codes/{gitHubAlias}", Name = "GetEventAccessCodeByGitHubAlias")]
-    public async Task<IActionResult> GetAccessCodesByEventIdAsync(
-        [FromHeader(Name = "Authorization")] string apiKey,
-        [FromRoute] string eventId,
-        [FromRoute] string gitHubAlias)
-    {
-        var result = new OkObjectResult("Pong");
-
-        return await Task.FromResult(result);
     }
 }
