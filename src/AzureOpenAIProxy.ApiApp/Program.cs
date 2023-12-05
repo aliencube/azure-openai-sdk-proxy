@@ -10,8 +10,9 @@ builder.AddAzureTableService("table");
 // Add services to the container.
 builder.Services.AddSingleton<AoaiSettings>(p => p.GetService<IConfiguration>().GetSection(AoaiSettings.Name).Get<AoaiSettings>());
 builder.Services.AddHttpClient<IOpenAIService, OpenAIService>();
+builder.Services.AddScoped<IManagementService, ManagementService>();
 builder.Services.AddKeyedScoped<IAuthService<AccessCodeRecord>, UserAuthService>("accesscode");
-builder.Services.AddKeyedScoped<IAuthService<ManagementRecord>, ManagementAuthService>("management");
+builder.Services.AddKeyedScoped<IAuthService<EventRecord>, ManagementAuthService>("management");
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

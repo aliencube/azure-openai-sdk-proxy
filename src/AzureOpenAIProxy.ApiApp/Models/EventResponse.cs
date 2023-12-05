@@ -3,22 +3,22 @@
 namespace AzureOpenAIProxy.ApiApp.Models;
 
 /// <summary>
-/// This represents the response entity for management.
+/// This represents the response entity for event.
 /// </summary>
-public class ManagementResponse : ManagementRequest
+public class EventResponse : EventRequest
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ManagementResponse"/> class.
+    /// Initializes a new instance of the <see cref="EventResponse"/> class.
     /// </summary>
-    public ManagementResponse()
+    public EventResponse()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ManagementResponse"/> class.
+    /// Initializes a new instance of the <see cref="EventResponse"/> class.
     /// </summary>
-    /// <param name="record"><see cref="ManagementRecord"/> instance.</param>
-    public ManagementResponse(ManagementRecord record)
+    /// <param name="record"><see cref="EventRecord"/> instance.</param>
+    public EventResponse(EventRecord record)
     {
         this.Id = record.EventId;
         this.AccessCode = record.ApiKey;

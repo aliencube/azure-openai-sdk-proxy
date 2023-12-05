@@ -3,9 +3,9 @@
 namespace AzureOpenAIProxy.ApiApp.Models;
 
 /// <summary>
-/// This represents the request entity for management.
+/// This represents the request entity for event.
 /// </summary>
-public class ManagementRequest
+public class EventRequest
 {
     /// <summary>
     /// Gets or sets the event name.
