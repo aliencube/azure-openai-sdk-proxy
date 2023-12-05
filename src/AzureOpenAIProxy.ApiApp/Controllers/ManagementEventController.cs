@@ -13,7 +13,7 @@ namespace AzureOpenAIProxy.ApiApp.Controllers;
 /// <param name="management"><see cref="IManagementService"/> instance.</param>
 /// <param name="logger"><see cref="ILogger{TCategoryName}"/> instance.</param>
 [ApiController]
-[Route("api/management")]
+[Route("management")]
 public partial class ManagementController(
     [FromKeyedServices("management")] IAuthService<EventRecord> auth,
     IManagementService management,

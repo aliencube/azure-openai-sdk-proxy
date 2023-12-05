@@ -46,13 +46,18 @@ builder.Services.AddSwaggerGen(options =>
             {
                 Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "apiKey" }
             },
-            new string[] {}
+            Array.Empty<string>()
         }
     });
     options.OperationFilter<OpenApiParameterIgnoreFilter>();
 });
 
 var app = builder.Build();
+
+// https://stackoverflow.com/questions/76962735/how-do-i-set-a-prefix-in-my-asp-net-core-7-web-api-for-all-endpoints
+var basePath = "/api";
+app.UsePathBase(basePath);
+app.UseRouting();
 
 app.Use(async (context, next) =>
 {
@@ -65,7 +70,17 @@ app.MapDefaultEndpoints();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
+    app.UseSwagger(options =>
+    {
+        options.RouteTemplate = "swagger/{documentName}/swagger.json";
+        options.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
+        {
+            swaggerDoc.Servers = new List<OpenApiServer>()
+            {
+                new() { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}{basePath}" },
+            };
+        });
+    });
     app.UseSwaggerUI();
 }
 
