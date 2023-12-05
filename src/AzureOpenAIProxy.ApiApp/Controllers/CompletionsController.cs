@@ -2,6 +2,7 @@
 
 using Azure.AI.OpenAI;
 
+using AzureOpenAIProxy.ApiApp.Filters;
 using AzureOpenAIProxy.ApiApp.Models;
 using AzureOpenAIProxy.ApiApp.Services;
 
@@ -36,8 +37,8 @@ public class CompletionsController(
     /// <returns>Returns the chat completions response.</returns>
     [HttpPost("deployments/{deploymentName}/completions", Name = "GetCompletions")]
     public async Task<IActionResult> GetCompletionsAsync(
+        [OpenApiParameterIgnore][FromHeader(Name = "api-key")] string apiKey,
         [FromRoute] string deploymentName,
-        [FromHeader(Name = "api-key")] string apiKey,
         [FromQuery(Name = "api-version")] string apiVersion,
         [FromBody] CompletionsOptions req)
     {
@@ -87,8 +88,8 @@ public class CompletionsController(
     /// <returns>Returns the completions response.</returns>
     [HttpPost("deployments/{deploymentName}/extensions/completions", Name = "GetExtensionsCompletions")]
     public async Task<IActionResult> GetExtensionsCompletionsAsync(
+        [OpenApiParameterIgnore][FromHeader(Name = "api-key")] string apiKey,
         [FromRoute] string deploymentName,
-        [FromHeader(Name = "api-key")] string apiKey,
         [FromQuery(Name = "api-version")] string apiVersion,
         [FromBody] CompletionsOptions req)
     {

@@ -1,4 +1,5 @@
-﻿using AzureOpenAIProxy.ApiApp.Models;
+﻿using AzureOpenAIProxy.ApiApp.Filters;
+using AzureOpenAIProxy.ApiApp.Models;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +20,7 @@ public partial class ManagementController
     /// <returns>Returns the <see cref="AccessCodeResponseCollection"/> instance.</returns>
     [HttpGet("events/{eventId}/access-codes", Name = "GetListOfEventAccessCodes")]
     public async Task<IActionResult> GetEventAccessCodesByEventIdAsync(
-        [FromHeader(Name = "Authorization")] string apiKey,
+        [OpenApiParameterIgnore][FromHeader(Name = "api-key")] string apiKey,
         [FromRoute] string eventId,
         [FromQuery(Name = "page")] int? page = 0,
         [FromQuery(Name = "size")] int? size = 20)
@@ -66,7 +67,7 @@ public partial class ManagementController
     /// <returns>Returns the <see cref="AccessCodeResponse"/> instance.</returns>
     [HttpPost("events/{eventId}/access-codes", Name = "CreateEventAccessCode")]
     public async Task<IActionResult> CreateEventAccessCodeAsync(
-        [FromHeader(Name = "Authorization")] string apiKey,
+        [OpenApiParameterIgnore][FromHeader(Name = "api-key")] string apiKey,
         [FromRoute] string eventId,
         [FromBody] AccessCodeRequest req)
     {
@@ -119,7 +120,7 @@ public partial class ManagementController
     /// <returns>Returns the <see cref="AccessCodeResponse"/> instance.</returns>
     [HttpGet("events/{eventId}/access-codes/{gitHubAlias}", Name = "GetEventAccessCodeByGitHubAlias")]
     public async Task<IActionResult> GetEventAccessCodeByGitHubAliasAsync(
-        [FromHeader(Name = "Authorization")] string apiKey,
+        [OpenApiParameterIgnore][FromHeader(Name = "api-key")] string apiKey,
         [FromRoute] string eventId,
         [FromRoute] string gitHubAlias)
     {

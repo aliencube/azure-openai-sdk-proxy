@@ -1,4 +1,5 @@
-﻿using AzureOpenAIProxy.ApiApp.Models;
+﻿using AzureOpenAIProxy.ApiApp.Filters;
+using AzureOpenAIProxy.ApiApp.Models;
 using AzureOpenAIProxy.ApiApp.Services;
 
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +32,7 @@ public partial class ManagementController(
     /// <returns>Returns the <see cref="EventResponseCollection"/> instance.</returns>
     [HttpGet("events", Name = "GetListOfEvents")]
     public async Task<IActionResult> GetEventsAsync(
-        [FromHeader(Name = "Authorization")] string apiKey,
+        [OpenApiParameterIgnore][FromHeader(Name = "api-key")] string apiKey,
         [FromQuery(Name = "page")] int? page = 0,
         [FromQuery(Name = "size")] int? size = 20)
     {
@@ -69,7 +70,7 @@ public partial class ManagementController(
     /// <returns>Returns the <see cref="EventResponse"/> instance.</returns>
     [HttpPost("events", Name = "CreateEvent")]
     public async Task<IActionResult> CreateEventAsync(
-        [FromHeader(Name = "Authorization")] string apiKey,
+        [OpenApiParameterIgnore][FromHeader(Name = "api-key")] string apiKey,
         [FromBody] EventRequest req)
     {
         this._logger.LogInformation("Received a request to generate an event");
@@ -113,7 +114,7 @@ public partial class ManagementController(
     /// <returns>Returns the <see cref="EventResponse"/> instance.</returns>
     [HttpGet("events/{eventId}", Name = "GetEventById")]
     public async Task<IActionResult> GetEventByEventIdAsync(
-        [FromHeader(Name = "Authorization")] string apiKey,
+        [OpenApiParameterIgnore][FromHeader(Name = "api-key")] string apiKey,
         [FromRoute] string eventId)
     {
         this._logger.LogInformation("Received a request to get an event details by event ID");

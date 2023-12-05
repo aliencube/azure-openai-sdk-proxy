@@ -1,6 +1,9 @@
 using AzureOpenAIProxy.ApiApp.Configurations;
+using AzureOpenAIProxy.ApiApp.Filters;
 using AzureOpenAIProxy.ApiApp.Models;
 using AzureOpenAIProxy.ApiApp.Services;
+
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +20,37 @@ builder.Services.AddKeyedScoped<IAuthService<EventRecord>, ManagementAuthService
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc(
+        "v1",
+        new OpenApiInfo()
+        {
+            Version = "1.0.0",
+            Title = "Azure OpenAI Proxy Service",
+            Description = "Providing a proxy service to Azure OpenAI",
+        });
+    options.AddSecurityDefinition(
+        "apiKey",
+        new OpenApiSecurityScheme()
+        {
+            Name = "api-key",
+            Type = SecuritySchemeType.ApiKey,
+            Description = "API key needed to access the endpoints.",
+            In = ParameterLocation.Header,
+        });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "apiKey" }
+            },
+            new string[] {}
+        }
+    });
+    options.OperationFilter<OpenApiParameterIgnoreFilter>();
+});
 
 var app = builder.Build();
 
