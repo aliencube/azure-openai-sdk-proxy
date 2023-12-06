@@ -19,4 +19,9 @@ public class OpenAISettings
     /// Gets or sets the API key of the OpenAI API.
     /// </summary>
     public string? ApiKey { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the deployment name of the OpenAI API.
+    /// </summary>
+    public string? DeploymentName { get; set; } = string.Empty;
 }

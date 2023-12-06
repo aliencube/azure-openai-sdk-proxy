@@ -52,8 +52,29 @@ public class ChatCompletionsController(
             return new UnauthorizedObjectResult("Invalid API key");
         }
 
+        if (string.IsNullOrWhiteSpace(deploymentName))
+        {
+            this._logger.LogError("No deployment name");
+
+            return new NotFoundObjectResult("No deployment name");
+        }
+
+        if (string.IsNullOrWhiteSpace(apiVersion))
+        {
+            this._logger.LogError("No API version");
+
+            return new NotFoundObjectResult("No API version");
+        }
+
+        if (req == null)
+        {
+            this._logger.LogError("No request payload");
+
+            return new BadRequestObjectResult("No request payload");
+        }
+
         this.Request.Body.Position = 0;
-        var options = await this._openai.BuildServiceOptionsAsync(this.Request.Path, apiVersion, this.Request.Body);
+        var options = await this._openai.BuildServiceOptionsAsync(this.Request.Path, deploymentName, apiVersion, this.Request.Body);
         if (options.MaxTokens > record.MaxTokens)
         {
             this._logger.LogError($"The maximum number of tokens must be less than or equal to {record.MaxTokens}");
@@ -103,8 +124,29 @@ public class ChatCompletionsController(
             return new UnauthorizedObjectResult("Invalid API key");
         }
 
+        if (string.IsNullOrWhiteSpace(deploymentName))
+        {
+            this._logger.LogError("No deployment name");
+
+            return new NotFoundObjectResult("No deployment name");
+        }
+
+        if (string.IsNullOrWhiteSpace(apiVersion))
+        {
+            this._logger.LogError("No API version");
+
+            return new NotFoundObjectResult("No API version");
+        }
+
+        if (req == null)
+        {
+            this._logger.LogError("No request payload");
+
+            return new BadRequestObjectResult("No request payload");
+        }
+
         this.Request.Body.Position = 0;
-        var options = await this._openai.BuildServiceOptionsAsync(this.Request.Path, apiVersion, this.Request.Body);
+        var options = await this._openai.BuildServiceOptionsAsync(this.Request.Path, deploymentName, apiVersion, this.Request.Body);
         if (options.MaxTokens > record.MaxTokens)
         {
             this._logger.LogError($"The maximum number of tokens must be less than or equal to {record.MaxTokens}");
