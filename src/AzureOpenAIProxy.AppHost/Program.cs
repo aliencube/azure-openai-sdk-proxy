@@ -16,7 +16,8 @@ for (var i = 0; i < aoai.Instances.Count; i++)
 {
     var instance = aoai.Instances[i];
     apiapp.WithEnvironment($"AOAI__Instances__{i}__Endpoint", instance.Endpoint)
-          .WithEnvironment($"AOAI__Instances__{i}__ApiKey", instance.ApiKey);
+          .WithEnvironment($"AOAI__Instances__{i}__ApiKey", instance.ApiKey)
+          .WithEnvironment($"AOAI__Instances__{i}__DeploymentName", instance.DeploymentName);
 }
 
 builder.AddProject<Projects.AzureOpenAIProxy_PlaygroundApp>("playground")

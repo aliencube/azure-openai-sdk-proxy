@@ -48,7 +48,7 @@ public class ApiAppClient(OpenAISettings openai, HttpClient http) : IApiAppClien
         int? maxTokens = 2048,
         float? temperature = 0.7f)
     {
-        var endpoint = new Uri(this._openai.Endpoint);
+        var endpoint = new Uri($"{this._openai.Endpoint.Replace("/api", "")}/api");
         var credential = new AzureKeyCredential($"{accessToken}::{gitHubId}");
         var client = new OpenAIClient(endpoint, credential);
 
