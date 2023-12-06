@@ -1,36 +1,57 @@
-﻿<div class="container">
-    <div class="form-group">
-        <label for="accessCode">Access Code:</label>
-        <input type="text" id="accessCode" class="form-control" @bind="@AccessCode" />
+﻿
+<div class="container">
+    <div class="row">
+        <div class="col col-3">
+            <div class="form-group">
+                <label for="systemMessage">System Message:</label>
+                <textarea id="systemMessage" class="form-control" rows="3" placeholder="System Message">@SystemMessage</textarea>
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-primary" @onclick="SaveSystemMessageAsync">Save</button>
+            </div>
+        </div>
+
+        <div class="col col-6">
+            <div class="form-group">
+                <div class="blank-placeholder"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="prompt">Prompt:</label>
+                <textarea id="prompt" class="form-control" @bind="@Prompt"></textarea>
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-primary" @onclick="CompleteAsync">Complete</button>
+            </div>
+        </div>
+
+        <div class="col col-3">
+            <div class="form-group">
+                <label for="accessCode">Access Code:</label>
+                <input type="password" id="accessCode" class="form-control" placeholder="Access Code" @bind="@AccessCode" />
+            </div>
+
+            <div class="form-group">
+                <label for="githubAlias">GitHub Alias:</label>
+                <input type="text" id="githubAlias" class="form-control" placeholder="GitHub Alias" @bind="@GitHubAlias" />
+            </div>
+
+            <div class="form-group">
+                <label for="deploymentName">Deployment Name:</label>
+                <input type="text" id="deploymentName" class="form-control" placeholder="Deployment Name" @bind="@DeploymentName" />
+            </div>
+
+            <div class="form-group">
+                <label for="maxTokens">Max Tokens:</label>
+                <input type="text" id="maxTokens" class="form-control" placeholder="Max Tokens" @bind="@MaxTokens" />
+            </div>
+
+            <div class="form-group">
+                <label for="temperature">Temperature:</label>
+                <input type="text" id="temperature" class="form-control" placeholder="Temperature" @bind="@Temperature" />
+            </div>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label for="githubAlias">GitHub Alias:</label>
-        <input type="text" id="githubAlias" class="form-control" @bind="@GitHubAlias" />
-    </div>
-
-    <div class="form-group">
-        <label for="deploymentName">Deployment Name:</label>
-        <input type="text" id="deploymentName" class="form-control" @bind="@DeploymentName" />
-    </div>
-
-    <div class="form-group">
-        <label for="maxTokens">Max Tokens:</label>
-        <input type="text" id="maxTokens" class="form-control" @bind="@MaxTokens" />
-    </div>
-
-    <div class="form-group">
-        <label for="temperature">Temperature:</label>
-        <input type="text" id="temperature" class="form-control" @bind="@Temperature" />
-    </div>
-
-    <div class="form-group">
-        <label for="prompt">Prompt:</label>
-        <textarea id="prompt" class="form-control" @bind="@Prompt"></textarea>
-    </div>
-
-    <button class="btn btn-primary" @onclick="CompleteAsync">Complete</button>
-    <button class="btn btn-secondary" @onclick="ClearAsync">Clear</button>
-
-    <textarea id="completionResult" class="form-control" readonly>@CompletionResult</textarea>
 </div>

@@ -16,6 +16,7 @@ public interface IApiAppClient
     /// <param name="accessToken">Access token</param>
     /// <param name="gitHubId">GitHub ID.</param>
     /// <param name="deploymentName">Deployment name.</param>
+    /// <param name="systemMessage">System message.</param>
     /// <param name="prompt">Prompt to send.</param>
     /// <param name="maxTokens">Maximum token number to send.</param>
     /// <param name="temperature">Temperature to send.</param>
@@ -24,6 +25,7 @@ public interface IApiAppClient
         string accessToken,
         string gitHubId,
         string deploymentName,
+        string systemMessage,
         string prompt,
         int? maxTokens = 2048,
         float? temperature = 0.7f);
@@ -44,6 +46,7 @@ public class ApiAppClient(OpenAISettings openai, HttpClient http) : IApiAppClien
         string accessToken,
         string gitHubId,
         string deploymentName,
+        string systemMessage,
         string prompt,
         int? maxTokens = 2048,
         float? temperature = 0.7f)
@@ -59,6 +62,7 @@ public class ApiAppClient(OpenAISettings openai, HttpClient http) : IApiAppClien
             Temperature = temperature,
             Messages =
             {
+                new ChatMessage(ChatRole.System, systemMessage),
                 new ChatMessage(ChatRole.User, prompt)
             }
         };

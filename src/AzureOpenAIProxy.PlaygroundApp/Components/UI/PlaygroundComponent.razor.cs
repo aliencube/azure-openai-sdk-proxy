@@ -19,6 +19,11 @@ public partial class PlaygroundComponent : ComponentBase
     protected ILogger<PlaygroundComponent> Logger { get; set; }
 
     /// <summary>
+    /// Gets or sets the system message.
+    /// </summary>
+    protected string? SystemMessage { get; set; } = "You are an AI assistant that helps people find information.";
+
+    /// <summary>
     /// Gets or sets the API access code.
     /// </summary>
     protected string? AccessCode { get; set; }
@@ -51,7 +56,15 @@ public partial class PlaygroundComponent : ComponentBase
     /// <summary>
     /// Gets or sets the completion result.
     /// </summary>
-    protected string? CompletionResult { get; set; }
+    protected string? CompletionsResult { get; set; }
+
+    /// <summary>
+    /// Handles the button click event of <c>SaveSystemMessage</c>.
+    /// </summary>
+    protected async Task SaveSystemMessageAsync()
+    {
+        throw new NotImplementedException();
+    }
 
     /// <summary>
     /// Handles the button click event of <c>Complete</c>.
@@ -64,33 +77,18 @@ public partial class PlaygroundComponent : ComponentBase
                 this.AccessCode,
                 this.GitHubAlias,
                 this.DeploymentName,
+                this.SystemMessage,
                 this.Prompt,
                 this.MaxTokens,
                 this.Temperature);
 
-            this.CompletionResult = result;
+            this.CompletionsResult = result;
         }
         catch (Exception ex)
         {
             this.Logger.LogError(ex, ex.Message);
-            this.CompletionResult = ex.Message;
+            this.CompletionsResult = ex.Message;
         }
-
-        await Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Handles the button click event of <c>Clear</c>.
-    /// </summary>
-    protected async Task ClearAsync()
-    {
-        this.AccessCode = string.Empty;
-        this.GitHubAlias = string.Empty;
-        this.DeploymentName = string.Empty;
-        this.MaxTokens = 2048;
-        this.Temperature = 0.7f;
-        this.Prompt = string.Empty;
-        this.CompletionResult = string.Empty;
 
         await Task.CompletedTask;
     }
