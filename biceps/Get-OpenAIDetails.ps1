@@ -62,4 +62,4 @@ $openAIs | ForEach-Object {
     $instances += $instance
 }
 
-$instances | ConvertTo-Json -Depth 100 | Out-File -FilePath ./biceps/instances-$DeploymentName.json -Encoding utf8 -Force
+$instances | ConvertTo-Json -Depth 100 | Out-File -FilePath "./biceps/instances-$($DeploymentName).json" -Encoding utf8 -Force
