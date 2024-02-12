@@ -492,6 +492,9 @@ appsettings.Production.json
 # azd
 .azure
 
+# biceps
+model-*.json
+
 # azd infra synth
 manifests
 next-steps.md
