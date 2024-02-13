@@ -4,10 +4,6 @@ Param(
     [Parameter(Mandatory=$false)]
     $EnvironmentName = $null,
 
-    [string]
-    [Parameter(Mandatory=$false)]
-    $DeploymentName = $null,
-
     [switch]
     [Parameter(Mandatory=$false)]
     $Help
@@ -18,13 +14,11 @@ function Show-Usage {
 
     Usage: $(Split-Path $MyInvocation.ScriptName -Leaf) ``
             [-EnvironmentName <Azure environment name>] ``
-            [-DeploymentName <Azure OpenAI deployment name>] ``
 
             [-Help]
 
     Options:
         -EnvironmentName    Azure environment name.
-        -DeploymentName     Azure OpenAI deployment name.
 
         -Help:          Show this message.
 "
@@ -47,19 +41,19 @@ if ($EnvironmentName -eq $null) {
 $rg = "rg-$EnvironmentName"
 
 $openAIs = az resource list -g $rg --query "[?type=='Microsoft.CognitiveServices/accounts'].name" | ConvertFrom-Json | Sort-Object
-if ($DeploymentName -ne $null) {
-    $openAIs = $openAIs | Where-Object { $_ -like "*$DeploymentName*" }
-}
 
 $instances = @()
 $openAIs | ForEach-Object {
     $name = $_
     $endpoint = az cognitiveservices account show -g $rg -n $name --query "properties.endpoint" -o tsv
     $apiKey = az cognitiveservices account keys list -g $rg -n $name --query "key1" -o tsv
-    $deploymentName = az cognitiveservices account deployment list -g $rg -n $name --query "[].name" -o tsv
+    $deploymentNames = az cognitiveservices account deployment list -g $rg -n $name --query "[].name" | ConvertFrom-Json
+    if ($deploymentNames.Count -eq 1) {
+        $deploymentNames = @( $deploymentNames )
+    }
 
-    $instance = @{ Endpoint = $endpoint; ApiKey = $apiKey; DeploymentName = $deploymentName }
+    $instance = @{ Endpoint = $endpoint; ApiKey = $apiKey; DeploymentNames = $deploymentNames }
     $instances += $instance
 }
 
-$instances | ConvertTo-Json -Depth 100 | Out-File -FilePath "./biceps/instances-$($DeploymentName).json" -Encoding utf8 -Force
+$instances | ConvertTo-Json -Depth 100 | Out-File -FilePath "./biceps/instances.json" -Encoding utf8 -Force
