@@ -29,12 +29,12 @@ public interface IOpenAIService
 /// <summary>
 /// This represents the service entity for OpenAI API.
 /// </summary>
-/// <param name="aoaiSettings"><see cref="AoaiSettings"/> instance.</param>
+/// <param name="openaiSettings"><see cref="OpenAISettings"/> instance.</param>
 /// <param name="http"><see cref="HttpClient"/> instance.</param>
 /// <param name="logger"><see cref="ILogger{TCategoryName}"/> instance.</param>
-public class OpenAIService(AoaiSettings aoaiSettings, HttpClient http, ILogger<OpenAIService> logger) : IOpenAIService
+public class OpenAIService(OpenAISettings openaiSettings, HttpClient http, ILogger<OpenAIService> logger) : IOpenAIService
 {
-    private readonly AoaiSettings _aoaiSettings = aoaiSettings ?? throw new ArgumentNullException(nameof(aoaiSettings));
+    private readonly OpenAISettings _openaiSettings = openaiSettings ?? throw new ArgumentNullException(nameof(openaiSettings));
     private readonly HttpClient _http = http ?? throw new ArgumentNullException(nameof(http));
     private readonly ILogger<OpenAIService> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
@@ -42,7 +42,7 @@ public class OpenAIService(AoaiSettings aoaiSettings, HttpClient http, ILogger<O
     public async Task<OpenAIServiceOptions> BuildServiceOptionsAsync(PathString path, string apiVersion, Stream body)
     {
         var options = await new OpenAIServiceRequestBuilder()
-                                .SetOpenAIInstance(this._aoaiSettings)
+                                .SetOpenAIInstance(this._openaiSettings)
                                 .SetApiPath(path)
                                 .SetApiVersion(apiVersion)
                                 .SetRequestPayloadAsync(body)

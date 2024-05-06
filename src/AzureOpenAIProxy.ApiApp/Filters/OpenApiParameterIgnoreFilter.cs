@@ -1,18 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
+﻿using AzureOpenAIProxy.ApiApp.Attributes;
+
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Models;
 
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace AzureOpenAIProxy.ApiApp.Filters;
-
-/// <summary>
-/// This represents the attribute entity for parameters to be ignored from the OpenAPI document generation.
-/// </summary>
-[AttributeUsage(AttributeTargets.Parameter)]
-public class OpenApiParameterIgnoreAttribute : Attribute
-{
-}
 
 /// <summary>
 /// This represents the filter entity for parameters to be ignored from the OpenAPI document generation.
@@ -49,8 +42,9 @@ public class OpenApiParameterIgnoreFilter : IOperationFilter
 
     private static bool ParameterHasIgnoreAttribute(ApiParameterDescription parameterDescription)
     {
-        return parameterDescription.ModelMetadata is DefaultModelMetadata metadata
-            ? metadata.Attributes.ParameterAttributes.Any(attribute => attribute.GetType() == typeof(OpenApiParameterIgnoreAttribute))
-            : false;
+        var result = parameterDescription.CustomAttributes()
+                                         .Any(attribute => attribute.GetType() == typeof(OpenApiParameterIgnoreAttribute)) == true;
+
+        return result;
     }
 }

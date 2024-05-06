@@ -3,16 +3,22 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <IsAspireHost>true</IsAspireHost>
+
+    <AssemblyName>AzureOpenAIProxy.AppHost</AssemblyName>
+    <RootNamespace>AzureOpenAIProxy.AppHost</RootNamespace>
+
+    <UserSecretsId>e27a0d14-f968-4ce5-ac58-4ea26132c807</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting" Version="8.0.0-preview.1.23557.2" />
-    <PackageReference Include="Aspire.Hosting.Azure" Version="8.0.0-preview.1.23557.2" />
+    <ProjectReference Include="..\AzureOpenAIProxy.ApiApp\AzureOpenAIProxy.ApiApp.csproj" />
+    <ProjectReference Include="..\AzureOpenAIProxy.WebApp\AzureOpenAIProxy.WebApp.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AzureOpenAIProxy.ApiApp\AzureOpenAIProxy.ApiApp.csproj" />
-    <ProjectReference Include="..\AzureOpenAIProxy.PlaygroundApp\AzureOpenAIProxy.PlaygroundApp.csproj" />
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="8.0.0-preview.6.24214.1" />
+    <!-- <PackageReference Include="Aspire.Hosting.Azure.CognitiveServices" Version="8.0.0-preview.6.24214.1" /> -->
+    <PackageReference Include="Azure.Identity" Version="1.11.2" />
   </ItemGroup>
 
 </Project>
