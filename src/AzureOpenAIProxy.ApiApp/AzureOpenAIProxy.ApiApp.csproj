@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <AssemblyName>AzureOpenAIProxy.ApiApp</AssemblyName>
@@ -6,11 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- <PackageReference Include="Aspire.Azure.AI.OpenAI" Version="8.0.0-preview.6.24214.1" /> -->
-    <PackageReference Include="Azure.AI.OpenAI" Version="1.0.0-beta.17" />
-    <PackageReference Include="Azure.Identity" Version="1.11.2" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.4" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="Azure.AI.OpenAI" Version="$(AzureOpenAIVersion)" />
+    <!-- <PackageReference Include="Azure.Identity" Version="1.11.3" /> -->
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="$(AspNetCoreVersion)" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="$(SwashbuckleVersion)" />
   </ItemGroup>
 
   <ItemGroup>

@@ -10,8 +10,6 @@ builder.AddServiceDefaults();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddOutputCache();
-
 builder.Services.AddHttpClient<WeatherApiClient>(client =>
     {
         // This URL uses "https+http://" to indicate HTTPS is preferred over HTTP.
@@ -32,8 +30,6 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
-
-app.UseOutputCache();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
