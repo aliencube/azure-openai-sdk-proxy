@@ -6,5 +6,18 @@
 
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <AspireVersion>8.*</AspireVersion>
+    <AzureOpenAIVersion>1.*-*</AzureOpenAIVersion>
+    <AspNetCoreVersion>8.*</AspNetCoreVersion>
+    <MicrosoftExtensionsVersion>8.*</MicrosoftExtensionsVersion>
+    <OpenTelemetryExporterVersion>1.*</OpenTelemetryExporterVersion>
+    <OpenTelemetryExtensionsVersion>1.*</OpenTelemetryExtensionsVersion>
+    <OpenTelemetryInstrumentationVersion>1.*</OpenTelemetryInstrumentationVersion>
+    <SwashbuckleVersion>6.*</SwashbuckleVersion>
+
+    <CoverletVersion>6.*</CoverletVersion>
+    <MicrosoftTestSdkVersion>17.*</MicrosoftTestSdkVersion>
+    <XunitVersion>2.*</XunitVersion>
   </PropertyGroup>
 </Project>

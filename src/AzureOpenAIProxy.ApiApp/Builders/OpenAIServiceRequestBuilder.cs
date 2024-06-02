@@ -13,9 +13,9 @@ public interface IOpenAIServiceRequestBuilder
     /// <summary>
     /// Sets the OpenAI instance settings.
     /// </summary>
-    /// <param name="aoaiSettings"><see cref="AoaiSettings"/> instance.</param>
+    /// <param name="openaiSettings"><see cref="OpenAISettings"/> instance.</param>
     /// <returns>Returns the <see cref="IOpenAIServiceRequestBuilder"/> instance.</returns>
-    IOpenAIServiceRequestBuilder SetOpenAIInstance(AoaiSettings aoaiSettings);
+    IOpenAIServiceRequestBuilder SetOpenAIInstance(OpenAISettings openaiSettings);
 
     /// <summary>
     /// Sets the OpenAI API path.
@@ -58,15 +58,15 @@ public class OpenAIServiceRequestBuilder : IOpenAIServiceRequestBuilder
     private int? _maxTokens;
 
     /// <inheritdoc />
-    public IOpenAIServiceRequestBuilder SetOpenAIInstance(AoaiSettings aoaiSettings)
+    public IOpenAIServiceRequestBuilder SetOpenAIInstance(OpenAISettings openaiSettings)
     {
-        var aoai = (aoaiSettings ?? throw new ArgumentNullException(nameof(aoaiSettings)))
-                       .Instances
-                       .Skip(aoaiSettings.Random.Next(aoaiSettings.Instances.Count))
-                       .First();
+        var openai = (openaiSettings ?? throw new ArgumentNullException(nameof(openaiSettings)))
+                     .Instances
+                     .Skip(openaiSettings.Random.Next(openaiSettings.Instances.Count))
+                     .First();
 
-        this._endpoint = aoai.Endpoint;
-        this._apiKey = aoai.ApiKey;
+        this._endpoint = openai.Endpoint;
+        this._apiKey = openai.ApiKey;
 
         return this;
     }
@@ -102,15 +102,17 @@ public class OpenAIServiceRequestBuilder : IOpenAIServiceRequestBuilder
     {
         var options = new OpenAIServiceOptions
         {
-            Endpoint = this._endpoint,
-            Path = this._path,
-            ApiVersion = this._apiVersion,
-            RequestUri = $"{this._endpoint.TrimEnd('/')}/{this._path.Trim('/')}?api-version={this._apiVersion}",
+            Endpoint = this._endpoint ?? throw new InvalidOperationException("Endpoint is not set."),
+            Path = this._path ?? throw new InvalidOperationException("Path is not set."),
+            ApiVersion = this._apiVersion ?? throw new InvalidOperationException("ApiVersion is not set."),
+            RequestUri = $"{this._endpoint?.TrimEnd('/')}/{this._path?.Trim('/')}?api-version={this._apiVersion}",
             ApiKey = this._apiKey,
             Payload = this._payload,
             MaxTokens = this._maxTokens,
         };
 
-        return options;
+        return options.RequestUri.Contains("null")
+            ? throw new InvalidOperationException("RequestUri contains null values, make sure Endpoint, Path and ApiVersion are set before building.")
+            : options;
     }
 }

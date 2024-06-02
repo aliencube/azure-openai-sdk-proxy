@@ -18,7 +18,7 @@ public class OpenAIServiceOptions
     /// <summary>
     /// Gets or sets the OpenAI API version.
     /// </summary>
-    public string ApiVersion { get; set; } = "2023-09-01-preview";
+    public string ApiVersion { get; set; } = "2024-04-01-preview";
 
     /// <summary>
     /// Gets or sets the full OpenAI API request URI.

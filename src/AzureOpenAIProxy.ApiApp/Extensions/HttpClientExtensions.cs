@@ -17,10 +17,14 @@ public static class HttpClientExtensions
     /// <returns><see cref="HttpResponseMessage"/> instance.</returns>
     public static async Task<HttpResponseMessage> PostAsync(this HttpClient http, OpenAIServiceOptions options)
     {
+        if (options.Payload == null)
+        {
+            throw new ArgumentNullException(nameof(options), "Payload cannot be null.");
+        }
+
         http.DefaultRequestHeaders.Add("api-key", options.ApiKey);
 
         var content = new StringContent(options.Payload, Encoding.UTF8, "application/json");
-
         var response = await http.PostAsync(options.RequestUri, content)
                                  .ConfigureAwait(false);
 
