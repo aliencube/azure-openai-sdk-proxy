@@ -1,0 +1,27 @@
+﻿<div id="chat-window" class="container">
+    <h3>ChatWindowComponent</h3>
+    <div id="chat-box">
+        <!-- Chat messages go here -->
+    </div>
+    <div>
+        <textarea id="user-input" class="form-control">@userInput</textarea>
+        <button id="send" class="btn btn-primary" @onclick="SendAsync">Send</button>
+        <button id="clear" class="btn btn-secondary" @onclick="ClearAsync">Clear</button>
+    </div>
+</div>
+
+@code {
+    private string? userInput;
+
+    private async Task SendAsync()
+    {
+        // Send the user input to the server
+        await Task.CompletedTask;
+    }
+
+    private async Task ClearAsync()
+    {
+        // Clear the chat box
+        await Task.CompletedTask;
+    }
+}

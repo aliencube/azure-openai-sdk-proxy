@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.AI.OpenAI" Version="$(AzureOpenAIVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AzureOpenAIProxy.ServiceDefaults\AzureOpenAIProxy.ServiceDefaults.csproj" />
   </ItemGroup>
 

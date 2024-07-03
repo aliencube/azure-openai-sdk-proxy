@@ -8,7 +8,7 @@
     <Nullable>enable</Nullable>
 
     <AspireVersion>8.*</AspireVersion>
-    <AzureOpenAIVersion>1.*-*</AzureOpenAIVersion>
+    <AzureOpenAIVersion>2.*-*</AzureOpenAIVersion>
     <AspNetCoreVersion>8.*</AspNetCoreVersion>
     <MicrosoftExtensionsVersion>8.*</MicrosoftExtensionsVersion>
     <OpenTelemetryExporterVersion>1.*</OpenTelemetryExporterVersion>
