@@ -1,0 +1,21 @@
+﻿<div id="auth-window" class="container">
+    <h3>User Authentication</h3>
+    <div>
+        <label for="api-key">API Key:</label>
+        <input type="text" class="form-control" id="api-key" @bind="@apiKey" />
+    </div>
+    <div>
+        <label for="endpoint">Endpoint:</label>
+        <input type="text" class="form-control" id="endpoint" @bind="@endpoint" />
+    </div>
+    <div>
+        <label for="deployment-model">Deployment Model Name:</label>
+        <input type="text" class="form-control" id="deployment-model" @bind="@deploymentModel" />
+    </div>
+</div>
+
+@code {
+    private string? apiKey;
+    private string? endpoint;
+    private string? deploymentModel;
+}

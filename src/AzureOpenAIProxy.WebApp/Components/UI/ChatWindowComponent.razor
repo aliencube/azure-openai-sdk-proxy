@@ -1,22 +1,95 @@
-﻿<div id="chat-window" class="container">
-    <h3>ChatWindowComponent</h3>
-    <div id="chat-box">
-        <!-- Chat messages go here -->
+﻿@using AzureOpenAIProxy.WebApp.Clients
+@inject IOpenAIApiClient Api
+
+@* <div class="container" id="auth-window">
+    <h3>User Authentication</h3>
+    <div>
+        <label for="api-key">API Key:</label>
+        <input type="text" class="form-control" id="api-key" @bind="@apiKey" />
     </div>
     <div>
-        <textarea id="user-input" class="form-control">@userInput</textarea>
+        <label for="endpoint">Endpoint:</label>
+        <input type="text" class="form-control" id="endpoint" @bind="@endpoint" />
+    </div>
+    <div>
+        <label for="deployment-name">Deployment Model Name:</label>
+        <input type="text" class="form-control" id="deployment-name" @bind="@deploymentName" />
+    </div>
+</div>
+
+<div class="container" id="auth-window">
+    <h3>OpenAI Configuration</h3>
+    <div>
+        <label for="max-token">Max Token:</label>
+        <input type="text" class="form-control" id="max-token" @bind="@maxToken" />
+    </div>
+    <div>
+        <label for="temperature">Temperature:</label>
+        <input type="text" class="form-control" id="temperature" @bind="@temperature" />
+    </div>
+</div>
+
+<div class="container" id="system-prompot-window">
+    <h3>System Prompt</h3>
+    <div>
+        <textarea class="form-control" id="system-prompt">@systemPrompt</textarea>
+        <button class="btn btn-primary" id="set-system-prompt" @onclick="SetSystemPromptAsync">Set</button>
+        <button class="btn btn-secondary" id="reset-system-prompt" @onclick="ResetSystemPromptAsync">Reset</button>
+    </div>
+</div>
+ *@
+<div class="container" id="chat-window">
+    <h3>Chat Window</h3>
+    <div id="chat-box">
+        <textarea class="form-control" id="user-prompt" readonly>@userPrompt</textarea>
+        <textarea class="form-control" id="assistent-prompt" readonly>@assistant</textarea>
+    </div>
+    <div>
+        <textarea id="user-input" class="form-control" @bind="@userInput"></textarea>
         <button id="send" class="btn btn-primary" @onclick="SendAsync">Send</button>
         <button id="clear" class="btn btn-secondary" @onclick="ClearAsync">Clear</button>
     </div>
 </div>
 
 @code {
+    private string? apiKey = "abcdef";
+    private string? endpoint = "https://localhost:5051";
+    private string? deploymentName = "model-gpt35turbo16k-0613";
+    private int? maxToken = 4096;
+    private float? temperature = 0.7f;
+    private string? systemPrompt = "You are an AI assistant that helps people find information.";
     private string? userInput;
+    private string? userPrompt;
+    private string? assistant;
 
-    private async Task SendAsync()
+    private async Task SetSystemPromptAsync()
     {
         // Send the user input to the server
         await Task.CompletedTask;
+    }
+
+    private async Task ResetSystemPromptAsync()
+    {
+        // Clear the chat box
+        await Task.CompletedTask;
+    }
+
+    private async Task SendAsync()
+    {
+        var options = new OpenAIApiClientOptions
+        {
+            ApiKey = this.apiKey,
+            Endpoint = this.endpoint,
+            DeploymentName = this.deploymentName,
+            MaxToken = this.maxToken,
+            Temperature = this.temperature,
+            SystemPrompt = this.systemPrompt,
+            UserPrompt = this.userInput,
+        };
+
+        var result = await this.Api.CompleteChatAsync(options);
+        userPrompt = userInput;
+        assistant = result.Value.Content[0].Text;
     }
 
     private async Task ClearAsync()

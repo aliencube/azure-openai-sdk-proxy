@@ -1,4 +1,4 @@
-namespace AzureOpenAIProxy.WebApp;
+namespace AzureOpenAIProxy.WebApp.Clients;
 
 public class WeatherApiClient(HttpClient httpClient)
 {

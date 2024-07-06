@@ -11,13 +11,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureOpenAIProxy.ApiApp.Con
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureOpenAIProxy.WebApp", "src\AzureOpenAIProxy.WebApp\AzureOpenAIProxy.WebApp.csproj", "{6E6E0EB6-64DE-4D5B-83DB-6BB761C4E349}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureOpenAIProxy.AppHost", "src\AzureOpenAIProxy.AppHost\AzureOpenAIProxy.AppHost.csproj", "{D088D8BB-A008-46C7-8502-9445BDEF83AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureOpenAIProxy.AppHost", "src\AzureOpenAIProxy.AppHost\AzureOpenAIProxy.AppHost.csproj", "{D088D8BB-A008-46C7-8502-9445BDEF83AC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureOpenAIProxy.ServiceDefaults", "src\AzureOpenAIProxy.ServiceDefaults\AzureOpenAIProxy.ServiceDefaults.csproj", "{210A05DA-017B-4547-8B3D-74B446C6B547}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{DC698E15-95C5-43C7-B86A-F122EB3E5022}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureOpenAIProxy.AppHost.Tests", "test\AzureOpenAIProxy.AppHost.Tests\AzureOpenAIProxy.AppHost.Tests.csproj", "{6313C702-3092-4A33-A14E-F819A7EBA28F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureOpenAIProxy.PlaygroundApp", "src\AzureOpenAIProxy.PlaygroundApp\AzureOpenAIProxy.PlaygroundApp.csproj", "{B4148378-7CD0-4FA7-9C22-2A299BDFC93A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +51,10 @@ Global
 		{6313C702-3092-4A33-A14E-F819A7EBA28F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6313C702-3092-4A33-A14E-F819A7EBA28F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6313C702-3092-4A33-A14E-F819A7EBA28F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4148378-7CD0-4FA7-9C22-2A299BDFC93A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4148378-7CD0-4FA7-9C22-2A299BDFC93A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4148378-7CD0-4FA7-9C22-2A299BDFC93A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4148378-7CD0-4FA7-9C22-2A299BDFC93A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +66,7 @@ Global
 		{D088D8BB-A008-46C7-8502-9445BDEF83AC} = {9CDABF76-96F8-432D-8272-BF6286E03559}
 		{210A05DA-017B-4547-8B3D-74B446C6B547} = {9CDABF76-96F8-432D-8272-BF6286E03559}
 		{6313C702-3092-4A33-A14E-F819A7EBA28F} = {DC698E15-95C5-43C7-B86A-F122EB3E5022}
+		{B4148378-7CD0-4FA7-9C22-2A299BDFC93A} = {9CDABF76-96F8-432D-8272-BF6286E03559}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B8FA51E1-8533-4617-AFAE-96468CFA641B}

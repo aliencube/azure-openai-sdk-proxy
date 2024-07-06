@@ -1,11 +1,11 @@
 ﻿using System.Text.Json;
 
-using Azure.AI.OpenAI;
-
 using AzureOpenAIProxy.ApiApp.Attributes;
 using AzureOpenAIProxy.ApiApp.Services;
 
 using Microsoft.AspNetCore.Mvc;
+
+using OpenAI.Chat;
 
 namespace AzureOpenAIProxy.ApiApp.Endpoints;
 
@@ -25,7 +25,7 @@ public static class ChatCompletionsEndpoint
             [OpenApiParameterIgnore][FromHeader(Name = "api-key")] string apiKey,
             [FromRoute] string deploymentName,
             [FromQuery(Name = "api-version")] string apiVersion,
-            [FromBody] ChatCompletionsOptions payload,
+            [FromBody] ChatCompletionOptions payload,
             HttpRequest request,
             IOpenAIService openai,
             ILoggerFactory loggerFactory) =>
@@ -53,8 +53,8 @@ public static class ChatCompletionsEndpoint
             }
         })
         // TODO: Check both request/response payloads
-        .Accepts<ChatCompletionsOptions>(contentType: "application/json")
-        .Produces<ChatCompletions>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
+        .Accepts<ChatCompletionOptions>(contentType: "application/json")
+        .Produces<ChatCompletion>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
         // TODO: Check both request/response payloads
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
         .Produces<string>(statusCode: StatusCodes.Status500InternalServerError, contentType: "text/plain")

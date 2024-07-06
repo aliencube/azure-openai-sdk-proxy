@@ -1,25 +1,17 @@
-using AzureOpenAIProxy.WebApp.Clients;
-using AzureOpenAIProxy.WebApp.Components;
+using AzureOpenAIProxy.PlaygroundApp.Clients;
+using AzureOpenAIProxy.PlaygroundApp.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add service defaults & Aspire components.
-builder.AddServiceDefaults();
+builder.Services.AddScoped<IOpenAIApiClient, OpenAIApiClient>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddTransient<IOpenAIApiClient, OpenAIApiClient>();
-builder.Services.AddHttpClient<WeatherApiClient>("weather", client =>
-    {
-        // This URL uses "https+http://" to indicate HTTPS is preferred over HTTP.
-        // Learn more about service discovery scheme resolution at https://aka.ms/dotnet/sdschemes.
-        client.BaseAddress = new("https+http://apiapp");
-    });
-
 var app = builder.Build();
 
+// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
@@ -34,7 +26,5 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
-
-app.MapDefaultEndpoints();
 
 app.Run();

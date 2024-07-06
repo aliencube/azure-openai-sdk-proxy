@@ -1,0 +1,16 @@
+﻿<div id="auth-window" class="container">
+    <h3>OpenAI Configuration</h3>
+    <div>
+        <label for="max-token">Max Token:</label>
+        <input type="text" class="form-control" id="max-token" @bind="@maxToken" />
+    </div>
+    <div>
+        <label for="temperature">Temperature:</label>
+        <input type="text" class="form-control" id="temperature" @bind="@temperature" />
+    </div>
+</div>
+
+@code {
+    private int? maxToken = 4096;
+    private float? temperature = 0.7f;
+}
