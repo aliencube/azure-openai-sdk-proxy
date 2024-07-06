@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <AssemblyName>AzureOpenAIProxy.WebApp</AssemblyName>
+    <RootNamespace>AzureOpenAIProxy.WebApp</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.AI.OpenAI" Version="$(AzureOpenAIVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AzureOpenAIProxy.ServiceDefaults\AzureOpenAIProxy.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+</Project>
