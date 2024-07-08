@@ -13,7 +13,7 @@ public class WebTests
         await app.StartAsync();
 
         // Act
-        var httpClient = app.CreateHttpClient("webapp");
+        var httpClient = app.CreateHttpClient("playgroundapp");
         var response = await httpClient.GetAsync("/");
 
         // Assert
