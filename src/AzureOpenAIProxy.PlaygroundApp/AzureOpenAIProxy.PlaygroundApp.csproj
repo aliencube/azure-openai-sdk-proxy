@@ -14,4 +14,8 @@
     <PackageReference Include="Azure.AI.OpenAI" Version="2.0.0-beta.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AzureOpenAIProxy.ServiceDefaults\AzureOpenAIProxy.ServiceDefaults.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -34,7 +34,7 @@ public static class ChatCompletionsEndpoint
             logger.LogInformation("Received a chat completion request");
 
             request.Body.Position = 0;
-            var options = await openai.BuildServiceOptionsAsync(request.Path, apiVersion, request.Body);
+            var options = await openai.BuildServiceOptionsAsync(request.Path, deploymentName, apiVersion, request.Body);
 
             try
             {

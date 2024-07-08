@@ -19,4 +19,8 @@
     <Folder Include="Configurations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AzureOpenAIProxy.ServiceDefaults\AzureOpenAIProxy.ServiceDefaults.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -5,9 +5,13 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{004CE987-A209-4933-884A-2F59506CDC9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureOpenAIProxy.PlaygroundApp", "src\AzureOpenAIProxy.PlaygroundApp\AzureOpenAIProxy.PlaygroundApp.csproj", "{A8BBA7EA-5615-470C-8D2E-77CCCAE3F51E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureOpenAIProxy.PlaygroundApp", "src\AzureOpenAIProxy.PlaygroundApp\AzureOpenAIProxy.PlaygroundApp.csproj", "{A8BBA7EA-5615-470C-8D2E-77CCCAE3F51E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureOpenAIProxy.ApiApp", "src\AzureOpenAIProxy.ApiApp\AzureOpenAIProxy.ApiApp.csproj", "{1E3B6609-56EC-4FEC-A689-34F9E5DCCF22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureOpenAIProxy.ApiApp", "src\AzureOpenAIProxy.ApiApp\AzureOpenAIProxy.ApiApp.csproj", "{1E3B6609-56EC-4FEC-A689-34F9E5DCCF22}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureOpenAIProxy.AppHost", "src\AzureOpenAIProxy.AppHost\AzureOpenAIProxy.AppHost.csproj", "{8F568BEC-6D07-4AB3-9EA2-EA276CD4D02B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureOpenAIProxy.ServiceDefaults", "src\AzureOpenAIProxy.ServiceDefaults\AzureOpenAIProxy.ServiceDefaults.csproj", "{7E20BFB2-37CC-4A14-86BF-046D0C1BFD6D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +27,14 @@ Global
 		{1E3B6609-56EC-4FEC-A689-34F9E5DCCF22}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E3B6609-56EC-4FEC-A689-34F9E5DCCF22}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E3B6609-56EC-4FEC-A689-34F9E5DCCF22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F568BEC-6D07-4AB3-9EA2-EA276CD4D02B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F568BEC-6D07-4AB3-9EA2-EA276CD4D02B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F568BEC-6D07-4AB3-9EA2-EA276CD4D02B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F568BEC-6D07-4AB3-9EA2-EA276CD4D02B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E20BFB2-37CC-4A14-86BF-046D0C1BFD6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E20BFB2-37CC-4A14-86BF-046D0C1BFD6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E20BFB2-37CC-4A14-86BF-046D0C1BFD6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E20BFB2-37CC-4A14-86BF-046D0C1BFD6D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -30,6 +42,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{A8BBA7EA-5615-470C-8D2E-77CCCAE3F51E} = {004CE987-A209-4933-884A-2F59506CDC9E}
 		{1E3B6609-56EC-4FEC-A689-34F9E5DCCF22} = {004CE987-A209-4933-884A-2F59506CDC9E}
+		{8F568BEC-6D07-4AB3-9EA2-EA276CD4D02B} = {004CE987-A209-4933-884A-2F59506CDC9E}
+		{7E20BFB2-37CC-4A14-86BF-046D0C1BFD6D} = {004CE987-A209-4933-884A-2F59506CDC9E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1D2D444D-0384-4C78-B968-156C7C848DE8}

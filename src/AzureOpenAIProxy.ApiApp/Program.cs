@@ -3,6 +3,8 @@ using AzureOpenAIProxy.ApiApp.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 // Add Azure OpenAI service.
 builder.Services.AddOpenAIService();
 
@@ -10,6 +12,8 @@ builder.Services.AddOpenAIService();
 builder.Services.AddOpenApiService();
 
 var app = builder.Build();
+
+app.MapDefaultEndpoints();
 
 // https://stackoverflow.com/questions/76962735/how-do-i-set-a-prefix-in-my-asp-net-core-7-web-api-for-all-endpoints
 var basePath = "/api";

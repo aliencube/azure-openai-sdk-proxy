@@ -14,8 +14,9 @@ public interface IOpenAIServiceRequestBuilder
     /// Sets the OpenAI instance settings.
     /// </summary>
     /// <param name="openaiSettings"><see cref="OpenAISettings"/> instance.</param>
+    /// <param name="deploymentName">OpenAI deployment name.</param>
     /// <returns>Returns the <see cref="IOpenAIServiceRequestBuilder"/> instance.</returns>
-    IOpenAIServiceRequestBuilder SetOpenAIInstance(OpenAISettings openaiSettings);
+    IOpenAIServiceRequestBuilder SetOpenAIInstance(OpenAISettings openaiSettings, string deploymentName);
 
     /// <summary>
     /// Sets the OpenAI API path.
@@ -58,12 +59,12 @@ public class OpenAIServiceRequestBuilder : IOpenAIServiceRequestBuilder
     private int? _maxTokens;
 
     /// <inheritdoc />
-    public IOpenAIServiceRequestBuilder SetOpenAIInstance(OpenAISettings openaiSettings)
+    public IOpenAIServiceRequestBuilder SetOpenAIInstance(OpenAISettings openaiSettings, string deploymentName)
     {
-        var openai = (openaiSettings ?? throw new ArgumentNullException(nameof(openaiSettings)))
-                     .Instances
-                     .Skip(openaiSettings.Random.Next(openaiSettings.Instances.Count))
-                     .First();
+        var instances = (openaiSettings ?? throw new ArgumentNullException(nameof(openaiSettings)))
+                        .Instances
+                        .Where(p => p.DeploymentNames!.Contains(deploymentName) == true);
+        var openai = instances.Skip(openaiSettings.Random.Next(instances.Count())).First();
 
         this._endpoint = openai.Endpoint;
         this._apiKey = openai.ApiKey;

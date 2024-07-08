@@ -1,7 +1,10 @@
 using AzureOpenAIProxy.PlaygroundApp.Clients;
-using AzureOpenAIProxy.PlaygroundApp.Components;
+
+using App = AzureOpenAIProxy.PlaygroundApp.Components.App;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddServiceDefaults();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -10,6 +13,8 @@ builder.Services.AddRazorComponents()
 builder.Services.AddScoped<IOpenAIApiClient, OpenAIApiClient>();
 
 var app = builder.Build();
+
+app.MapDefaultEndpoints();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -27,4 +32,4 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
-app.Run();
+await app.RunAsync();
