@@ -13,10 +13,11 @@ public interface IOpenAIService
     /// Builds the <see cref="OpenAIServiceOptions"/> instance.
     /// </summary>
     /// <param name="path">OpenAI API path.</param>
+    /// <param name="deploymentName">OpenAI deployment name.</param>
     /// <param name="apiVersion">OpenAI API version.</param>
     /// <param name="body">Request payload.</param>
     /// <returns>Returns the <see cref="OpenAIServiceOptions"/> instance.</returns>
-    Task<OpenAIServiceOptions> BuildServiceOptionsAsync(PathString path, string apiVersion, Stream body);
+    Task<OpenAIServiceOptions> BuildServiceOptionsAsync(PathString path, string deploymentName, string apiVersion, Stream body);
 
     /// <summary>
     /// Invokes the OpenAI API.
@@ -39,10 +40,10 @@ public class OpenAIService(OpenAISettings openaiSettings, HttpClient http, ILogg
     private readonly ILogger<OpenAIService> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     /// <inheritdoc />
-    public async Task<OpenAIServiceOptions> BuildServiceOptionsAsync(PathString path, string apiVersion, Stream body)
+    public async Task<OpenAIServiceOptions> BuildServiceOptionsAsync(PathString path, string deploymentName, string apiVersion, Stream body)
     {
         var options = await new OpenAIServiceRequestBuilder()
-                                .SetOpenAIInstance(this._openaiSettings)
+                                .SetOpenAIInstance(this._openaiSettings, deploymentName)
                                 .SetApiPath(path)
                                 .SetApiVersion(apiVersion)
                                 .SetRequestPayloadAsync(body)

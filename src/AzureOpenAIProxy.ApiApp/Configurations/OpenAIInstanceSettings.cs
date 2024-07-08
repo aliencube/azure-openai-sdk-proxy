@@ -1,5 +1,8 @@
 ﻿namespace AzureOpenAIProxy.ApiApp.Configurations;
 
+/// <summary>
+/// This represents the settings entity for Azure OpenAI instance.
+/// </summary>
 public class OpenAIInstanceSettings
 {
     /// <summary>

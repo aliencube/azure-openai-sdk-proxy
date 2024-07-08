@@ -12,7 +12,7 @@ public class OpenAISettings
     public const string Name = "OpenAI";
 
     /// <summary>
-    /// Gets the <see cref="Random"/> instance.
+    /// Gets the <see cref="System.Random"/> instance.
     /// </summary>
     public Random Random { get; } = new();
 

@@ -5,14 +5,13 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
 
-    <AssemblyName>AzureOpenAIProxy.ApiApp</AssemblyName>
-    <RootNamespace>AzureOpenAIProxy.ApiApp</RootNamespace>
+
+    <AssemblyName>AzureOpenAIProxy.PlaygroundApp</AssemblyName>
+    <RootNamespace>AzureOpenAIProxy.PlaygroundApp</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Azure.AI.OpenAI" Version="$(AzureOpenAIVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="$(AspNetCoreVersion)" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="$(SwashbuckleVersion)" />
   </ItemGroup>
 
   <ItemGroup>

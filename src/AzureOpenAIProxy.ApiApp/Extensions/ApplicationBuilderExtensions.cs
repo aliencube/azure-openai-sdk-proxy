@@ -1,5 +1,8 @@
 ﻿namespace AzureOpenAIProxy.ApiApp.Extensions;
 
+/// <summary>
+/// This represents the extensions entity for the application builder.
+/// </summary>
 public static class ApplicationBuilderExtensions
 {
     /// <summary>
@@ -22,10 +25,11 @@ public static class ApplicationBuilderExtensions
             {
                 swaggerDoc.Servers =
                 [
-                    new() { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}{basePath}" },
-            ];
+                    new() { Url = $"{httpReq.Scheme}://{httpReq.Host.Value.TrimEnd('/')}/{basePath.TrimStart('/')}" },
+                ];
             });
         });
+
         app.UseSwaggerUI(options =>
         {
             options.SwaggerEndpoint($"{Constants.Version}/swagger.json", Constants.Title);

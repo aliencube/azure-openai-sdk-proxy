@@ -32,7 +32,7 @@ public static class WeatherForecastEndpoint
 
             return Results.Ok(forecast);
         })
-        //.Produces<ResponseMoods>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
+        .Produces<WeatherForecast>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
         .Produces<string>(statusCode: StatusCodes.Status500InternalServerError, contentType: "text/plain")
         .WithTags("weather")

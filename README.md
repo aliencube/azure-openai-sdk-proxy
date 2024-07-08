@@ -4,42 +4,60 @@ This provides a proxy server application of Azure OpenAI Service API that round-
 
 ## Prerequisites
 
-- .NET SDK 8.0.100 or later + Aspire workload
-- Visual Studio 2022 17.9+ or Visual Studio Code + C# DevKit
-- Azure Subscription
-- Azure OpenAI Subscription
+- [Azure Subscription](https://azure.microsoft.com/free)
+- [Azure OpenAI Subscription](https://aka.ms/oai/access)
+- [.NET SDK 8.0.300+](https://dotnet.microsoft.com/download/dotnet/8.0) + [Aspire workload](https://learn.microsoft.com/dotnet/aspire/fundamentals/setup-tooling)
+- [Visual Studio 2022 17.10+](https://visualstudio.microsoft.com/vs/) or [Visual Studio Code](https://code.visualstudio.com/) + [C# DevKit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit)
+- [Docker Desktop](https://docs.docker.com/desktop/) or [Podman](https://podman.io/docs/installation)
+- [PowerShell 7.4+](https://learn.microsoft.com/powershell/scripting/install/installing-powershell)
+- [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd)
+- [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) + [Container Apps extension](https://learn.microsoft.com/cli/azure/azure-cli-extensions-overview)
+- [GitHub CLI](https://cli.github.com/)
 
 ## Getting Started
 
-1. Run PowerShell script to prepare AOAI instance locations and models &ndash; `ADA`, `GPT 3.5 Turbo 16K`, `GPT 4 32K` and `DALL-E 3`.
+1. Login to Azure and GitHub.
 
-```powershell
-$RESOURCE_GROUP_LOCATION = "{{ RESOURCE_GROUP_LOCATION }}"
-$AZURE_ENV_NAME = "{{ AZURE_ENVIRONMENT_NAME }}"
+    ```bash
+    # Login to Azure Dev CLI
+    azd auth login
+    
+    # Login to Azure CLI
+    az login
+    
+    # Login to GitHub
+    gh auth login
+    ```
 
-# Text embedding with Ada
-./biceps/Get-OpenAILocations.ps1 -ResourceGroupLocation $RESOURCE_GROUP_LOCATION -AzureEnvironmentName $AZURE_ENV_NAME -ModelName "text-embedding-ada-002" -ModelVersion "2"
+1. Check login status.
 
-# GPT 3.5 Turbo 16K
-./biceps/Get-OpenAILocations.ps1 -ResourceGroupLocation $RESOURCE_GROUP_LOCATION -AzureEnvironmentName $AZURE_ENV_NAME -ModelName "gpt-35-turbo-16k" -ModelVersion "0613"
+    ```bash
+    # Azure Dev CLI
+    azd auth login --check-status
+    
+    # Azure CLI
+    az account show
+    
+    # GitHub CLI
+    gh auth status
+    ```
 
-# GPT 4 32K
-./biceps/Get-OpenAILocations.ps1 -ResourceGroupLocation $RESOURCE_GROUP_LOCATION -AzureEnvironmentName $AZURE_ENV_NAME -ModelName "gpt-4-32k" -ModelVersion "0613"
+1. Fork this repository to your account and clone the forked repository to your local machine.
 
-# DALL-E 3.0
-./biceps/Get-OpenAILocations.ps1 -ResourceGroupLocation $RESOURCE_GROUP_LOCATION -AzureEnvironmentName $AZURE_ENV_NAME -ModelName "dall-e-3" -ModelVersion "3.0"
-```
+    ```bash
+    gh repo fork aliencube/azure-openai-sdk-proxy --clone --default-branch-only
+    ```
 
-1. azd init
-1. azd provision
-1. azd pipeline config
-1. Set-GitHubActionsVariables.ps1
-1. Run-PostProvision.ps1
-1. azd deploy
+1. Run the following commands in order to provision and deploy the app.
 
-1. Create a new event
-1. Create a new access code that belongs to the event
-
-1. azd down
-1. Purge-CognitiveServices.ps1
-
+    ```bash
+    # zsh/bash
+    AZURE_ENV_NAME="proxy$((RANDOM%9000+1000))"
+    azd init -e $AZURE_ENV_NAME
+    azd up
+    
+    # PowerShell
+    $AZURE_ENV_NAME = "proxy$(Get-Random -Minimum 1000 -Maximum 9999)"
+    azd init -e $AZURE_ENV_NAME
+    azd up
+    ```

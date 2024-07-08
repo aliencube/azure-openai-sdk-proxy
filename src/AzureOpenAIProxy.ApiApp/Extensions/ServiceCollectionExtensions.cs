@@ -12,6 +12,27 @@ namespace AzureOpenAIProxy.ApiApp.Extensions;
 public static class ServiceCollectionExtensions
 {
     /// <summary>
+    /// Adds the OpenAI configuration settings to the service collection.
+    /// </summary>
+    /// <param name="services"><see cref="IServiceCollection"/> instance.</param>
+    /// <returns>Returns <see cref="IServiceCollection"/> instance.</returns>
+    public static IServiceCollection AddOpenAISettings(this IServiceCollection services)
+    {
+        services.AddSingleton<OpenAISettings>(sp =>
+        {
+            var configuration = sp.GetService<IConfiguration>()
+                ?? throw new InvalidOperationException($"{nameof(IConfiguration)} service is not registered.");
+
+            var settings = configuration.GetSection(OpenAISettings.Name).Get<OpenAISettings>()
+                ?? throw new InvalidOperationException($"{nameof(OpenAISettings)} could not be retrieved from the configuration.");
+
+            return settings;
+        });
+
+        return services;
+    }
+
+    /// <summary>
     /// Adds the OpenAI service to the service collection.
     /// </summary>
     /// <param name="services"><see cref="IServiceCollection"/> instance.</param>
