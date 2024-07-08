@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{004CE987-A209-4933-884A-2F59506CDC9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureOpenAIProxy.PlaygroundApp", "src\AzureOpenAIProxy.PlaygroundApp\AzureOpenAIProxy.PlaygroundApp.csproj", "{A8BBA7EA-5615-470C-8D2E-77CCCAE3F51E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureOpenAIProxy.ApiApp", "src\AzureOpenAIProxy.ApiApp\AzureOpenAIProxy.ApiApp.csproj", "{1E3B6609-56EC-4FEC-A689-34F9E5DCCF22}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A8BBA7EA-5615-470C-8D2E-77CCCAE3F51E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8BBA7EA-5615-470C-8D2E-77CCCAE3F51E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8BBA7EA-5615-470C-8D2E-77CCCAE3F51E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8BBA7EA-5615-470C-8D2E-77CCCAE3F51E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E3B6609-56EC-4FEC-A689-34F9E5DCCF22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E3B6609-56EC-4FEC-A689-34F9E5DCCF22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E3B6609-56EC-4FEC-A689-34F9E5DCCF22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E3B6609-56EC-4FEC-A689-34F9E5DCCF22}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A8BBA7EA-5615-470C-8D2E-77CCCAE3F51E} = {004CE987-A209-4933-884A-2F59506CDC9E}
+		{1E3B6609-56EC-4FEC-A689-34F9E5DCCF22} = {004CE987-A209-4933-884A-2F59506CDC9E}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1D2D444D-0384-4C78-B968-156C7C848DE8}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,6 @@
+@AzureOpenAIProxy.ApiApp_HostAddress = http://localhost:5157
+
+GET {{AzureOpenAIProxy.ApiApp_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
