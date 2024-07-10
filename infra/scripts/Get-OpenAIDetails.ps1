@@ -2,7 +2,7 @@
 Param(
     [string]
     [Parameter(Mandatory=$false)]
-    $EnvironmentName = $null,
+    $AzureEnvironmentName = $null,
 
     [switch]
     [Parameter(Mandatory=$false)]
@@ -13,12 +13,12 @@ function Show-Usage {
     Write-Output "    This gets list of the Azure OpenAI instances with specific deployment name
 
     Usage: $(Split-Path $MyInvocation.ScriptName -Leaf) ``
-            [-EnvironmentName <Azure environment name>] ``
+            [-AzureEnvironmentName  <Azure environment name>] ``
 
             [-Help]
 
     Options:
-        -EnvironmentName    Azure environment name.
+        -AzureEnvironmentName   Azure environment name.
 
         -Help:          Show this message.
 "
@@ -33,12 +33,13 @@ if ($needHelp -eq $true) {
     Exit 0
 }
 
-if ($EnvironmentName -eq $null) {
+if ($AzureEnvironmentName -eq $null) {
     Show-Usage
     Exit 0
 }
 
-$rg = "rg-$EnvironmentName"
+$rg = "rg-$AzureEnvironmentName"
+$repositoryRoot = git rev-parse --show-toplevel
 
 $openAIs = az resource list -g $rg --query "[?type=='Microsoft.CognitiveServices/accounts'].name" | ConvertFrom-Json | Sort-Object
 
@@ -56,4 +57,4 @@ $openAIs | ForEach-Object {
     $instances += $instance
 }
 
-$instances | ConvertTo-Json -Depth 100 | Out-File -FilePath "./biceps/instances.json" -Encoding utf8 -Force
+$instances | ConvertTo-Json -Depth 100 | Out-File -FilePath "$repositoryRoot/infra/instances.json" -Encoding utf8 -Force

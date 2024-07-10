@@ -1,0 +1,50 @@
+name: Azure Dev - Build Only
+
+on:
+  push:
+    branches:
+    - 'feature/*'
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  build-test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.x
+
+    - name: Install local certs
+      shell: pwsh
+      run: |
+        dotnet dev-certs https --clean
+        dotnet dev-certs https --trust
+
+    - name: Install Aspire workload
+      shell: pwsh
+      run: |
+        dotnet workload update
+        dotnet workload install aspire
+
+    - name: Restore NuGet packages
+      shell: bash
+      run: |
+        dotnet restore
+
+    - name: Build solution
+      shell: bash
+      run: |
+        dotnet build
+
+    - name: Test solution
+      shell: bash
+      run: |
+        dotnet test
