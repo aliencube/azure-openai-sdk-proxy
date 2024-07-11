@@ -17,7 +17,10 @@
     <SwashbuckleVersion>6.*</SwashbuckleVersion>
 
     <CoverletVersion>6.*</CoverletVersion>
+    <FluentAssertionsVersion>6.*</FluentAssertionsVersion>
     <MicrosoftTestSdkVersion>17.*</MicrosoftTestSdkVersion>
+    <NSubstituteVersion>5.*</NSubstituteVersion>
+    <SystemTextJsonVersion>8.*</SystemTextJsonVersion>
     <XunitVersion>2.*</XunitVersion>
   </PropertyGroup>
 </Project>

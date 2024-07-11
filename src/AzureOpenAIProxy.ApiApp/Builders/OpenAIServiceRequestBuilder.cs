@@ -64,10 +64,10 @@ public class OpenAIServiceRequestBuilder : IOpenAIServiceRequestBuilder
         var instances = (openaiSettings ?? throw new ArgumentNullException(nameof(openaiSettings)))
                         .Instances
                         .Where(p => p.DeploymentNames!.Contains(deploymentName) == true);
-        var openai = instances.Skip(openaiSettings.Random.Next(instances.Count())).First();
+        var openai = instances.Skip(openaiSettings.Random.Next(instances.Count())).FirstOrDefault();
 
-        this._endpoint = openai.Endpoint;
-        this._apiKey = openai.ApiKey;
+        this._endpoint = openai?.Endpoint;
+        this._apiKey = openai?.ApiKey;
 
         return this;
     }
