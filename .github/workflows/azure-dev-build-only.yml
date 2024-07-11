@@ -25,8 +25,8 @@ jobs:
     - name: Install local certs
       shell: pwsh
       run: |
-        dotnet dev-certs https --clean
-        dotnet dev-certs https --trust
+        dotnet tool update -g linux-dev-certs
+        dotnet linux-dev-certs install
 
     - name: Install Aspire workload
       shell: pwsh
