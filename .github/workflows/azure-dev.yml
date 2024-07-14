@@ -5,6 +5,8 @@ on:
   push:
     branches:
     - main
+    paths-ignore:
+    - '.github/**'
 
 permissions:
   id-token: write
@@ -62,6 +64,7 @@ jobs:
       uses: Azure/setup-azd@v1.0.0
 
     - name: Log in with Azure (Federated Credentials)
+      if: env.AZURE_CLIENT_ID != ''
       run: |
         azd auth login `
           --client-id "$Env:AZURE_CLIENT_ID" `

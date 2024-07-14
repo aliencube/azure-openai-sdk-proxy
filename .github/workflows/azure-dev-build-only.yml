@@ -4,6 +4,8 @@ on:
   push:
     branches:
     - 'feature/*'
+    paths-ignore:
+    - '.github/**'
   pull_request:
     branches:
     - main

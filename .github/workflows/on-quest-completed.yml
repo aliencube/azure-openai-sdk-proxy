@@ -1,0 +1,724 @@
+name: On Quest Completed
+
+on:
+  issues:
+    types:
+      - opened
+  workflow_dispatch:
+    inputs:
+      issue-number:
+        description: "Issue number"
+        required: true
+      error-code:
+        description: "Error code. It should be between 0 and 3"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+  id-token: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  verification:
+    name: "Verifying Quest Completion"
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check event payload
+        shell: pwsh
+        run: |
+          $eventPayload = '${{ toJson(github) }}'
+
+      - name: Checkout quest checker repository
+        uses: actions/checkout@v4
+        with:
+          repository: aliencube/ossca-quest-checker
+          path: quest-checker
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Check issue details
+        id: issue
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          $payload = '${{ toJson(github) }}'
+          $Issuenumber = "${{ github.event.inputs.issue-number }}"
+
+          $tz = [TimeZoneInfo]::FindSystemTimeZoneById("Asia/Seoul")
+
+          $today = [DateTimeOffset]::New([TimeZoneInfo]::ConvertTimeBySystemTimeZoneId((Get-Date).ToUniversalTime(), "Asia/Seoul"))
+          $quest1 = [DateTimeOffset]::Parse("${{ vars.QUEST_1_DUE_DATE }}").ToOffset($tz.GetUtcOffset($today))
+          $quest2 = [DateTimeOffset]::Parse("${{ vars.QUEST_2_DUE_DATE }}").ToOffset($tz.GetUtcOffset($today))
+          $quest3 = [DateTimeOffset]::Parse("${{ vars.QUEST_3_DUE_DATE }}").ToOffset($tz.GetUtcOffset($today))
+          $dueDate = if ($today -lt $quest1) {
+            "${{ vars.QUEST_1_DUE_DATE }}"
+          } elseif ($today -lt $quest2) {
+            "${{ vars.QUEST_2_DUE_DATE }}"
+          } elseif ($today -lt $quest3) {
+            "${{ vars.QUEST_3_DUE_DATE }}"
+          } else {
+            "${{ vars.QUEST_1_DUE_DATE }}"
+          }
+
+          $result = $(./quest-checker/gha-scripts/Check-IssueDetails.ps1 `
+            -IssueNumber "${{ github.event.inputs.issue-number }}" `
+            -DueDate "$dueDate" `
+            -GitHubPayload $($payload | ConvertFrom-Json)) | ConvertFrom-Json
+
+          $dateSubmitted = [DateTimeOffset]::Parse($result.dateSubmitted).ToOffset($tz.GetUtcOffset($result.createdAt)).ToString("yyyy-MM-ddTHH:mm:ss.fffzzz")
+          $dateDue = [DateTimeOffset]::Parse($result.dateDue).ToOffset($tz.GetUtcOffset($result.createdAt)).ToString("yyyy-MM-ddTHH:mm:ss.fffzzz")
+          $githubRepository = $result.githubRepository -replace "https://github.com/", ""
+
+          echo "issueNumber=$($result.issueNumber)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "issueType=$($result.issueType)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "githubID=$($result.githubID)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "githubProfile=$($result.githubProfile)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "isValidGitHubProfile=$($result.isValidGitHubProfile)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "githubRepository=$githubRepository" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "isValidGitHubRepository=$($result.isValidGitHubRepository)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "frontendUrl=$($result.frontendUrl)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "isValidFrontendUrl=$($result.isValidFrontendUrl)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "backendUrl=$($result.backendUrl)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "isValidBackendUrl=$($result.isValidBackendUrl)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "dashboardUrl=$($result.dashboardUrl)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "isValidDashboardUrl=$($result.isValidDashboardUrl)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "dateSubmitted=$dateSubmitted" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "dateDue=$dateDue" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "isOverdue=$($result.isOverdue)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+
+      - name: Debug issue details
+        shell: bash
+        run: |
+          echo "Issue number: ${{ steps.issue.outputs.issueNumber }}"
+          echo "Issue type: ${{ steps.issue.outputs.issueType }}"
+          echo "GitHub ID: ${{ steps.issue.outputs.githubID }}"
+          echo "GitHub profile: ${{ steps.issue.outputs.githubProfile }}"
+          echo "Is valid GitHub profile: ${{ steps.issue.outputs.isValidGitHubProfile }}"
+          echo "GitHub repository: ${{ steps.issue.outputs.githubRepository }}"
+          echo "Is valid GitHub repository: ${{ steps.issue.outputs.isValidGitHubRepository }}"
+          echo "Frontend app URL: ${{ steps.issue.outputs.frontendUrl }}"
+          echo "Is valid frontend app URL: ${{ steps.issue.outputs.isValidFrontendUrl }}"
+          echo "Backend app URL: ${{ steps.issue.outputs.backendUrl }}"
+          echo "is valid backend app URL: ${{ steps.issue.outputs.isValidBackendUrl }}"
+          echo "Dashboard app URL: ${{ steps.issue.outputs.dashboardUrl }}"
+          echo "Is valid dashboard app URL: ${{ steps.issue.outputs.isValidDashboardUrl }}"
+          echo "Date submitted: ${{ steps.issue.outputs.dateSubmitted }}"
+          echo "Date due: ${{ steps.issue.outputs.dateDue }}"
+          echo "Is overdue: ${{ steps.issue.outputs.isOverdue }}"
+
+      - name: Add a label - Acknowledge
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue edit ${{ steps.issue.outputs.issueNumber }} \
+            --add-label "ossca,quest,${{ steps.issue.outputs.issueType }}" \
+            -R ${{ github.event.repository.full_name }}
+
+      - name: Comment to issue - Acknowledge
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: "create-comment"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ steps.issue.outputs.issueNumber }}
+          emoji: "+1,rocket"
+          body: |
+            👋🏼 @${{ steps.issue.outputs.githubId }} 님!
+
+            과제를 제출해 주셔서 감사합니다! 🎉
+
+            생성해주신 이슈는 현재 확인 중이며, 완료 여부를 확인한 후 다시 알려드리겠습니다.
+
+      - name: Add a label - Overdue
+        if: |
+          steps.issue.outputs.isOverdue == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue edit ${{ steps.issue.outputs.issueNumber }} \
+            --add-label "overdue" \
+            -R ${{ github.event.repository.full_name }}
+
+      - name: Comment to issue - Overdue
+        if: |
+          steps.issue.outputs.isOverdue == 'true'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: "create-comment"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ steps.issue.outputs.issueNumber }}
+          body: |
+            👋🏼 @${{ steps.issue.outputs.githubId }} 님!
+
+            * **과제 제출 시각** : ${{ steps.issue.outputs.dateSubmitted }}
+            * **과제 마감 시각** : ${{ steps.issue.outputs.dateDue }}
+
+            안타깝게도 제출하신 과제는 **마감 기한인 ${{ steps.issue.outputs.dateDue }}**을 넘겼습니다. 😭
+
+      - name: Close issue - Overdue
+        if: |
+          steps.issue.outputs.isOverdue == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue close ${{ steps.issue.outputs.issueNumber }} \
+            -c "과제 제출 기한이 지났습니다. 이슈를 닫습니다." \
+            -R ${{ github.event.repository.full_name }}
+
+      - name: Add a label - Invalid GitHub profile
+        if: |
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'false'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue edit ${{ steps.issue.outputs.issueNumber }} \
+            --add-label "invalid" \
+            -R ${{ github.event.repository.full_name }}
+
+      - name: Comment to issue - Invalid GitHub profile
+        if: |
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'false'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: "create-comment"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ steps.issue.outputs.issueNumber }}
+          body: |
+            👋🏼 @${{ steps.issue.outputs.githubId }} 님!
+
+            안타깝게도 제출하신 **GitHub Profile 주소**를 확인할 수 없습니다. 😱
+
+            * 제출 GitHub Profile: `${{ steps.issue.outputs.githubProfile }}`
+
+            다시 한 번 GitHub Profile 주소를 확인해주세요.
+
+      - name: Close issue - Invalid GitHub profile
+        if: |
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'false'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue close ${{ steps.issue.outputs.issueNumber }} \
+            -c "GitHub Profile 주소를 확인할 수 없습니다. 이슈를 닫습니다." \
+            -R ${{ github.event.repository.full_name }}
+
+      - name: Add a label - Invalid GitHub repository
+        if: |
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'false'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue edit ${{ steps.issue.outputs.issueNumber }} \
+            --add-label "invalid" \
+            -R ${{ github.event.repository.full_name }}
+
+      - name: Comment to issue - Invalid GitHub repository
+        if: |
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'false'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: "create-comment"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ steps.issue.outputs.issueNumber }}
+          body: |
+            👋🏼 @${{ steps.issue.outputs.githubId }} 님!
+
+            안타깝게도 제출하신 **GitHub Repository 주소**를 확인할 수 없습니다. 😱
+
+            * 제출 GitHub Repository: `https://github.com/${{ steps.issue.outputs.githubRepository }}`
+
+            다시 한 번 GitHub Repository 주소를 확인해주세요.
+
+      - name: Close issue - Invalid GitHub repository
+        if: |
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'false'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue close ${{ steps.issue.outputs.issueNumber }} \
+            -c "GitHub Repository 주소를 확인할 수 없습니다. 이슈를 닫습니다." \
+            -R ${{ github.event.repository.full_name }}
+
+      - name: Add a label - Invalid frontend app URL - .NET Aspire
+        if: |
+          steps.issue.outputs.issueType == 'DOTNET-ASPIRE' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.issue.outputs.isValidFrontendUrl == 'false'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue edit ${{ steps.issue.outputs.issueNumber }} \
+            --add-label "invalid" \
+            -R ${{ github.event.repository.full_name }}
+
+      - name: Comment to issue - Invalid frontend app URL - .NET Aspire
+        if: |
+          steps.issue.outputs.issueType == 'DOTNET-ASPIRE' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.issue.outputs.isValidFrontendUrl == 'false'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: "create-comment"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ steps.issue.outputs.issueNumber }}
+          body: |
+            👋🏼 @${{ steps.issue.outputs.githubId }} 님!
+
+            안타깝게도 제출하신 **Frontend App URL 주소**를 확인할 수 없습니다. 😱
+
+            * 제출 Frontend App URL: `${{ steps.issue.outputs.frontendUrl }}`
+
+            다시 한 번 Frontend App URL 주소를 확인해주세요.
+
+      - name: Close issue - Invalid frontend app URL - .NET Aspire
+        if: |
+          steps.issue.outputs.issueType == 'DOTNET-ASPIRE' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.issue.outputs.isValidFrontendUrl == 'false'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue close ${{ steps.issue.outputs.issueNumber }} \
+            -c "Frontend App URL 주소를 확인할 수 없습니다. 이슈를 닫습니다." \
+            -R ${{ github.event.repository.full_name }}
+
+      - name: Add a label - Invalid backend app URL - .NET Aspire
+        if: |
+          steps.issue.outputs.issueType == 'DOTNET-ASPIRE' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.issue.outputs.isValidFrontendUrl == 'true' &&
+          steps.issue.outputs.isValidBackendUrl == 'false'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue edit ${{ steps.issue.outputs.issueNumber }} \
+            --add-label "invalid" \
+            -R ${{ github.event.repository.full_name }}
+
+      - name: Comment to issue - Invalid backend app URL - .NET Aspire
+        if: |
+          steps.issue.outputs.issueType == 'DOTNET-ASPIRE' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.issue.outputs.isValidFrontendUrl == 'true' &&
+          steps.issue.outputs.isValidBackendUrl == 'false'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: "create-comment"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ steps.issue.outputs.issueNumber }}
+          body: |
+            👋🏼 @${{ steps.issue.outputs.githubId }} 님!
+
+            안타깝게도 제출하신 **Backend App URL 주소**를 확인할 수 없습니다. 😱
+
+            * 제출 Backend App URL: `${{ steps.issue.outputs.backendUrl }}`
+
+            다시 한 번 Backend App URL 주소를 확인해주세요.
+
+      - name: Close issue - Invalid backend app URL - .NET Aspire
+        if: |
+          steps.issue.outputs.issueType == 'DOTNET-ASPIRE' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.issue.outputs.isValidFrontendUrl == 'true' &&
+          steps.issue.outputs.isValidBackendUrl == 'false'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue close ${{ steps.issue.outputs.issueNumber }} \
+            -c "Backend App URL 주소를 확인할 수 없습니다. 이슈를 닫습니다." \
+            -R ${{ github.event.repository.full_name }}
+
+      - name: Add a label - Invalid dashboard app URL - .NET Aspire
+        if: |
+          steps.issue.outputs.issueType == 'DOTNET-ASPIRE' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.issue.outputs.isValidFrontendUrl == 'true' &&
+          steps.issue.outputs.isValidBackendUrl == 'true' &&
+          steps.issue.outputs.isValidDashboardUrl == 'false'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue edit ${{ steps.issue.outputs.issueNumber }} \
+            --add-label "invalid" \
+            -R ${{ github.event.repository.full_name }}
+
+      - name: Comment to issue - Invalid dashboard app URL - .NET Aspire
+        if: |
+          steps.issue.outputs.issueType == 'DOTNET-ASPIRE' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.issue.outputs.isValidFrontendUrl == 'true' &&
+          steps.issue.outputs.isValidBackendUrl == 'true' &&
+          steps.issue.outputs.isValidDashboardUrl == 'false'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: "create-comment"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ steps.issue.outputs.issueNumber }}
+          body: |
+            👋🏼 @${{ steps.issue.outputs.githubId }} 님!
+
+            안타깝게도 제출하신 **Dashboard App URL 주소**를 확인할 수 없습니다. 😱
+
+            * 제출 Dashboard App URL: `${{ steps.issue.outputs.backendUrl }}`
+
+            다시 한 번 Dashboard App URL 주소를 확인해주세요.
+
+      - name: Close issue - Invalid dashboard app URL - .NET Aspire
+        if: |
+          steps.issue.outputs.issueType == 'DOTNET-ASPIRE' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.issue.outputs.isValidFrontendUrl == 'true' &&
+          steps.issue.outputs.isValidBackendUrl == 'true' &&
+          steps.issue.outputs.isValidDashboardUrl == 'false'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue close ${{ steps.issue.outputs.issueNumber }} \
+            -c "Dashboard App URL 주소를 확인할 수 없습니다. 이슈를 닫습니다." \
+            -R ${{ github.event.repository.full_name }}
+
+      - name: Setup .NET SDK
+        if: |
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true'
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.x
+
+      - name: Checkout quest repository
+        if: |
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ steps.issue.outputs.githubRepository }}
+          path: quest
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Get project - Connect Four
+        if: |
+          steps.issue.outputs.issueType == 'CONNECT-FOUR' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true'
+        id: connect-four
+        shell: pwsh
+        run: |
+          $projects = Get-ChildItem -Path ./quest/*.csproj -Recurse
+          $project = $projects[0]
+          $launchSettings = Get-Content -Path "$($project.Directory.FullName)/Properties/launchSettings.json" | ConvertFrom-Json
+          $appUrl = if ($launchSettings -ne $null) {
+            $launchSettings.profiles.http.applicationUrl
+          } else {
+            "none"
+          }
+
+          echo "projectCount=$($projects.Count)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "project=$project" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "appUrl=$appUrl" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+
+      - name: Run project - Connect Four
+        if: |
+          steps.issue.outputs.issueType == 'CONNECT-FOUR' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.connect-four.outputs.projectCount == '1'
+        shell: bash
+        run: |
+          pushd ./quest
+
+          dotnet restore && dotnet build
+          dotnet run --project "${{ steps.connect-four.outputs.project }}" &
+
+          popd
+
+      - name: Check quest - Connect Four
+        if: |
+          steps.issue.outputs.issueType == 'CONNECT-FOUR' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.connect-four.outputs.projectCount == '1'
+        id: check-quest-connect-four
+        shell: pwsh
+        run: |
+          $errorCode = "${{ github.event.inputs.error-code }}"
+          $forceError = if ($errorCode -eq '') { $false } else { $true }
+
+          $issueType = "${{ steps.issue.outputs.issueType }}" -replace "DOTNET", "DOT-NET"
+
+          pushd ./quest-checker
+
+          dotnet restore && dotnet build
+
+          $playwright = Get-ChildItem -File Microsoft.Playwright.dll -Path . -Recurse
+          $installer = "$($playwright[0].Directory.FullName)/playwright.ps1"
+          & "$installer" install
+
+          if ($forceError -eq $true) {
+            $result = dotnet run `
+              --project ./src/OssCaQuestChecker.ConnectFour.ConsoleApp `
+              -- `
+              -t $issueType `
+              -u ${{ steps.connect-four.outputs.appUrl }} `
+              --force-error `
+              --error-code $errorCode | ConvertFrom-Json
+          } else {
+            $result = dotnet run `
+              --project ./src/OssCaQuestChecker.ConnectFour.ConsoleApp `
+              -- `
+              -t $issueType `
+              -u ${{ steps.connect-four.outputs.appUrl }} | ConvertFrom-Json
+          }
+
+          echo "questType=$($result.questType)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "questStatus=$($result.questStatus)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "questMessage=$($result.message)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+
+          popd
+
+      - name: Add label - FAILED - Connect Four
+        if: |
+          steps.issue.outputs.issueType == 'CONNECT-FOUR' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.connect-four.outputs.projectCount == '1' &&
+          steps.check-quest-connect-four.outputs.questStatus == 'FAILED'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue edit ${{ steps.issue.outputs.issueNumber }} \
+          --add-label "failed" \
+          -R ${{ github.event.repository.full_name }}
+
+      - name: Comment to issue - FAILED - Connect Four
+        if: |
+          steps.issue.outputs.issueType == 'CONNECT-FOUR' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.connect-four.outputs.projectCount == '1' &&
+          steps.check-quest-connect-four.outputs.questStatus == 'FAILED'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: "create-comment"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ steps.issue.outputs.issueNumber }}
+          body: |
+            👋🏼 @${{ steps.issue.outputs.githubId }} 님!
+
+            과제를 확인하는 중에 문제가 발생했습니다❗
+
+            최대한 빨리 확인한 후 다시 알려드리겠습니다.
+
+      - name: Add label - INVALID - Connect Four
+        if: |
+          steps.issue.outputs.issueType == 'CONNECT-FOUR' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.connect-four.outputs.projectCount == '1' &&
+          steps.check-quest-connect-four.outputs.questStatus == 'INVALID'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue edit ${{ steps.issue.outputs.issueNumber }} \
+          --add-label "invalid" \
+          -R ${{ github.event.repository.full_name }}
+
+      - name: Comment to issue - INVALID - Connect Four
+        if: |
+          steps.issue.outputs.issueType == 'CONNECT-FOUR' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.connect-four.outputs.projectCount == '1' &&
+          steps.check-quest-connect-four.outputs.questStatus == 'INVALID'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: "create-comment"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ steps.issue.outputs.issueNumber }}
+          body: |
+            👋🏼 @${{ steps.issue.outputs.githubId }} 님!
+
+            입력하신 값이 올바르지 않습니다. 😭
+
+            다시 한 번 확인해 주세요❗
+
+      - name: Close issue - INVALID - Connect Four
+        if: |
+          steps.issue.outputs.issueType == 'CONNECT-FOUR' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.connect-four.outputs.projectCount == '1' &&
+          steps.check-quest-connect-four.outputs.questStatus == 'INVALID'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue close ${{ steps.issue.outputs.issueNumber }} \
+            -c "입력 값이 올바르지 않습니다. 이슈를 닫습니다." \
+            -R ${{ github.event.repository.full_name }}
+
+      - name: Add label - NOT_COMPLETED - Connect Four
+        if: |
+          steps.issue.outputs.issueType == 'CONNECT-FOUR' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.connect-four.outputs.projectCount == '1' &&
+          steps.check-quest-connect-four.outputs.questStatus == 'NOT_COMPLETED'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue edit ${{ steps.issue.outputs.issueNumber }} \
+          --add-label "incomplete" \
+          -R ${{ github.event.repository.full_name }}
+
+      - name: Comment to issue - NOT_COMPLETED - Connect Four
+        if: |
+          steps.issue.outputs.issueType == 'CONNECT-FOUR' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.connect-four.outputs.projectCount == '1' &&
+          steps.check-quest-connect-four.outputs.questStatus == 'NOT_COMPLETED'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: "create-comment"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ steps.issue.outputs.issueNumber }}
+          body: |
+            👋🏼 @${{ steps.issue.outputs.githubId }} 님!
+
+            확인 결과 과제를 아직 끝마치지 않으셨습니다. 😭
+
+            과제를 완료 하신 후 이슈를 생성해주세요❗
+
+      - name: Close issue - NOT_COMPLETED - Connect Four
+        if: |
+          steps.issue.outputs.issueType == 'CONNECT-FOUR' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.connect-four.outputs.projectCount == '1' &&
+          steps.check-quest-connect-four.outputs.questStatus == 'NOT_COMPLETED'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue close ${{ steps.issue.outputs.issueNumber }} \
+            -c "과제 완료 기록을 확인할 수 없습니다. 이슈를 닫습니다." \
+            -R ${{ github.event.repository.full_name }}
+
+      - name: Add label - COMPLETED - Connect Four
+        if: |
+          steps.issue.outputs.issueType == 'CONNECT-FOUR' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.connect-four.outputs.projectCount == '1' &&
+          steps.check-quest-connect-four.outputs.questStatus == 'COMPLETED'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue edit ${{ github.event.issue.number }} \
+          --add-label "complete" \
+          -R ${{ github.event.repository.full_name }}
+
+      - name: Comment to issue - COMPLETED - Connect Four
+        if: |
+          steps.issue.outputs.issueType == 'CONNECT-FOUR' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.connect-four.outputs.projectCount == '1' &&
+          steps.check-quest-connect-four.outputs.questStatus == 'COMPLETED'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: "create-comment"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          emoji: "+1,rocket"
+          body: |
+            👋🏼 @${{ github.event.issue.user.login }}님!
+
+            과제를 완료하셨습니다!
+
+            축하드려요. 🎉🎉🎉
+
+      - name: Close issue - COMPLETED - Connect Four
+        if: |
+          steps.issue.outputs.issueType == 'CONNECT-FOUR' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.connect-four.outputs.projectCount == '1' &&
+          steps.check-quest-connect-four.outputs.questStatus == 'COMPLETED'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue close ${{ github.event.issue.number }} \
+            -c "과제를 완료했습니다. 이슈를 닫습니다." \
+            -R ${{ github.event.repository.full_name }}
+
+      - name: Call Power Automate workflow
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: ${{ secrets.PAU_ON_QUEST_COMPLETION_SUBMITTED_URL }}
+          method: "POST"
+          data: '{ "githubId": "${{ steps.issue.outputs.githubID }}", "questType": "${{ steps.check-quest-connect-four.outputs.questType }}", "questStatus": "${{ steps.check-quest-connect-four.outputs.questStatus }}" }'
