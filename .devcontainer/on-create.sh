@@ -7,8 +7,9 @@ sudo apt-get update \
 git config --global pull.rebase false
 git config --global core.autocrlf input
 
-## Enable local HTTPS for .NET
-dotnet dev-certs https --trust
+## Install dev certs
+dotnet tool update -g linux-dev-certs
+dotnet linux-dev-certs install
 
 ## Add .NET Aspire workload
 sudo dotnet workload update && sudo dotnet workload install aspire
