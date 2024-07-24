@@ -734,7 +734,7 @@ jobs:
 
       - name: Check quest - Unit Test
         if: |
-          steps.issue.outputs.issueType == 'UNIT-TEST' &&
+          steps.issue.outputs.issueType == 'CONNECT-FOUR' &&
           steps.issue.outputs.isOverdue == 'false' &&
           steps.issue.outputs.isValidGitHubProfile == 'true' &&
           steps.issue.outputs.isValidGitHubRepository == 'true'
@@ -760,9 +760,109 @@ jobs:
 
           popd
 
+      - name: Add label - NOT_COMPLETED - Unit Test
+        if: |
+          steps.issue.outputs.issueType == 'UNIT-TEST' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.check-quest-unit-test.outputs.questStatus == 'NOT_COMPLETED'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue edit ${{ steps.issue.outputs.issueNumber }} \
+          --add-label "incomplete" \
+          -R ${{ github.event.repository.full_name }}
+
+      - name: Comment to issue - NOT_COMPLETED - Unit Test
+        if: |
+          steps.issue.outputs.issueType == 'UNIT-TEST' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.check-quest-unit-test.outputs.questStatus == 'NOT_COMPLETED'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: "create-comment"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ steps.issue.outputs.issueNumber }}
+          body: |
+            👋🏼 @${{ steps.issue.outputs.githubId }} 님!
+
+            확인 결과 과제를 아직 끝마치지 않으셨습니다. 😭
+
+            과제를 완료 하신 후 이슈를 생성해주세요❗
+
+      - name: Close issue - NOT_COMPLETED - Unit Test
+        if: |
+          steps.issue.outputs.issueType == 'UNIT-TEST' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.check-quest-unit-test.outputs.questStatus == 'NOT_COMPLETED'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue close ${{ steps.issue.outputs.issueNumber }} \
+            -c "과제 완료 기록을 확인할 수 없습니다. 이슈를 닫습니다." \
+            -R ${{ github.event.repository.full_name }}
+
+      - name: Add label - COMPLETED - Unit Test
+        if: |
+          steps.issue.outputs.issueType == 'UNIT-TEST' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.check-quest-unit-test.outputs.questStatus == 'COMPLETED'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue edit ${{ github.event.issue.number }} \
+          --add-label "complete" \
+          -R ${{ github.event.repository.full_name }}
+
+      - name: Comment to issue - COMPLETED - Unit Test
+        if: |
+          steps.issue.outputs.issueType == 'UNIT-TEST' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.check-quest-unit-test.outputs.questStatus == 'COMPLETED'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: "create-comment"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          emoji: "+1,rocket"
+          body: |
+            👋🏼 @${{ github.event.issue.user.login }}님!
+
+            과제를 완료하셨습니다!
+
+            축하드려요. 🎉🎉🎉
+
+      - name: Close issue - COMPLETED - Unit Test
+        if: |
+          steps.issue.outputs.issueType == 'UNIT-TEST' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.check-quest-unit-test.outputs.questStatus == 'COMPLETED'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue close ${{ github.event.issue.number }} \
+            -c "과제를 완료했습니다. 이슈를 닫습니다." \
+            -R ${{ github.event.repository.full_name }}
+
       - name: Call Power Automate workflow
         uses: fjogeleit/http-request-action@v1
         with:
           url: ${{ secrets.PAU_ON_QUEST_COMPLETION_SUBMITTED_URL }}
           method: "POST"
-          data: '{ "githubId": "${{ steps.issue.outputs.githubID }}", "questType": "${{ steps.check-quest-connect-four.outputs.questType }}", "questStatus": "${{ steps.check-quest-connect-four.outputs.questStatus }}" }'
+          # data: '{ "githubId": "${{ steps.issue.outputs.githubID }}", "questType": "${{ steps.check-quest-connect-four.outputs.questType }}", "questStatus": "${{ steps.check-quest-connect-four.outputs.questStatus }}" }'
+          data: '{ "githubId": "${{ steps.issue.outputs.githubID }}", "questType": "${{ steps.check-quest-unit-test.outputs.questType }}", "questStatus": "${{ steps.check-quest-connect-four.outputs.questStatus }}" }'
