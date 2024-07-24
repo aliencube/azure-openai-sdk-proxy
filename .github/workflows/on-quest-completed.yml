@@ -734,7 +734,7 @@ jobs:
 
       - name: Check quest - Unit Test
         if: |
-          steps.issue.outputs.issueType == 'CONNECT-FOUR' &&
+          steps.issue.outputs.issueType == 'UNIT-TEST' &&
           steps.issue.outputs.isOverdue == 'false' &&
           steps.issue.outputs.isValidGitHubProfile == 'true' &&
           steps.issue.outputs.isValidGitHubRepository == 'true'
