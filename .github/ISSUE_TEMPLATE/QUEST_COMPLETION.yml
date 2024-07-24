@@ -13,8 +13,8 @@ body:
   attributes:
     label: '제목'
     options:
-      - '과제 1: Blazor 앱'
-      # - '과제 2: 단위 테스트'
+      # - '과제 1: Blazor 앱'
+      - '과제 2: 단위 테스트'
       # - '과제 3: .NET Aspire'
     default: 0
 

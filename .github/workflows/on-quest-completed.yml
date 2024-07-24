@@ -56,9 +56,9 @@ jobs:
           $quest3 = [DateTimeOffset]::Parse("${{ vars.QUEST_3_DUE_DATE }}").ToOffset($tz.GetUtcOffset($today))
           $dueDate = if ($today -lt $quest1) {
             "${{ vars.QUEST_1_DUE_DATE }}"
-          } elseif ($today -lt $quest2) {
+          } elseif (($quest1 -le $today) -and ($today -lt $quest2)) {
             "${{ vars.QUEST_2_DUE_DATE }}"
-          } elseif ($today -lt $quest3) {
+          } elseif (($quest2 -le $today) -and ($today -lt $quest3)) {
             "${{ vars.QUEST_3_DUE_DATE }}"
           } else {
             "${{ vars.QUEST_1_DUE_DATE }}"
@@ -715,6 +715,50 @@ jobs:
           gh issue close ${{ github.event.issue.number }} \
             -c "과제를 완료했습니다. 이슈를 닫습니다." \
             -R ${{ github.event.repository.full_name }}
+
+      - name: Run project - Unit Test
+        if: |
+          steps.issue.outputs.issueType == 'UNIT-TEST' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true'
+        shell: bash
+        run: |
+          pushd ./quest
+
+          dotnet restore
+          dotnet build /p:LangVersion=latest
+          dotnet test /p:LangVersion=latest --logger "trx;LogFileName=test-results.trx"
+
+          popd
+
+      - name: Check quest - Unit Test
+        if: |
+          steps.issue.outputs.issueType == 'CONNECT-FOUR' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true'
+        id: check-quest-unit-test
+        shell: pwsh
+        run: |
+          pushd ./quest
+
+          $files = Get-ChildItem *.trx -Recurse | Select-Object -Property FullName
+
+          popd
+
+          pushd ./quest-checker
+
+          $result = ./gha-scripts/Check-UnitTestResults.ps1 -FilePaths $files.FullName
+          $questType = "UNIT_TEST"
+          $questStatus = if ($result -eq $true) { "COMPLETED" } else { "NOT_COMPLETED" }
+          $message = if ($result -eq $true) { "Test passed" } else { "Test NOT passed" }
+
+          echo "questType=$questType" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "questStatus=$questStatus" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "questMessage=$message" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+
+          popd
 
       - name: Call Power Automate workflow
         uses: fjogeleit/http-request-action@v1
