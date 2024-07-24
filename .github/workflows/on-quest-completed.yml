@@ -865,4 +865,4 @@ jobs:
           url: ${{ secrets.PAU_ON_QUEST_COMPLETION_SUBMITTED_URL }}
           method: "POST"
           # data: '{ "githubId": "${{ steps.issue.outputs.githubID }}", "questType": "${{ steps.check-quest-connect-four.outputs.questType }}", "questStatus": "${{ steps.check-quest-connect-four.outputs.questStatus }}" }'
-          data: '{ "githubId": "${{ steps.issue.outputs.githubID }}", "questType": "${{ steps.check-quest-unit-test.outputs.questType }}", "questStatus": "${{ steps.check-quest-connect-four.outputs.questStatus }}" }'
+          data: '{ "githubId": "${{ steps.issue.outputs.githubID }}", "questType": "${{ steps.check-quest-unit-test.outputs.questType }}", "questStatus": "${{ steps.check-quest-unit-test.outputs.questStatus }}" }'
