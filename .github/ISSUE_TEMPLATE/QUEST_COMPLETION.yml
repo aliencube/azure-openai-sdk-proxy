@@ -14,8 +14,8 @@ body:
     label: '제목'
     options:
       # - '과제 1: Blazor 앱'
-      - '과제 2: 단위 테스트'
-      # - '과제 3: .NET Aspire'
+      # - '과제 2: 단위 테스트'
+      - '과제 3: .NET Aspire'
     default: 0
 
 - type: input
@@ -36,29 +36,29 @@ body:
   validations:
     required: true
 
-# - type: input
-#   id: frontend_url
-#   attributes:
-#     label: '프론트엔드 앱 URL'
-#     description: '프론트엔드 앱 URL을 입력해 주세요. (예: https://webapp.howsweet-fcd6fb4e.koreacentral.azurecontainerapps.io)'
-#     placeholder: '프론트엔드 앱 URL을 입력해 주세요. (예: https://webapp.howsweet-fcd6fb4e.koreacentral.azurecontainerapps.io)'
-#   validations:
-#     required: true
+- type: input
+  id: frontend_url
+  attributes:
+    label: '프론트엔드 앱 URL'
+    description: '프론트엔드 앱 URL을 입력해 주세요. (예: https://webapp.howsweet-fcd6fb4e.koreacentral.azurecontainerapps.io)'
+    placeholder: '프론트엔드 앱 URL을 입력해 주세요. (예: https://webapp.howsweet-fcd6fb4e.koreacentral.azurecontainerapps.io)'
+  validations:
+    required: true
 
-# - type: input
-#   id: backend_url
-#   attributes:
-#     label: '백엔드 앱 URL'
-#     description: '백엔드 앱 URL을 입력해 주세요. (예: https://apiapp.howsweet-fcd6fb4e.koreacentral.azurecontainerapps.io)'
-#     placeholder: '백엔드 앱 URL을 입력해 주세요. (예: https://apiapp.howsweet-fcd6fb4e.koreacentral.azurecontainerapps.io)'
-#   validations:
-#     required: true
+- type: input
+  id: backend_url
+  attributes:
+    label: '백엔드 앱 URL'
+    description: '백엔드 앱 URL을 입력해 주세요. (예: https://apiapp.howsweet-fcd6fb4e.koreacentral.azurecontainerapps.io)'
+    placeholder: '백엔드 앱 URL을 입력해 주세요. (예: https://apiapp.howsweet-fcd6fb4e.koreacentral.azurecontainerapps.io)'
+  validations:
+    required: true
 
-# - type: input
-#   id: dashboard_url
-#   attributes:
-#     label: '대시보드 앱 URL'
-#     description: '대시보드 앱 URL을 입력해 주세요. (예: https://aspire-dashboard.ext.howsweet-fcd6fb4e.koreacentral.azurecontainerapps.io)'
-#     placeholder: '대시보드 앱 URL을 입력해 주세요. (예: https://aspire-dashboard.ext.howsweet-fcd6fb4e.koreacentral.azurecontainerapps.io)'
-#   validations:
-#     required: true
+- type: input
+  id: dashboard_url
+  attributes:
+    label: '대시보드 앱 URL'
+    description: '대시보드 앱 URL을 입력해 주세요. (예: https://aspire-dashboard.ext.howsweet-fcd6fb4e.koreacentral.azurecontainerapps.io)'
+    placeholder: '대시보드 앱 URL을 입력해 주세요. (예: https://aspire-dashboard.ext.howsweet-fcd6fb4e.koreacentral.azurecontainerapps.io)'
+  validations:
+    required: true
