@@ -905,6 +905,7 @@ jobs:
           }
 
           $trimmed = $result[$($result.IndexOf("{"))..$($result.Length)] | ConvertFrom-Json
+
           echo "questType=$($trimmed.questType)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
           echo "questStatus=$($trimmed.questStatus)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
           echo "questMessage=$($trimmed.message)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
