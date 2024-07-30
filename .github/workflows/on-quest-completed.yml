@@ -399,7 +399,7 @@ jobs:
 
             안타깝게도 제출하신 **Dashboard App URL 주소**를 확인할 수 없습니다. 😱
 
-            * 제출 Dashboard App URL: `${{ steps.issue.outputs.backendUrl }}`
+            * 제출 Dashboard App URL: `${{ steps.issue.outputs.dashboardUrl }}`
 
             다시 한 번 Dashboard App URL 주소를 확인해주세요.
 
@@ -859,10 +859,238 @@ jobs:
             -c "과제를 완료했습니다. 이슈를 닫습니다." \
             -R ${{ github.event.repository.full_name }}
 
+      - name: Check quest - .NET Aspire
+        if: |
+          steps.issue.outputs.issueType == 'DOTNET-ASPIRE' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.issue.outputs.isValidFrontendUrl == 'true' &&
+          steps.issue.outputs.isValidBackendUrl == 'true' &&
+          steps.issue.outputs.isValidDashboardUrl == 'true'
+        id: check-quest-dotnet-aspire
+        shell: pwsh
+        run: |
+          $errorCode = "${{ github.event.inputs.error-code }}"
+          $forceError = if ($errorCode -eq '') { $false } else { $true }
+
+          $issueType = "${{ steps.issue.outputs.issueType }}" -replace "DOTNET", "DOT-NET"
+
+          pushd ./quest-checker
+
+          dotnet restore && dotnet build
+
+          $playwright = Get-ChildItem -File Microsoft.Playwright.dll -Path . -Recurse
+          $installer = "$($playwright[0].Directory.FullName)/playwright.ps1"
+          & "$installer" install
+
+          if ($forceError -eq $true) {
+            $result = dotnet run `
+              --project ./src/OssCaQuestChecker.NetAspire.ConsoleApp `
+              -- `
+              -t $issueType `
+              -f ${{ steps.issue.outputs.frontendUrl }} `
+              -b ${{ steps.issue.outputs.backendUrl }} `
+              -d ${{ steps.issue.outputs.dashboardUrl }} `
+              --force-error `
+              --error-code $errorCode
+          } else {
+            $result = dotnet run `
+              --project ./src/OssCaQuestChecker.NetAspire.ConsoleApp `
+              -- `
+              -t $issueType `
+              -f ${{ steps.issue.outputs.frontendUrl }} `
+              -b ${{ steps.issue.outputs.backendUrl }} `
+              -d ${{ steps.issue.outputs.dashboardUrl }}
+          }
+
+          $trimmed = $result[$($result.IndexOf("{"))..$($result.Length)] | ConvertFrom-Json
+          echo "questType=$($trimmed.questType)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "questStatus=$($trimmed.questStatus)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "questMessage=$($trimmed.message)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+
+          popd
+
+      - name: Add label - FAILED - .NET Aspire
+        if: |
+          steps.issue.outputs.issueType == 'DOTNET-ASPIRE' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.issue.outputs.isValidFrontendUrl == 'true' &&
+          steps.issue.outputs.isValidBackendUrl == 'true' &&
+          steps.issue.outputs.isValidDashboardUrl == 'true' &&
+          steps.check-quest-dotnet-aspire.outputs.questStatus == 'FAILED'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue edit ${{ steps.issue.outputs.issueNumber }} \
+          --add-label "failed" \
+          -R ${{ github.event.repository.full_name }}
+
+      - name: Comment to issue - FAILED - .NET Aspire
+        if: |
+          steps.issue.outputs.issueType == 'DOTNET-ASPIRE' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.issue.outputs.isValidFrontendUrl == 'true' &&
+          steps.issue.outputs.isValidBackendUrl == 'true' &&
+          steps.issue.outputs.isValidDashboardUrl == 'true' &&
+          steps.check-quest-dotnet-aspire.outputs.questStatus == 'FAILED'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: "create-comment"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ steps.issue.outputs.issueNumber }}
+          body: |
+            👋🏼 @${{ steps.issue.outputs.githubId }} 님!
+
+            확인하는 과정에서 문제가 생겼습니다. 😭
+
+            다시 한 번 확인해 보시고 이슈를 생성해 주세요❗
+
+      - name: Close issue - FAILED - .NET Aspire
+        if: |
+          steps.issue.outputs.issueType == 'DOTNET-ASPIRE' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.issue.outputs.isValidFrontendUrl == 'true' &&
+          steps.issue.outputs.isValidBackendUrl == 'true' &&
+          steps.issue.outputs.isValidDashboardUrl == 'true' &&
+          steps.check-quest-dotnet-aspire.outputs.questStatus == 'FAILED'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue close ${{ steps.issue.outputs.issueNumber }} \
+            -c "과제 확인 과정에서 문제가 생겼습니다. 이슈를 닫습니다." \
+            -R ${{ github.event.repository.full_name }}
+
+      - name: Add label - NOT_COMPLETED - .NET Aspire
+        if: |
+          steps.issue.outputs.issueType == 'DOTNET-ASPIRE' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.issue.outputs.isValidFrontendUrl == 'true' &&
+          steps.issue.outputs.isValidBackendUrl == 'true' &&
+          steps.issue.outputs.isValidDashboardUrl == 'true' &&
+          steps.check-quest-dotnet-aspire.outputs.questStatus == 'NOT_COMPLETED'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue edit ${{ steps.issue.outputs.issueNumber }} \
+          --add-label "incomplete" \
+          -R ${{ github.event.repository.full_name }}
+
+      - name: Comment to issue - NOT_COMPLETED - .NET Aspire
+        if: |
+          steps.issue.outputs.issueType == 'DOTNET-ASPIRE' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.issue.outputs.isValidFrontendUrl == 'true' &&
+          steps.issue.outputs.isValidBackendUrl == 'true' &&
+          steps.issue.outputs.isValidDashboardUrl == 'true' &&
+          steps.check-quest-dotnet-aspire.outputs.questStatus == 'NOT_COMPLETED'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: "create-comment"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ steps.issue.outputs.issueNumber }}
+          body: |
+            👋🏼 @${{ steps.issue.outputs.githubId }} 님!
+
+            확인 결과 과제를 아직 끝마치지 않으셨습니다. 😭
+
+            과제를 완료 하신 후 이슈를 생성해주세요❗
+
+      - name: Close issue - NOT_COMPLETED - .NET Aspire
+        if: |
+          steps.issue.outputs.issueType == 'DOTNET-ASPIRE' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.issue.outputs.isValidFrontendUrl == 'true' &&
+          steps.issue.outputs.isValidBackendUrl == 'true' &&
+          steps.issue.outputs.isValidDashboardUrl == 'true' &&
+          steps.check-quest-dotnet-aspire.outputs.questStatus == 'NOT_COMPLETED'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue close ${{ steps.issue.outputs.issueNumber }} \
+            -c "과제 완료 기록을 확인할 수 없습니다. 이슈를 닫습니다." \
+            -R ${{ github.event.repository.full_name }}
+
+      - name: Add label - COMPLETED - .NET Aspire
+        if: |
+          steps.issue.outputs.issueType == 'DOTNET-ASPIRE' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.issue.outputs.isValidFrontendUrl == 'true' &&
+          steps.issue.outputs.isValidBackendUrl == 'true' &&
+          steps.issue.outputs.isValidDashboardUrl == 'true' &&
+          steps.check-quest-dotnet-aspire.outputs.questStatus == 'COMPLETED'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue edit ${{ github.event.issue.number }} \
+          --add-label "complete" \
+          -R ${{ github.event.repository.full_name }}
+
+      - name: Comment to issue - COMPLETED - .NET Aspire
+        if: |
+          steps.issue.outputs.issueType == 'DOTNET-ASPIRE' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.issue.outputs.isValidFrontendUrl == 'true' &&
+          steps.issue.outputs.isValidBackendUrl == 'true' &&
+          steps.issue.outputs.isValidDashboardUrl == 'true' &&
+          steps.check-quest-dotnet-aspire.outputs.questStatus == 'COMPLETED'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: "create-comment"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          emoji: "+1,rocket"
+          body: |
+            👋🏼 @${{ github.event.issue.user.login }}님!
+
+            과제를 완료하셨습니다!
+
+            축하드려요. 🎉🎉🎉
+
+      - name: Close issue - COMPLETED - .NET Aspire
+        if: |
+          steps.issue.outputs.issueType == 'DOTNET-ASPIRE' &&
+          steps.issue.outputs.isOverdue == 'false' &&
+          steps.issue.outputs.isValidGitHubProfile == 'true' &&
+          steps.issue.outputs.isValidGitHubRepository == 'true' &&
+          steps.issue.outputs.isValidFrontendUrl == 'true' &&
+          steps.issue.outputs.isValidBackendUrl == 'true' &&
+          steps.issue.outputs.isValidDashboardUrl == 'true' &&
+          steps.check-quest-dotnet-aspire.outputs.questStatus == 'COMPLETED'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue close ${{ github.event.issue.number }} \
+            -c "과제를 완료했습니다. 이슈를 닫습니다." \
+            -R ${{ github.event.repository.full_name }}
+
       - name: Call Power Automate workflow
         uses: fjogeleit/http-request-action@v1
         with:
           url: ${{ secrets.PAU_ON_QUEST_COMPLETION_SUBMITTED_URL }}
           method: "POST"
           # data: '{ "githubId": "${{ steps.issue.outputs.githubID }}", "questType": "${{ steps.check-quest-connect-four.outputs.questType }}", "questStatus": "${{ steps.check-quest-connect-four.outputs.questStatus }}" }'
-          data: '{ "githubId": "${{ steps.issue.outputs.githubID }}", "questType": "${{ steps.check-quest-unit-test.outputs.questType }}", "questStatus": "${{ steps.check-quest-unit-test.outputs.questStatus }}" }'
+          # data: '{ "githubId": "${{ steps.issue.outputs.githubID }}", "questType": "${{ steps.check-quest-unit-test.outputs.questType }}", "questStatus": "${{ steps.check-quest-unit-test.outputs.questStatus }}" }'
+          data: '{ "githubId": "${{ steps.issue.outputs.githubID }}", "questType": "${{ steps.check-quest-dotnet-aspire.outputs.questType }}", "questStatus": "${{ steps.check-quest-dotnet-aspire.outputs.questStatus }}" }'
