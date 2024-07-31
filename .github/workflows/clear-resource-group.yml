@@ -16,6 +16,8 @@ jobs:
   reset-resource-group:
     name: "Resetting Resource Groups"
 
+    if: github.repository_owner == 'aliencube'
+
     runs-on: ubuntu-latest
 
     env:
