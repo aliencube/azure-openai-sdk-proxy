@@ -1,9 +1,9 @@
 name: On Quest Completed
 
 on:
-  issues:
-    types:
-      - opened
+  # issues:
+  #   types:
+  #     - opened
   workflow_dispatch:
     inputs:
       issue-number:
