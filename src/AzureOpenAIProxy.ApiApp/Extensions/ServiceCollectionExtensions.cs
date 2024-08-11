@@ -12,11 +12,11 @@ namespace AzureOpenAIProxy.ApiApp.Extensions;
 public static class ServiceCollectionExtensions
 {
     /// <summary>
-    /// Adds the OpenAI configuration settings to the service collection.
+    /// Adds the OpenAI configuration settings to the service collection by reading appsettings.json.
     /// </summary>
     /// <param name="services"><see cref="IServiceCollection"/> instance.</param>
     /// <returns>Returns <see cref="IServiceCollection"/> instance.</returns>
-    public static IServiceCollection AddOpenAISettings(this IServiceCollection services)
+    public static IServiceCollection AddOpenAISettingsFromAppSettings(this IServiceCollection services)
     {
         services.AddSingleton<OpenAISettings>(sp =>
         {
@@ -39,7 +39,7 @@ public static class ServiceCollectionExtensions
     /// <returns>Returns <see cref="IServiceCollection"/> instance.</returns>
     public static IServiceCollection AddOpenAIService(this IServiceCollection services)
     {
-        services.AddOpenAISettings();
+        services.AddOpenAISettingsFromAppSettings();
         services.AddHttpClient<IOpenAIService, OpenAIService>();
 
         return services;
