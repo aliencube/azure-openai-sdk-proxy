@@ -23,6 +23,7 @@ jobs:
       AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
       AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+      AZURE_OPENAI_KEYS: ${{ secrets.AZURE_OPENAI_KEYS }}
 
     steps:
     - name: Checkout
@@ -44,6 +45,13 @@ jobs:
       run: |
         dotnet workload update
         dotnet workload install aspire
+
+    - name: Update appsettings.json for API app
+      shell: pwsh
+      run: |
+        $appsettings = Get-Content -Path "./src/AzureOpenAIProxy.ApiApp/appsettings.json" -Raw | ConvertFrom-Json
+        $appsettings.Azure.OpenAI.Instances = '${{ env.AZURE_OPENAI_KEYS }}' | ConvertFrom-Json
+        $appsettings | ConvertTo-Json -Depth 100 | Set-Content -Path "./src/AzureOpenAIProxy.ApiApp/appsettings.json" -Encoding UTF8 -Force
 
     - name: Restore NuGet packages
       shell: bash

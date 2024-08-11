@@ -1,4 +1,4 @@
-name: Clear Resource Group
+name: Reset Resource Group
 
 on:
   workflow_dispatch:

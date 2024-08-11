@@ -23,7 +23,7 @@ public static class ServiceCollectionExtensions
             var configuration = sp.GetService<IConfiguration>()
                 ?? throw new InvalidOperationException($"{nameof(IConfiguration)} service is not registered.");
 
-            var settings = configuration.GetSection(OpenAISettings.Name).Get<OpenAISettings>()
+            var settings = configuration.GetSection(AzureSettings.Name).GetSection(OpenAISettings.Name).Get<OpenAISettings>()
                 ?? throw new InvalidOperationException($"{nameof(OpenAISettings)} could not be retrieved from the configuration.");
 
             return settings;
