@@ -1,0 +1,36 @@
+name: Clear Resource Group
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run every day at 5:30 AM (KST)
+    - cron: "30 20 * * *"
+
+permissions:
+  contents: read
+  id-token: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  reset-resource-group:
+    name: "Resetting Resource Groups"
+
+    if: github.repository_owner == 'aliencube'
+
+    runs-on: ubuntu-latest
+
+    env:
+      PAU_ON_RESET_RESOURCE_GROUP_REQUEST_URL: ${{ secrets.PAU_ON_RESET_RESOURCE_GROUP_REQUEST_URL }}
+      PAU_API_KEY: ${{ secrets.PAU_API_KEY }}
+
+    steps:
+      - name: Call Power Automate to reset resource groups
+        shell: pwsh
+        run: |
+          $uri = "${{ env.PAU_ON_RESET_RESOURCE_GROUP_REQUEST_URL }}"
+          $body = @{
+            "apiKey" = "${{ env.PAU_API_KEY }}"
+          } | ConvertTo-Json
+
+          Invoke-RestMethod -Uri $uri -Method Post -Body $body -ContentType "application/json"
