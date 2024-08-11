@@ -132,7 +132,7 @@ $locations | ForEach-Object {
         $modelNameShortened = $ModelName.Replace("-", "").Replace(".", "")
         $modelVersionShortened = $ModelVersion.Replace("-", "").Replace(".", "")
         $deploymentName = "model-$modelNameShortened-$modelVersionShortened"
-        $skuName = ($ModelName -eq "gpt-4o") ? "GlobalStandard" : "Standard"
+        $skuName = (($ModelName -eq "gpt-4o") -or ($ModelName -eq "gpt-4o-mini")) ? "GlobalStandard" : "Standard"
 
         $deployment = az cognitiveservices account deployment list `
             -g $resourceGroupName `

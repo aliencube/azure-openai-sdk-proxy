@@ -36,6 +36,7 @@ $REPOSITORY_ROOT = git rev-parse --show-toplevel
 
 & "$REPOSITORY_ROOT/infra/scripts/New-OpenAIs.ps1" -AzureEnvironmentName $AZURE_ENV_NAME -ModelName "gpt-35-turbo-16k" -ModelVersion "0613" -Capacity 12
 & "$REPOSITORY_ROOT/infra/scripts/New-OpenAIs.ps1" -AzureEnvironmentName $AZURE_ENV_NAME -ModelName "gpt-4o" -ModelVersion "2024-05-13" -Capacity 12
+& "$REPOSITORY_ROOT/infra/scripts/New-OpenAIs.ps1" -AzureEnvironmentName $AZURE_ENV_NAME -ModelName "gpt-4o-mini" -ModelVersion "2024-07-18" -Capacity 12
 & "$REPOSITORY_ROOT/infra/scripts/New-OpenAIs.ps1" -AzureEnvironmentName $AZURE_ENV_NAME -ModelName "text-embedding-ada-002" -ModelVersion "2" -Capacity 120
 & "$REPOSITORY_ROOT/infra/scripts/New-OpenAIs.ps1" -AzureEnvironmentName $AZURE_ENV_NAME -ModelName "dall-e-3" -ModelVersion "3.0" -Capacity 1
 
