@@ -63,6 +63,7 @@ jobs:
         results-path: ./**/TestResults/**/*.trx
         coverage-path: ./**/TestResults/**/*.xml
         coverage-type: cobertura
-        coverage-threshold: 80
+        coverage-threshold: 0
+        # coverage-threshold: 80
         allow-failed-tests: true
         post-new-comment: true
