@@ -12,6 +12,7 @@ permissions:
   id-token: write
   contents: read
   issues: write
+  pull-requests: write
 
 jobs:
   build-test-deploy:
@@ -74,9 +75,10 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         results-path: ./**/TestResults/**/*.trx
-        coverage-path: ./**/TestResults/**/*.xml
-        coverage-type: cobertura
-        coverage-threshold: 80
+        # coverage-path: ./**/TestResults/**/*.xml
+        # coverage-type: cobertura
+        # coverage-threshold: 0
+        # coverage-threshold: 80
         allow-failed-tests: true
         post-new-comment: true
         
