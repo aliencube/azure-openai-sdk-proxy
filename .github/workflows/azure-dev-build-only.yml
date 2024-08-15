@@ -4,8 +4,8 @@ on:
   push:
     branches:
     - 'feature/*'
-    # paths-ignore:
-    # - '.github/**'
+    paths-ignore:
+    - '.github/**'
   pull_request:
     branches:
     - main
@@ -91,4 +91,4 @@ jobs:
 
           | :straight_ruler: Line | :herb: Branch |
           |-----------------------|---------------|
-          | ${{ steps.test-report.outputs.coverage-lines-covered }}/${{ steps.test-report.outputs.coverage-lines-total }} (${{ steps.test-report.outputs.coverage-line }}%) | ${{ steps.test-report.outputs.coverage-branches-covered }}/${{ steps.test-report.outputs.coverage-branches-total }} (${{ steps.test-report.outputs.coverage-branch }}%) |
+          | ${{ steps.test-report.outputs.coverage-lines-covered }} / ${{ steps.test-report.outputs.coverage-lines-total }} (${{ steps.test-report.outputs.coverage-line }}%) | ${{ steps.test-report.outputs.coverage-branches-covered }} / ${{ steps.test-report.outputs.coverage-branches-total }} (${{ steps.test-report.outputs.coverage-branch }}%) |
