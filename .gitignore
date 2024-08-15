@@ -483,11 +483,15 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 
+# Project-specific
 *.bak
 *.org
 
 appsettings.Development.json
 appsettings.Production.json
+
+# Live Unit Testing
+*.lutconfig
 
 # azd
 .azure

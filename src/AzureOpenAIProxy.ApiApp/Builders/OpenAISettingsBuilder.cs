@@ -8,6 +8,12 @@ namespace AzureOpenAIProxy.ApiApp.Builders;
 public interface IOpenAISettingsBuilder
 {
     /// <summary>
+    /// Sets the list of <see cref="OpenAIInstanceSettings"/> instances.
+    /// </summary>
+    /// <param name="instances">List of <see cref="OpenAIInstanceSettings"/> instances.</param>
+    void SetOpenAIInstances(IEnumerable<OpenAIInstanceSettings>? instances);
+
+    /// <summary>
     /// Builds the <see cref="OpenAISettings"/> instance.
     /// </summary>
     /// <returns>Returns the <see cref="OpenAISettings"/> instance.</returns>
@@ -19,13 +25,19 @@ public interface IOpenAISettingsBuilder
 /// </summary>
 public class OpenAISettingsBuilder : IOpenAISettingsBuilder
 {
-    private OpenAISettings? _settings;
+    private IEnumerable<OpenAIInstanceSettings>? _instances;
+
+    /// <inheritdoc />
+    public void SetOpenAIInstances(IEnumerable<OpenAIInstanceSettings>? instances)
+    {
+        this._instances = instances;
+    }
 
     /// <inheritdoc />
     public OpenAISettings Build()
     {
-        this._settings ??= new OpenAISettings();
+        var settings = new OpenAISettings() { Instances = (this._instances ?? []).ToList() };
 
-        return this._settings;
+        return settings;
     }
 }
