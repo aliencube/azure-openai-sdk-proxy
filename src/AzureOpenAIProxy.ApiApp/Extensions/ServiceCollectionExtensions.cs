@@ -16,10 +16,15 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services"><see cref="IServiceCollection"/> instance.</param>
     /// <returns>Returns <see cref="IServiceCollection"/> instance.</returns>
-    public static IServiceCollection AddOpenAISettingsFromAppSettings(this IServiceCollection services)
+    public static IServiceCollection AddOpenAISettings(this IServiceCollection services)
     {
         services.AddSingleton<OpenAISettings>(sp =>
         {
+            //var settings = new OpenAISettingsBuilder()
+            //                   .WithAppSettings(sp)
+            //                   .WithKeyVault(sp)
+            //                   .Build();
+
             var configuration = sp.GetService<IConfiguration>()
                 ?? throw new InvalidOperationException($"{nameof(IConfiguration)} service is not registered.");
 
@@ -39,7 +44,7 @@ public static class ServiceCollectionExtensions
     /// <returns>Returns <see cref="IServiceCollection"/> instance.</returns>
     public static IServiceCollection AddOpenAIService(this IServiceCollection services)
     {
-        services.AddOpenAISettingsFromAppSettings();
+        services.AddOpenAISettings();
         services.AddHttpClient<IOpenAIService, OpenAIService>();
 
         return services;
