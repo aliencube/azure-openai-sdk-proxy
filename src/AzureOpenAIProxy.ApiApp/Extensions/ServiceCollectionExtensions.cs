@@ -1,4 +1,5 @@
-﻿using AzureOpenAIProxy.ApiApp.Configurations;
+﻿using AzureOpenAIProxy.ApiApp.Builders;
+using AzureOpenAIProxy.ApiApp.Configurations;
 using AzureOpenAIProxy.ApiApp.Filters;
 using AzureOpenAIProxy.ApiApp.Services;
 
@@ -20,16 +21,10 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<OpenAISettings>(sp =>
         {
-            //var settings = new OpenAISettingsBuilder()
-            //                   .WithAppSettings(sp)
-            //                   .WithKeyVault(sp)
-            //                   .Build();
-
-            var configuration = sp.GetService<IConfiguration>()
-                ?? throw new InvalidOperationException($"{nameof(IConfiguration)} service is not registered.");
-
-            var settings = configuration.GetSection(AzureSettings.Name).GetSection(OpenAISettings.Name).Get<OpenAISettings>()
-                ?? throw new InvalidOperationException($"{nameof(OpenAISettings)} could not be retrieved from the configuration.");
+            var settings = new OpenAISettingsBuilder()
+                               .WithAppSettings(sp)
+                               //.WithKeyVault(sp)
+                               .Build();
 
             return settings;
         });
