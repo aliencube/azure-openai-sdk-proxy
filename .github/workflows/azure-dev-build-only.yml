@@ -71,7 +71,7 @@ jobs:
         comment-title: "Test Results"
 
     - name: Comment to issue
-      if: !cancelled() && github.event_name == 'pull_request'
+      if: ${{ !cancelled() && github.event_name == 'pull_request' }}
       uses: actions-cool/issues-helper@v3
       with:
         actions: "create-comment"
