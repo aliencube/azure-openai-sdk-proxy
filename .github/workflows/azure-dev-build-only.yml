@@ -4,11 +4,17 @@ on:
   push:
     branches:
     - 'feature/*'
-    paths-ignore:
-    - '.github/**'
+    # paths-ignore:
+    # - '.github/**'
   pull_request:
     branches:
     - main
+
+permissions:
+  id-token: write
+  contents: read
+  issues: write
+  pull-requests: write
 
 jobs:
   build-test:
@@ -49,4 +55,40 @@ jobs:
     - name: Test solution
       shell: bash
       run: |
-        dotnet test
+        dotnet test --logger "trx" --collect:"XPlat Code Coverage"
+
+    - name: Publish test results
+      id: test-report
+      uses: bibipkins/dotnet-test-reporter@main
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        results-path: ./**/TestResults/**/*.trx
+        coverage-path: ./**/TestResults/**/*.xml
+        coverage-type: cobertura
+        coverage-threshold: 0
+        # coverage-threshold: 80
+        allow-failed-tests: true
+        post-new-comment: true
+        comment-title: "Test Results"
+
+    - name: Comment to issue
+      if: ${{ !cancelled() && github.event_name == 'pull_request' }}
+      uses: actions-cool/issues-helper@v3
+      with:
+        actions: "create-comment"
+        token: ${{ secrets.GITHUB_TOKEN }}
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          ## Test Results
+
+          ### Tests
+
+          | :clipboard: Total | :heavy_check_mark: Passed | :x: Failed | :warning: Skipped |
+          |-------------------|---------------------------|------------|-------------------|
+          | ${{ steps.test-report.outputs.tests-total }} | ${{ steps.test-report.outputs.tests-passed }} | ${{ steps.test-report.outputs.tests-failed }} | ${{ steps.test-report.outputs.tests-skipped }} |
+
+          ### Coverage
+
+          | :straight_ruler: Line | :herb: Branch |
+          |-----------------------|---------------|
+          | ${{ steps.test-report.outputs.coverage-lines-covered }}/${{ steps.test-report.outputs.coverage-lines-total }} (${{ steps.test-report.outputs.coverage-line }}%) | ${{ steps.test-report.outputs.coverage-branches-covered }}/${{ steps.test-report.outputs.coverage-branches-total }} (${{ steps.test-report.outputs.coverage-branch }}%) |
