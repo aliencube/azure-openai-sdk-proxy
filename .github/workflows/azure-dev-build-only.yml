@@ -86,9 +86,3 @@ jobs:
           | :clipboard: Total | :heavy_check_mark: Passed | :x: Failed | :warning: Skipped |
           |-------------------|---------------------------|------------|-------------------|
           | ${{ steps.test-report.outputs.tests-total }} | ${{ steps.test-report.outputs.tests-passed }} | ${{ steps.test-report.outputs.tests-failed }} | ${{ steps.test-report.outputs.tests-skipped }} |
-
-          ### Coverage
-
-          | :straight_ruler: Line | :herb: Branch |
-          |-----------------------|---------------|
-          | ${{ steps.test-report.outputs.coverage-lines-covered }} / ${{ steps.test-report.outputs.coverage-lines-total }} (${{ steps.test-report.outputs.coverage-line }}%) | ${{ steps.test-report.outputs.coverage-branches-covered }} / ${{ steps.test-report.outputs.coverage-branches-total }} (${{ steps.test-report.outputs.coverage-branch }}%) |

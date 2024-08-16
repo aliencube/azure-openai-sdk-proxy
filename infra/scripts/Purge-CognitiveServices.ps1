@@ -1,8 +1,8 @@
-# Purges the deleted the Azure Cognitive Service instance.
+# Purges the deleted the Azure Cognitive Service instances.
 Param(
     [string]
     [Parameter(Mandatory=$false)]
-    $ApiVersion = "2021-10-01",
+    $ApiVersion = "2023-05-01",
 
     [switch]
     [Parameter(Mandatory=$false)]
@@ -10,7 +10,7 @@ Param(
 )
 
 function Show-Usage {
-    Write-Output "    This permanently deletes the Azure Cognitive Service instance
+    Write-Output "    This permanently deletes the Azure Cognitive Service instances
 
     Usage: $(Split-Path $MyInvocation.ScriptName -Leaf) ``
             [-ApiVersion <API version>] ``
@@ -18,7 +18,7 @@ function Show-Usage {
             [-Help]
 
     Options:
-        -ApiVersion     REST API version. Default is `2021-10-01`.
+        -ApiVersion     REST API version. Default is `2023-05-01`.
 
         -Help:          Show this message.
 "

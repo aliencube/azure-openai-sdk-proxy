@@ -61,3 +61,27 @@ This provides a proxy server application of Azure OpenAI Service API that round-
     azd init -e $AZURE_ENV_NAME
     azd up
     ```
+
+   > **NOTE**: The `AZURE_ENV_NAME` variable is an arbitrary name for the Azure environment. You can change it to your preferred one.
+
+1. Run the following command to provision Azure resources that are required for the app.
+
+    ```bash
+    # zsh/bash
+    AZURE_RESOURCE_GROUP="rg-$AZURE_ENV_NAME"
+    AZURE_LOCATION=$(azd env get-value AZURE_LOCATION)
+    az deployment group create \
+        -g $AZURE_RESOURCE_GROUP \
+        --template-file ./infra/aspire.bicep \
+        --parameters environmentName=$AZURE_ENV_NAME \
+        --parameters location=$AZURE_LOCATION
+
+    # PowerShell
+    $AZURE_RESOURCE_GROUP = "rg-$AZURE_ENV_NAME"
+    $AZURE_LOCATION = azd env get-value AZURE_LOCATION
+    az deployment group create `
+        -g $AZURE_RESOURCE_GROUP `
+        --template-file ./infra/aspire.bicep `
+        --parameters environmentName=$AZURE_ENV_NAME `
+        --parameters location=$AZURE_LOCATION
+    ```

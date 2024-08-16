@@ -1,8 +1,8 @@
-# Purges the deleted the API Management instance.
+# Purges the deleted the API Management instances.
 Param(
     [string]
     [Parameter(Mandatory=$false)]
-    $ApiVersion = "2021-08-01",
+    $ApiVersion = "2022-08-01",
 
     [switch]
     [Parameter(Mandatory=$false)]
@@ -10,7 +10,7 @@ Param(
 )
 
 function Show-Usage {
-    Write-Output "    This permanently deletes the API Management instance
+    Write-Output "    This permanently deletes the API Management instances
 
     Usage: $(Split-Path $MyInvocation.ScriptName -Leaf) ``
             [-ApiVersion <API version>] ``
@@ -18,7 +18,7 @@ function Show-Usage {
             [-Help]
 
     Options:
-        -ApiVersion     REST API version. Default is `2021-08-01`.
+        -ApiVersion     REST API version. Default is `2022-08-01`.
 
         -Help:          Show this message.
 "
@@ -42,7 +42,7 @@ function List-DeletedAPIMs {
     $account = $(az account show | ConvertFrom-Json)
 
     $url = "https://management.azure.com/subscriptions/$($account.id)/providers/Microsoft.ApiManagement/deletedservices?api-version=$($ApiVersion)"
-    
+
     # Uncomment to debug
     # $url
 
@@ -54,7 +54,7 @@ function List-DeletedAPIMs {
         $returnValue = @{ apims = $apims; options = $options }
         return $returnValue
     }
-    
+
     if ($apims.Count -eq 1) {
         $name = $apims.name
         $options += "    1: $name `n"
@@ -65,11 +65,38 @@ function List-DeletedAPIMs {
             $options += "    $($i +1): $name `n"
         }
     }
+    $options += "    a: Purge all`n"
     $options += "    q: Quit`n"
 
     $returnValue = @{ apims = $apims; options = $options }
     return $returnValue
 }
+
+# Purge all soft-deleted API Management instances at once.
+function Purge-AllDeletedAPIMs {
+    param (
+        [string] $ApiVersion,
+        [object[]] $Instances
+    )
+
+    Process {
+        $Instances | ForEach-Object {
+            Write-Output "Purging $($_.name) ..."
+
+            $url = "https://management.azure.com$($_.id)?api-version=$($ApiVersion)"
+    
+            $apim = $(az rest -m get -u $url)
+            if ($apim -ne $null) {
+                $deleted = $(az rest -m delete -u $url)
+            }
+
+            Write-Output "... $($_.name) purged"
+        }
+
+        Write-Output "All soft-deleted API Management instances purged"
+    }
+}
+
 
 # Purge soft-deleted API Management instances
 function Purge-DeletedAPIMs {
@@ -86,9 +113,14 @@ function Purge-DeletedAPIMs {
     while ($continue -eq $true) {
         $options = $result.options
 
-        $input = Read-Host "Select the number to purge the soft-deleted API Management instance or 'q' to quit: `n`n$options"
+        $input = Read-Host "Select the number to purge the soft-deleted API Management instance, 'a' to purge all or 'q' to quit: `n`n$options"
         if ($input -eq "q") {
             $continue = $false
+            break
+        }
+
+        if ($input -eq "a") {
+            Purge-AllDeletedAPIMs -ApiVersion $ApiVersion -Instances $result.apims
             break
         }
 
@@ -107,12 +139,12 @@ function Purge-DeletedAPIMs {
         }
 
         $index = $parsed - 1
-        
+
         $url = "https://management.azure.com$($apims[$index].id)?api-version=$($ApiVersion)"
-        
+
         # Uncomment to debug
         # $url
-        
+
         $apim = $(az rest -m get -u $url)
         if ($apim -ne $null) {
             $deleted = $(az rest -m delete -u $url)
