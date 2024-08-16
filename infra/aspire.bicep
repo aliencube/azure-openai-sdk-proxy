@@ -28,7 +28,8 @@ var tags = {
 // Generate a unique token to be used in naming resources.
 // Remove linter suppression after using.
 #disable-next-line no-unused-vars
-var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
+// var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
+var resourceToken = uniqueString(resourceGroup().id)
 
 // Name of the service defined in azure.yaml
 // A tag named azd-service-name with this value should be applied to the service host resource, such as:
