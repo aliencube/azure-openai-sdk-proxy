@@ -5,6 +5,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
+// Add KeyVault service
+builder.Services.AddKeyVaultService();
+
 // Add Azure OpenAI service.
 builder.Services.AddOpenAIService();
 
