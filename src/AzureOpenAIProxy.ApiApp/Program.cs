@@ -1,7 +1,3 @@
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
-
-using AzureOpenAIProxy.ApiApp.Configurations;
 using AzureOpenAIProxy.ApiApp.Endpoints;
 using AzureOpenAIProxy.ApiApp.Extensions;
 
@@ -9,25 +5,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
+// Add KeyVault service
+builder.Services.AddKeyVaultService();
+
 // Add Azure OpenAI service.
 builder.Services.AddOpenAIService();
 
 // Add OpenAPI service
 builder.Services.AddOpenApiService();
-
-// Add KeyVault service
-builder.Services.AddScoped<SecretClient>(sp =>
-{
-    var configuration = sp.GetService<IConfiguration>()
-        ?? throw new InvalidOperationException($"{nameof(IConfiguration)} service is not registered.");
-
-    var settings = configuration.GetSection(AzureSettings.Name).GetSection(KeyVaultSettings.Name).Get<KeyVaultSettings>()
-        ?? throw new InvalidOperationException($"{nameof(KeyVaultSettings)} could not be retrieved from the configuration.");
-
-    var client = new SecretClient(new Uri(settings.VaultUri!), new DefaultAzureCredential());
-
-    return client;
-});
 
 var app = builder.Build();
 

@@ -1,4 +1,7 @@
-﻿using AzureOpenAIProxy.ApiApp.Builders;
+﻿using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+
+using AzureOpenAIProxy.ApiApp.Builders;
 using AzureOpenAIProxy.ApiApp.Configurations;
 using AzureOpenAIProxy.ApiApp.Filters;
 using AzureOpenAIProxy.ApiApp.Services;
@@ -12,6 +15,29 @@ namespace AzureOpenAIProxy.ApiApp.Extensions;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds the KeyVault service to the service collection.
+    /// </summary>
+    /// <param name="services"><see cref="IServiceCollection"/> instance.</param>
+    /// <returns>Returns <see cref="IServiceCollection"/> instance.</returns>
+    public static IServiceCollection AddKeyVaultService(this IServiceCollection services)
+    {
+        services.AddScoped<SecretClient>(sp =>
+        {
+            var configuration = sp.GetService<IConfiguration>()
+                ?? throw new InvalidOperationException($"{nameof(IConfiguration)} service is not registered.");
+
+            var settings = configuration.GetSection(AzureSettings.Name).GetSection(KeyVaultSettings.Name).Get<KeyVaultSettings>()
+                ?? throw new InvalidOperationException($"{nameof(KeyVaultSettings)} could not be retrieved from the configuration.");
+
+            var client = new SecretClient(new Uri(settings.VaultUri!), new DefaultAzureCredential());
+
+            return client;
+        });
+
+        return services;
+    }
+
     /// <summary>
     /// Adds the OpenAI configuration settings to the service collection by reading appsettings.json.
     /// </summary>
