@@ -49,8 +49,8 @@ public static class AdminEventDetailsEndpoint
         .WithName("GetAdminEventDetails")
         .WithOpenApi(operation =>
         {
-            operation.Summary = "Get event details by admin";
-            operation.Description = "Get event details by event id, api for admin users";
+            operation.Summary = "Gets event details from the given event ID";
+            operation.Description = "This endpoint gets the event details from the given event ID.";
 
             return operation;
         });
