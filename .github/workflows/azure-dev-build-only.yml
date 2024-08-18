@@ -69,21 +69,22 @@ jobs:
         # coverage-threshold: 0
         # coverage-threshold: 80
         allow-failed-tests: true
-        post-new-comment: true
+        # post-new-comment: true
+        post-new-comment: false
         comment-title: "Test Results"
 
-    - name: Comment to issue
-      if: ${{ !cancelled() && github.event_name == 'pull_request' }}
-      uses: actions-cool/issues-helper@v3
-      with:
-        actions: "create-comment"
-        token: ${{ secrets.GITHUB_TOKEN }}
-        issue-number: ${{ github.event.pull_request.number }}
-        body: |
-          ## Test Results
+    # - name: Comment to issue
+    #   if: ${{ !cancelled() && github.event_name == 'pull_request' }}
+    #   uses: actions-cool/issues-helper@v3
+    #   with:
+    #     actions: "create-comment"
+    #     token: ${{ secrets.GITHUB_TOKEN }}
+    #     issue-number: ${{ github.event.pull_request.number }}
+    #     body: |
+    #       ## Test Results
 
-          ### Tests
+    #       ### Tests
 
-          | :clipboard: Total | :heavy_check_mark: Passed | :x: Failed | :warning: Skipped |
-          |-------------------|---------------------------|------------|-------------------|
-          | ${{ steps.test-report.outputs.tests-total }} | ${{ steps.test-report.outputs.tests-passed }} | ${{ steps.test-report.outputs.tests-failed }} | ${{ steps.test-report.outputs.tests-skipped }} |
+    #       | :clipboard: Total | :heavy_check_mark: Passed | :x: Failed | :warning: Skipped |
+    #       |-------------------|---------------------------|------------|-------------------|
+    #       | ${{ steps.test-report.outputs.tests-total }} | ${{ steps.test-report.outputs.tests-passed }} | ${{ steps.test-report.outputs.tests-failed }} | ${{ steps.test-report.outputs.tests-skipped }} |
