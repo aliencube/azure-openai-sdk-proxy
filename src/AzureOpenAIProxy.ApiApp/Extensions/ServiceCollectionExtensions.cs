@@ -22,7 +22,7 @@ public static class ServiceCollectionExtensions
     /// <returns>Returns <see cref="IServiceCollection"/> instance.</returns>
     public static IServiceCollection AddKeyVaultService(this IServiceCollection services)
     {
-        services.AddScoped<SecretClient>(sp =>
+        services.AddSingleton<SecretClient>(sp =>
         {
             var configuration = sp.GetService<IConfiguration>()
                 ?? throw new InvalidOperationException($"{nameof(IConfiguration)} service is not registered.");
@@ -30,7 +30,17 @@ public static class ServiceCollectionExtensions
             var settings = configuration.GetSection(AzureSettings.Name).GetSection(KeyVaultSettings.Name).Get<KeyVaultSettings>()
                 ?? throw new InvalidOperationException($"{nameof(KeyVaultSettings)} could not be retrieved from the configuration.");
 
-            var client = new SecretClient(new Uri(settings.VaultUri!), new DefaultAzureCredential());
+            if (string.IsNullOrWhiteSpace(settings.VaultUri) == true)
+            {
+                throw new InvalidOperationException($"{nameof(KeyVaultSettings.VaultUri)} is not defined.");
+            }
+
+            if (string.IsNullOrWhiteSpace(settings.SecretName) == true)
+            {
+                throw new InvalidOperationException($"{nameof(KeyVaultSettings.SecretName)} is not defined.");
+            }
+
+            var client = new SecretClient(new Uri(settings.VaultUri), new DefaultAzureCredential());
 
             return client;
         });
@@ -48,8 +58,8 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<OpenAISettings>(sp =>
         {
             var settings = new OpenAISettingsBuilder()
-                               .WithAppSettings(sp)
-                               //.WithKeyVault(sp)
+                               //.WithAppSettings(sp)
+                               .WithKeyVault(sp)
                                .Build();
 
             return settings;
