@@ -14,7 +14,7 @@ public static class AdminEventEndpoints
     /// </summary>
     /// <param name="app"><see cref="WebApplication"/> instance.</param>
     /// <returns>Returns <see cref="RouteHandlerBuilder"/> instance.</returns>
-    public static RouteHandlerBuilder AddAdminEventDetails(this WebApplication app)
+    public static RouteHandlerBuilder AddAdminEvents(this WebApplication app)
     {
         // Todo: Issue #19 https://github.com/aliencube/azure-openai-sdk-proxy/issues/19
         // Need authorization by admin
