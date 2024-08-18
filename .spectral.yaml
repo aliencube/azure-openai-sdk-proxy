@@ -57,15 +57,8 @@ rules:
         message: Request body is required
   
   # Get 요청의 경우 parameters가 정의되어 있어야함
-  operation-parameters-convention:
-    description: Get Operation might include parameters
-    given: $.paths[*].get
-    severity: warn # 파라미터가 없는 Get 요청에 대응
-    then:
-      - field: parameters
-        function: truthy
-        message: Parameters are required
-    
+  # 규칙관리를 위해 각주만 유지, spectral(path-params)에서 이미 검사중임
+  
   # 응답이 정의되어 있어야함
   operation-response-convention:
     description: All Operation should include response
