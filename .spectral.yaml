@@ -78,7 +78,7 @@ rules:
     
   # 응답 코드 규칙 : 200, 401, 500 응답 코드가 있어야 함
   operation-responsecode-convention:
-    description: All Operation response should include 200, 401, 500 with description, content
+    description: All Operation response should include 200, 401, 500
     given: $.paths[*][*].responses
     severity: error
     then:
@@ -92,25 +92,22 @@ rules:
         function: truthy
         message: Response 500 is required
 
-  # 각 응답 코드는 descriptioin과 content를 포함해야함
-  operation-responsedetail-convention:
-    description: All Operation response should include description, content
+  # 모든 응답 코드는 descriptioin을 포함해야함
+  operation-responsedetail-description-convention:
+    description: All Operation response should include description
     given: $.paths[*][*].responses[*]
     severity: error
     then:
       - field: 'description'
         function: truthy
         message: Description is required
-      - field: 'content'
-        function: truthy
-        message: Content is required
-  
-  # 각 응답 코드는 descriptioin과 content를 포함해야하는데, 401은 content가 없어도 됨
-  operation-responsedetail-convention:
-    description: All Operation response should include description, content
-    given: $.paths[*][*].responses[*]
-    severity: off
+
+  # 401을 제외한 모든 응답 코드는 content를 포함해야함
+  operation-responsedetail-content-convention:
+    description: All Operation response might include content, except 401
+    given: $.paths[*][*].responses[?(@property != '401')]
+    severity: error
     then:
       - field: 'content'
         function: truthy
-        message: Content is not required when response code is 401
+        message: Content is required
