@@ -14,9 +14,4 @@ public static class EndpointUrls
     /// Declares the chat completions endpoint.
     /// </summary>
     public const string ChatCompletions = "/openai/deployments/{deploymentName}/chat/completions";
-
-    /// <summary>
-    /// Declares the admin event details endpoint.
-    /// </summary>
-    public const string AdminEventDetails = "/admin/events/{eventID}";
 }

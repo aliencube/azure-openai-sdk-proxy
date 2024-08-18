@@ -38,6 +38,9 @@ app.UseHttpsRedirection();
 
 app.AddWeatherForecast();
 app.AddChatCompletions();
+
+#region Admin Event Endpoint
 app.AddAdminEventDetails();
+#endregion
 
 await app.RunAsync();

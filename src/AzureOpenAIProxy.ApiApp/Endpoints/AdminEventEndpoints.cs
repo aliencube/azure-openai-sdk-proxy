@@ -1,5 +1,4 @@
-﻿using AzureOpenAIProxy.ApiApp.Attributes;
-using AzureOpenAIProxy.ApiApp.Models;
+﻿using AzureOpenAIProxy.ApiApp.Models;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +7,7 @@ namespace AzureOpenAIProxy.ApiApp.Endpoints;
 /// <summary>
 /// This represents the endpoint entity for get event details by admin
 /// </summary>
-public static class AdminEventDetailsEndpoint
+public static class AdminEventEndpoints
 {
     /// <summary>
     /// Adds the get event details by admin endpoint
@@ -19,28 +18,12 @@ public static class AdminEventDetailsEndpoint
     {
         // Todo: Issue #19 https://github.com/aliencube/azure-openai-sdk-proxy/issues/19
         // Need authorization by admin
-        var builder = app.MapGet(EndpointUrls.AdminEventDetails, (
-            [FromRoute] string eventID,
-            ILoggerFactory loggerFactory) =>
+        var builder = app.MapGet(AdminEndpointUrls.AdminEventDetails, (
+            [FromRoute] string eventId) =>
         {
-            var logger = loggerFactory.CreateLogger(nameof(AdminEventDetailsEndpoint));
-            logger.LogInformation($"Received a admin event detail request id: {eventID}");
-
-            try
-            {
-                // Todo: Issue #208 https://github.com/aliencube/azure-openai-sdk-proxy/issues/208
-                // Fake implementation, just return recieved event id.
-                var result = new AdminEventDetails { EventId = eventID };
-
-                return Results.Ok(result);
-                // Todo: Issue #208
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Failed to invoke the admin detail get request");
-
-                return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
-            }
+            // Todo: Issue #208 https://github.com/aliencube/azure-openai-sdk-proxy/issues/208
+            return Results.Ok();
+            // Todo: Issue #208
         })
         .Produces<AdminEventDetails>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
