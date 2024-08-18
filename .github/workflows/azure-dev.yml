@@ -24,6 +24,8 @@ jobs:
       AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
       AZURE_OPENAI_KEYS: ${{ secrets.AZURE_OPENAI_KEYS }}
+      AZURE_KEYVAULT_URI: ${{ secrets.AZURE_KEYVAULT_URI }}
+      AZURE_KEYVAULT_SECRET_NAME: ${{ vars.AZURE_KEYVAULT_SECRET_NAME }}
 
     steps:
     - name: Checkout
@@ -50,7 +52,9 @@ jobs:
       shell: pwsh
       run: |
         $appsettings = Get-Content -Path "./src/AzureOpenAIProxy.ApiApp/appsettings.json" -Raw | ConvertFrom-Json
-        $appsettings.Azure.OpenAI.Instances = '${{ env.AZURE_OPENAI_KEYS }}' | ConvertFrom-Json
+        $appsettings.Azure.OpenAI.Instances = @()
+        $appsettings.Azure.KeyVault.VaultUri = "${{ env.AZURE_KEYVAULT_URI }}"
+        $appsettings.Azure.KeyVault.SecretName = "${{ env.AZURE_KEYVAULT_SECRET_NAME }}"
         $appsettings | ConvertTo-Json -Depth 100 | Set-Content -Path "./src/AzureOpenAIProxy.ApiApp/appsettings.json" -Encoding UTF8 -Force
 
     - name: Restore NuGet packages
