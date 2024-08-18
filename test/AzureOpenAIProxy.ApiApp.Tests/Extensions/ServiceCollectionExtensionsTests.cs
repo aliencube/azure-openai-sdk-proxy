@@ -153,7 +153,7 @@ public class ServiceCollectionExtensionsTests
         Action action = () => services.BuildServiceProvider().GetService<SecretClient>();
 
         // Assert
-        action.Should().Throw<InvalidOperationException>();
+        action.Should().Throw<UriFormatException>();
     }
 
     [Theory]
