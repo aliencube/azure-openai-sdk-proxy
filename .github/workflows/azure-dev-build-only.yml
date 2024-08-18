@@ -58,6 +58,7 @@ jobs:
         dotnet test --logger "trx" --collect:"XPlat Code Coverage"
 
     - name: Publish test results
+      if: ${{ !cancelled() }}
       id: test-report
       uses: bibipkins/dotnet-test-reporter@main
       with:
