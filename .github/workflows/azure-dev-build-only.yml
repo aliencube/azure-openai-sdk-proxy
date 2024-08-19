@@ -6,7 +6,7 @@ on:
     - 'feature/*'
     paths-ignore:
     - '.github/**'
-  pull_request:
+  pull_request_target:
     branches:
     - main
 
@@ -73,7 +73,7 @@ jobs:
         comment-title: "Test Results"
 
     - name: Comment to issue
-      if: ${{ !cancelled() && github.event_name == 'pull_request' }}
+      if: ${{ !cancelled() && (github.event_name == 'pull_request_target' || github.event_name == 'pull_request') }}
       uses: actions-cool/issues-helper@v3
       with:
         actions: "create-comment"
