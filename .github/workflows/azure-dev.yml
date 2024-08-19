@@ -62,10 +62,21 @@ jobs:
       run: |
         dotnet restore
 
+    - name: Install SwashBuckle Cli
+      shell: bash
+      run: |
+        dotnet new tool-manifest
+        dotnet tool install SwashBuckle.AspNetCore.Cli
+
     - name: Build solution
       shell: bash
       run: |
         dotnet build
+
+    - name: OpenAPI linting
+      uses: stoplightio/spectral-action@latest
+      with:
+        file_glob: './openapi.json'
 
     - name: Test solution
       shell: bash
