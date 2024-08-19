@@ -193,7 +193,7 @@ public record CitationObject(
 /// <param name="TopLogprobs"><see cref="TopLogprobs"/></param>
 public record ChatCompletionTokenLogprob(
     [property: JsonPropertyName("token"), Required] string Token,
-    [property: JsonPropertyName("logprob"), Required] decimal Logprob,
+    [property: JsonPropertyName("logprob"), Required] double Logprob,
     [property: JsonPropertyName("bytes"), Required] List<int>? Bytes,
     [property: JsonPropertyName("top_logprob"), Required] List<TopLogprobs> TopLogprobs
 );
@@ -207,7 +207,7 @@ public record ChatCompletionTokenLogprob(
 /// <param name="Bytes">A list of integers representing the UTF-8 bytes representation of the token. Useful in instances where characters are represented by multiple tokens and their byte representations must be combined to generate the correct text representation. Can be `null` if there is no bytes representation for the token.</param>
 public record TopLogprobs(
     [property: JsonPropertyName("token"), Required] string Token,
-    [property: JsonPropertyName("logprob"), Required] decimal Logprob,
+    [property: JsonPropertyName("logprob"), Required] double Logprob,
     [property: JsonPropertyName("bytes"), Required] List<int>? Bytes
 );
 
