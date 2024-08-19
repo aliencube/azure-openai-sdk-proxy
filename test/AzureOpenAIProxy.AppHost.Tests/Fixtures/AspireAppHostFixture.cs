@@ -1,10 +1,10 @@
-﻿namespace AzureOpenAIProxy.AppHost.Tests.Fixture;
+﻿namespace AzureOpenAIProxy.AppHost.Tests.Fixtures;
 
 /// <summary>
 /// This class instance is automatically created before run test.
 /// To use, inherit IClassFixture<AspireHostFixture> and inject on constructor.
 /// </summary>
-public class AspireHostFixture : IAsyncLifetime
+public class AspireAppHostFixture : IAsyncLifetime
 {
     public DistributedApplication? App { get; private set; }
 

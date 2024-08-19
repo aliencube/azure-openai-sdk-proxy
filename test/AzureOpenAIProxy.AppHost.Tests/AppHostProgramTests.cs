@@ -1,12 +1,12 @@
 using System.Net;
 
-using AzureOpenAIProxy.AppHost.Tests.Fixture;
+using AzureOpenAIProxy.AppHost.Tests.Fixtures;
 
 using FluentAssertions;
 
 namespace AzureOpenAIProxy.Tests;
 
-public class AppHostProgramTests(AspireHostFixture host) : IClassFixture<AspireHostFixture>
+public class AppHostProgramTests(AspireAppHostFixture host) : IClassFixture<AspireAppHostFixture>
 {
     [Theory]
     [InlineData("apiapp", "/health", HttpStatusCode.OK)]

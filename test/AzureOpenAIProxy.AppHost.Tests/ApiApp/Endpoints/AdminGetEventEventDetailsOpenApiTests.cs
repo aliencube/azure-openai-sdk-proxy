@@ -1,12 +1,12 @@
 using System.Text.Json;
 
-using AzureOpenAIProxy.AppHost.Tests.Fixture;
+using AzureOpenAIProxy.AppHost.Tests.Fixtures;
 
 using FluentAssertions;
 
 namespace AzureOpenAIProxy.AppHost.Tests.ApiApp.Endpoints;
 
-public class AdminGetEventEventDetailsOpenApiTests(AspireHostFixture host) : IClassFixture<AspireHostFixture>
+public class AdminGetEventEventDetailsOpenApiTests(AspireAppHostFixture host) : IClassFixture<AspireAppHostFixture>
 {
     [Fact]
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Path()
