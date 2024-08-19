@@ -1,21 +1,20 @@
 using System.Text.Json;
 
+using AzureOpenAIProxy.AppHost.Tests.Fixture;
+
 using FluentAssertions;
 
 namespace AzureOpenAIProxy.AppHost.Tests.ApiApp.Endpoints;
 
-public class AdminGetEventEventDetailsOpenApiTests
+public class AdminGetEventEventDetailsOpenApiTests(AspireHostFixture host) : IClassFixture<AspireHostFixture>
 {
     [Fact]
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Path()
     {
         // Arrange
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.AzureOpenAIProxy_AppHost>();
-        await using var app = await appHost.BuildAsync();
-        await app.StartAsync();
+        using var httpClient = host.App!.CreateHttpClient("apiapp");
 
         // Act
-        var httpClient = app.CreateHttpClient("apiapp");
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
         var openapi = JsonSerializer.Deserialize<JsonDocument>(json);
 
@@ -29,12 +28,9 @@ public class AdminGetEventEventDetailsOpenApiTests
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Verb()
     {
         // Arrange
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.AzureOpenAIProxy_AppHost>();
-        await using var app = await appHost.BuildAsync();
-        await app.StartAsync();
+        using var httpClient = host.App!.CreateHttpClient("apiapp");
 
         // Act
-        var httpClient = app.CreateHttpClient("apiapp");
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
         var openapi = JsonSerializer.Deserialize<JsonDocument>(json);
 
@@ -50,12 +46,9 @@ public class AdminGetEventEventDetailsOpenApiTests
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Tags(string tag)
     {
         // Arrange
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.AzureOpenAIProxy_AppHost>();
-        await using var app = await appHost.BuildAsync();
-        await app.StartAsync();
+        using var httpClient = host.App!.CreateHttpClient("apiapp");
 
         // Act
-        var httpClient = app.CreateHttpClient("apiapp");
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
         var openapi = JsonSerializer.Deserialize<JsonDocument>(json);
 
@@ -75,12 +68,9 @@ public class AdminGetEventEventDetailsOpenApiTests
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Value(string attribute)
     {
         // Arrange
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.AzureOpenAIProxy_AppHost>();
-        await using var app = await appHost.BuildAsync();
-        await app.StartAsync();
+        using var httpClient = host.App!.CreateHttpClient("apiapp");
 
         // Act
-        var httpClient = app.CreateHttpClient("apiapp");
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
         var openapi = JsonSerializer.Deserialize<JsonDocument>(json);
 
@@ -97,12 +87,9 @@ public class AdminGetEventEventDetailsOpenApiTests
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Array(string attribute)
     {
         // Arrange
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.AzureOpenAIProxy_AppHost>();
-        await using var app = await appHost.BuildAsync();
-        await app.StartAsync();
+        using var httpClient = host.App!.CreateHttpClient("apiapp");
 
         // Act
-        var httpClient = app.CreateHttpClient("apiapp");
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
         var openapi = JsonSerializer.Deserialize<JsonDocument>(json);
 
@@ -119,12 +106,9 @@ public class AdminGetEventEventDetailsOpenApiTests
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Path_Parameter(string name)
     {
         // Arrange
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.AzureOpenAIProxy_AppHost>();
-        await using var app = await appHost.BuildAsync();
-        await app.StartAsync();
+        using var httpClient = host.App!.CreateHttpClient("apiapp");
 
         // Act
-        var httpClient = app.CreateHttpClient("apiapp");
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
         var openapi = JsonSerializer.Deserialize<JsonDocument>(json);
 
@@ -144,12 +128,9 @@ public class AdminGetEventEventDetailsOpenApiTests
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Object(string attribute)
     {
         // Arrange
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.AzureOpenAIProxy_AppHost>();
-        await using var app = await appHost.BuildAsync();
-        await app.StartAsync();
+        using var httpClient = host.App!.CreateHttpClient("apiapp");
 
         // Act
-        var httpClient = app.CreateHttpClient("apiapp");
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
         var openapi = JsonSerializer.Deserialize<JsonDocument>(json);
 
@@ -168,12 +149,9 @@ public class AdminGetEventEventDetailsOpenApiTests
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Response(string attribute)
     {
         // Arrange
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.AzureOpenAIProxy_AppHost>();
-        await using var app = await appHost.BuildAsync();
-        await app.StartAsync();
+        using var httpClient = host.App!.CreateHttpClient("apiapp");
 
         // Act
-        var httpClient = app.CreateHttpClient("apiapp");
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
         var openapi = JsonSerializer.Deserialize<JsonDocument>(json);
 
