@@ -5,6 +5,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
 
+    <!-- This should be the same value as the API version in Constant.cs -->
+    <ApiVersion>v1.0.0</ApiVersion>
+
     <AssemblyName>AzureOpenAIProxy.ApiApp</AssemblyName>
     <RootNamespace>AzureOpenAIProxy.ApiApp</RootNamespace>
   </PropertyGroup>
@@ -20,5 +23,9 @@
   <ItemGroup>
     <ProjectReference Include="..\AzureOpenAIProxy.ServiceDefaults\AzureOpenAIProxy.ServiceDefaults.csproj" />
   </ItemGroup>
+
+  <Target Name="CreateSwaggerJson" AfterTargets="Build" Condition="$(Configuration)=='Debug'">
+    <Exec Command="dotnet swagger tofile --output ./openapi.json $(OutputPath)$(AssemblyName).dll $(ApiVersion)" WorkingDirectory="$(ProjectDir)" />
+  </Target>
 
 </Project>
