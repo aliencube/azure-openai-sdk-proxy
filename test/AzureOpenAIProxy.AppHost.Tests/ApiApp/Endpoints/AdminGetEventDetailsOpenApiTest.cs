@@ -182,10 +182,12 @@ public class AdminGetEventDetailsOpenApiTest(AspireAppHostFixture host) : IClass
                                             .GetProperty("schemas")
                                             .GetProperty(type.Name)
                                             .GetProperty("properties");
+
         foreach (var prop in type.GetProperties())
         {
-            var name = JsonNamingPolicy.CamelCase.ConvertName(prop.Name);
-            component.TryGetProperty(name, out var temp).Should().BeTrue();
+            var propName = JsonNamingPolicy.CamelCase.ConvertName(prop.Name);
+            component.TryGetProperty(propName, out var jsonProp).Should().BeTrue();
+            jsonProp.ValueKind.Should().Be(JsonValueKind.Object);
         }
     }
 }
