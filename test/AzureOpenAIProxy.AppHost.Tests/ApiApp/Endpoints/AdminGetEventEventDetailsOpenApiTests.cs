@@ -2,9 +2,9 @@ using System.Text.Json;
 
 using FluentAssertions;
 
-namespace AzureOpenAIProxy.AppHost.Tests.ApiApp;
+namespace AzureOpenAIProxy.AppHost.Tests.ApiApp.Endpoints;
 
-public class AdminEventEndpointsOpenApiTests
+public class AdminGetEventEventDetailsOpenApiTests
 {
     [Fact]
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Path()
