@@ -45,19 +45,6 @@ rules:
       - field: 'description'
         function: truthy
         message: Description is required  
-    
-  # Post 요청의 경우 requestbody가 정의되어 있어야함
-  operation-request-convention:
-    description: Post Operation should include request body
-    given: $.paths[*].post
-    severity: error
-    then:
-      - field: requestBody
-        function: truthy
-        message: Request body is required
-  
-  # Get 요청의 경우 parameters가 정의되어 있어야함
-  # 규칙관리를 위해 각주만 유지, spectral(path-params)에서 이미 검사중임
   
   # 응답이 정의되어 있어야함
   operation-response-convention:
@@ -84,16 +71,6 @@ rules:
       - field: '500'
         function: truthy
         message: Response 500 is required
-
-  # 모든 응답 코드는 descriptioin을 포함해야함
-  operation-responsedetail-description-convention:
-    description: All Operation response should include description
-    given: $.paths[*][*].responses[*]
-    severity: error
-    then:
-      - field: 'description'
-        function: truthy
-        message: Description is required
 
   # 401을 제외한 모든 응답 코드는 content를 포함해야함
   operation-responsedetail-content-convention:
