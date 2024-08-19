@@ -1,5 +1,6 @@
 using System.Text.Json;
 
+using AzureOpenAIProxy.ApiApp.Models;
 using AzureOpenAIProxy.AppHost.Tests.Fixtures;
 
 using FluentAssertions;
@@ -165,4 +166,26 @@ public class AdminGetEventDetailsOpenApiTest(AspireAppHostFixture host) : IClass
     }
 
     // TODO: Add more tests for the component section
+    [Theory]
+    [InlineData(typeof(AdminEventDetails))]
+    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Response_Property(Type type)
+    {
+        // Arrange
+        using var httpClient = host.App!.CreateHttpClient("apiapp");
+
+        // Act
+        var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
+        var openapi = JsonSerializer.Deserialize<JsonDocument>(json);
+
+        // Assert
+        var component = openapi!.RootElement.GetProperty("components")
+                                            .GetProperty("schemas")
+                                            .GetProperty(type.Name)
+                                            .GetProperty("properties");
+        foreach (var prop in type.GetProperties())
+        {
+            var name = JsonNamingPolicy.CamelCase.ConvertName(prop.Name);
+            component.TryGetProperty(name, out var temp).Should().BeTrue();
+        }
+    }
 }
