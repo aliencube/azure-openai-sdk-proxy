@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 
 using AzureOpenAIProxy.ApiApp.Attributes;
+using AzureOpenAIProxy.ApiApp.Models;
 using AzureOpenAIProxy.ApiApp.Services;
 
 using Microsoft.AspNetCore.Mvc;
@@ -54,7 +55,7 @@ public static class ChatCompletionsEndpoint
         })
         // TODO: Check both request/response payloads
         .Accepts<ChatCompletionOptions>(contentType: "application/json")
-        .Produces<ChatCompletion>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
+        .Produces<CreateChatCompletionResponseDto>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
         // TODO: Check both request/response payloads
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
         .Produces<string>(statusCode: StatusCodes.Status500InternalServerError, contentType: "text/plain")
