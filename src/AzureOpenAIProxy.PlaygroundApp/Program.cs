@@ -16,6 +16,8 @@ builder.Services.AddFluentUIComponents();
 
 builder.Services.AddScoped<IOpenAIApiClient, OpenAIApiClient>();
 
+builder.Services.AddSingleton<Microsoft.FluentUI.AspNetCore.Components.LibraryConfiguration>();
+
 var app = builder.Build();
 
 app.MapDefaultEndpoints();

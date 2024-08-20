@@ -1,0 +1,21 @@
+@using Microsoft.FluentUI.AspNetCore.Components
+
+<FluentTabs ActiveTabId="system-message" OnTabChange="HandleOnTabChange">
+    <FluentTab Label="System message" Id="system-message">
+        This is "System message" tab.
+    </FluentTab>
+    <FluentTab Label="Parameters" Id="parameters">
+        This is "Parameters" tab.
+    </FluentTab>
+</FluentTabs>
+
+<p>[TEST] Active tab changed to: @SelectedTab?.Label</p>
+
+@code {
+    FluentTab? SelectedTab;
+
+    private void HandleOnTabChange(FluentTab tab)
+    {
+        SelectedTab = tab;
+    }
+}
