@@ -19,7 +19,7 @@ namespace AzureOpenAIProxy.ApiApp.Models;
 public record CreateChatCompletionResponse(
     [property: JsonPropertyName("id"), Required] string? Id,
     [property: JsonPropertyName("object"), Required] ChatCompletionResponseObject? Object,
-    [property: JsonPropertyName("created"), Required] DateTimeOffset? Created,
+    [property: JsonPropertyName("created"), Required] long? Created,
     [property: JsonPropertyName("model"), Required] string? Model,
     [property: JsonPropertyName("usage")] CompletionUsage? Usage,
     [property: JsonPropertyName("system_fingerprint")] string? SystemFingerprint,
