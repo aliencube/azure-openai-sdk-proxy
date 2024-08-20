@@ -2,6 +2,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
+using AzureOpenAIProxy.ApiApp.Models.Converters;
+
 namespace AzureOpenAIProxy.ApiApp.Models;
 
 /// <summary>
@@ -284,7 +286,7 @@ public record ErrorBase(
 /// <summary>
 /// The type of the tool call, in this case `function`.
 /// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(EnumMemberConverter<ToolCallType>))]
 public enum ToolCallType
 {
     /// <summary>
@@ -296,7 +298,7 @@ public enum ToolCallType
 /// <summary>
 /// The role of the author of the response message.
 /// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(EnumMemberConverter<ChatCompletionResponseMessageRole>))]
 public enum ChatCompletionResponseMessageRole
 {
     [EnumMember(Value = "assistant")] Assistant
@@ -305,7 +307,7 @@ public enum ChatCompletionResponseMessageRole
 /// <summary>
 /// The object type.
 /// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(EnumMemberConverter<ChatCompletionResponseObject>))]
 public enum ChatCompletionResponseObject
 {
     /// <summary>
@@ -318,7 +320,7 @@ public enum ChatCompletionResponseObject
 /// <summary>
 /// Severity levels for content filtering.
 /// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(EnumMemberConverter<ContentFilterSeverity>))]
 public enum ContentFilterSeverity
 {
     /// <summary>
