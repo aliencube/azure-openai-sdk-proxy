@@ -4,7 +4,6 @@ using FluentAssertions;
 using IdentityModel.Client;
 
 using AzureOpenAIProxy.AppHost.Tests.Fixtures;
-using System.ComponentModel;
 
 namespace AzureOpenAIProxy.AppHost.Tests.ApiApp.Endpoints;
 
@@ -166,25 +165,23 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
         result.ValueKind.Should().Be(JsonValueKind.Object);
     }
 
-    // TODO: Add more tests for the component section
     public static IEnumerable<object[]> AttributeData =>
-        new List<object[]>
-        {
-            new object[] {"eventId", true, "string"},
-            new object[] {"title", true, "string"},
-            new object[] {"summary", true, "string"},
-            new object[] {"description", false, "string"},
-            new object[] {"dateStart", true, "string"},
-            new object[] {"dateEnd", true, "string"},
-            new object[] {"timeZone", true, "string"},
-            new object[] {"isActive", true, "boolean"},
-            new object[] {"organizerName", true, "string"},
-            new object[] {"organizerEmail", true, "string"},
-            new object[] {"coorganizerName", false, "string"},
-            new object[] {"coorganizerEmail", false, "string"},
-            new object[] {"maxTokenCap", true, "integer"},
-            new object[] {"dailyRequestCap", true, "integer"}
-        };
+        [
+            ["eventId", true, "string"],
+            ["title", true, "string"],
+            ["summary", true, "string"],
+            ["description", false, "string"],
+            ["dateStart", true, "string"],
+            ["dateEnd", true, "string"],
+            ["timeZone", true, "string"],
+            ["isActive", true, "boolean"],
+            ["organizerName", true, "string"],
+            ["organizerEmail", true, "string"],
+            ["coorganizerName", false, "string"],
+            ["coorganizerEmail", false, "string"],
+            ["maxTokenCap", true, "integer"],
+            ["dailyRequestCap", true, "integer"]
+        ];
 
     [Fact]
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Schemas()
@@ -198,7 +195,7 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
 
         // Assert
         var result = openapi!.RootElement.GetProperty("components")
-                                        .TryGetProperty("schemas", out var property) ? property : default;
+                                         .TryGetProperty("schemas", out var property) ? property : default;
         result.ValueKind.Should().Be(JsonValueKind.Object);
     }
 
@@ -214,8 +211,8 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
 
         // Assert
         var result = openapi!.RootElement.GetProperty("components")
-                                        .GetProperty("schemas")
-                                        .TryGetProperty("AdminEventDetails", out var property) ? property : default;
+                                         .GetProperty("schemas")
+                                         .TryGetProperty("AdminEventDetails", out var property) ? property : default;
         result.ValueKind.Should().Be(JsonValueKind.Object);
     }
 
@@ -235,10 +232,10 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
 
         // Assert
         var result = openapi!.RootElement.GetProperty("components")
-                                        .GetProperty("schemas")
-                                        .GetProperty("AdminEventDetails")
-                                        .TryGetStringArray("required")
-                                        .ToList();
+                                         .GetProperty("schemas")
+                                         .GetProperty("AdminEventDetails")
+                                         .TryGetStringArray("required")
+                                         .ToList();
         result.Contains(attribute).Should().Be(isRequired);
     }
 
@@ -258,10 +255,10 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
 
         // Assert
         var result = openapi!.RootElement.GetProperty("components")
-                                        .GetProperty("schemas")
-                                        .GetProperty("AdminEventDetails")
-                                        .GetProperty("properties")
-                                        .TryGetProperty(attribute, out var property) ? property : default;
+                                         .GetProperty("schemas")
+                                         .GetProperty("AdminEventDetails")
+                                         .GetProperty("properties")
+                                         .TryGetProperty(attribute, out var property) ? property : default;
         result.ValueKind.Should().Be(JsonValueKind.Object);
     }
 
@@ -281,10 +278,10 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
 
         // Assert
         var result = openapi!.RootElement.GetProperty("components")
-                                        .GetProperty("schemas")
-                                        .GetProperty("AdminEventDetails")
-                                        .GetProperty("properties")
-                                        .GetProperty(attribute);
+                                         .GetProperty("schemas")
+                                         .GetProperty("AdminEventDetails")
+                                         .GetProperty("properties")
+                                         .GetProperty(attribute);
         result.TryGetString("type").Should().Be(type);
     }
 }
