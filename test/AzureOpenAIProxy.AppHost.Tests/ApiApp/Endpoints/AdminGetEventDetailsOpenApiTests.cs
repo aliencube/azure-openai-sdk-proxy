@@ -1,10 +1,10 @@
 using System.Text.Json;
 
+using AzureOpenAIProxy.AppHost.Tests.Fixtures;
+
 using FluentAssertions;
 
 using IdentityModel.Client;
-
-using AzureOpenAIProxy.AppHost.Tests.Fixtures;
 
 namespace AzureOpenAIProxy.AppHost.Tests.ApiApp.Endpoints;
 
