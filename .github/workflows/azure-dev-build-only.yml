@@ -6,7 +6,8 @@ on:
     - 'feature/*'
     paths-ignore:
     - '.github/**'
-  pull_request_target:
+  # pull_request_target:
+  pull_request:
     branches:
     - main
 
@@ -62,7 +63,7 @@ jobs:
       id: test-report
       uses: bibipkins/dotnet-test-reporter@main
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.GH_PAT }}
         results-path: ./**/TestResults/**/*.trx
         # coverage-path: ./**/TestResults/**/*.xml
         # coverage-type: cobertura
@@ -77,7 +78,7 @@ jobs:
       uses: actions-cool/issues-helper@v3
       with:
         actions: "create-comment"
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.GH_PAT }}
         issue-number: ${{ github.event.pull_request.number }}
         body: |
           ## Test Results
