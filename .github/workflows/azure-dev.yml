@@ -75,7 +75,7 @@ jobs:
     - name: Publish test results
       uses: bibipkins/dotnet-test-reporter@main
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.GH_PAT_GRAINED }}
         results-path: ./**/TestResults/**/*.trx
         # coverage-path: ./**/TestResults/**/*.xml
         # coverage-type: cobertura
