@@ -1,15 +1,15 @@
 @using Microsoft.FluentUI.AspNetCore.Components
 
 <FluentTabs ActiveTabId="system-message" OnTabChange="HandleOnTabChange">
-    <FluentTab Label="System message" Id="system-message">
+    <FluentTab Label="System message" Id="system-message-tab">
         This is "System message" tab.
     </FluentTab>
-    <FluentTab Label="Parameters" Id="parameters">
+    <FluentTab Label="Parameters" Id="parameters-tab">
         This is "Parameters" tab.
     </FluentTab>
 </FluentTabs>
 
-<p>[TEST] Active tab changed to: @SelectedTab?.Label</p>
+<p id ="active-tab">[TEST] Active tab changed to: @SelectedTab?.Id</p>
 
 @code {
     FluentTab? SelectedTab;
