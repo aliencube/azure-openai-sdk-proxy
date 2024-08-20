@@ -25,7 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\AzureOpenAIProxy.ApiApp\AzureOpenAIProxy.ApiApp.csproj" />
     <ProjectReference Include="..\..\src\AzureOpenAIProxy.AppHost\AzureOpenAIProxy.AppHost.csproj" />
   </ItemGroup>
 

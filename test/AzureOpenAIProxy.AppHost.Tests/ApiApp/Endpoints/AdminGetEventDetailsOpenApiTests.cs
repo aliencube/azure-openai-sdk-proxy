@@ -1,9 +1,10 @@
 using System.Text.Json;
 
-using AzureOpenAIProxy.ApiApp.Models;
-using AzureOpenAIProxy.AppHost.Tests.Fixtures;
-
 using FluentAssertions;
+using IdentityModel.Client;
+
+using AzureOpenAIProxy.AppHost.Tests.Fixtures;
+using System.ComponentModel;
 
 namespace AzureOpenAIProxy.AppHost.Tests.ApiApp.Endpoints;
 
@@ -166,9 +167,27 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
     }
 
     // TODO: Add more tests for the component section
-    [Theory]
-    [InlineData(typeof(AdminEventDetails))]
-    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Response_Property(Type type)
+    public static IEnumerable<object[]> AttributeData =>
+        new List<object[]>
+        {
+            new object[] {"eventId", true, "string"},
+            new object[] {"title", true, "string"},
+            new object[] {"summary", true, "string"},
+            new object[] {"description", false, "string"},
+            new object[] {"dateStart", true, "string"},
+            new object[] {"dateEnd", true, "string"},
+            new object[] {"timeZone", true, "string"},
+            new object[] {"isActive", true, "boolean"},
+            new object[] {"organizerName", true, "string"},
+            new object[] {"organizerEmail", true, "string"},
+            new object[] {"coorganizerName", false, "string"},
+            new object[] {"coorganizerEmail", false, "string"},
+            new object[] {"maxTokenCap", true, "integer"},
+            new object[] {"dailyRequestCap", true, "integer"}
+        };
+
+    [Fact]
+    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Schemas()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -178,16 +197,94 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
         var openapi = JsonSerializer.Deserialize<JsonDocument>(json);
 
         // Assert
-        var component = openapi!.RootElement.GetProperty("components")
-                                            .GetProperty("schemas")
-                                            .GetProperty(type.Name)
-                                            .GetProperty("properties");
+        var result = openapi!.RootElement.GetProperty("components")
+                                        .TryGetProperty("schemas", out var property) ? property : default;
+        result.ValueKind.Should().Be(JsonValueKind.Object);
+    }
 
-        foreach (var prop in type.GetProperties())
-        {
-            var propName = JsonNamingPolicy.CamelCase.ConvertName(prop.Name);
-            component.TryGetProperty(propName, out var jsonProp).Should().BeTrue();
-            jsonProp.ValueKind.Should().Be(JsonValueKind.Object);
-        }
+    [Fact]
+    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Model()
+    {
+        // Arrange
+        using var httpClient = host.App!.CreateHttpClient("apiapp");
+
+        // Act
+        var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
+        var openapi = JsonSerializer.Deserialize<JsonDocument>(json);
+
+        // Assert
+        var result = openapi!.RootElement.GetProperty("components")
+                                        .GetProperty("schemas")
+                                        .TryGetProperty("AdminEventDetails", out var property) ? property : default;
+        result.ValueKind.Should().Be(JsonValueKind.Object);
+    }
+
+    [Theory]
+    [MemberData(nameof(AttributeData))]
+    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Required
+        (string attribute, bool isRequired, string type)
+    {
+        // Arrange
+        using var httpClient = host.App!.CreateHttpClient("apiapp");
+        var isReq = isRequired;
+        var typeStr = type;
+
+        // Act
+        var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
+        var openapi = JsonSerializer.Deserialize<JsonDocument>(json);
+
+        // Assert
+        var result = openapi!.RootElement.GetProperty("components")
+                                        .GetProperty("schemas")
+                                        .GetProperty("AdminEventDetails")
+                                        .TryGetStringArray("required")
+                                        .ToList();
+        result.Contains(attribute).Should().Be(isRequired);
+    }
+
+    [Theory]
+    [MemberData(nameof(AttributeData))]
+    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Property
+        (string attribute, bool isRequired, string type)
+    {
+        // Arrange
+        using var httpClient = host.App!.CreateHttpClient("apiapp");
+        var isReq = isRequired;
+        var typeStr = type;
+
+        // Act
+        var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
+        var openapi = JsonSerializer.Deserialize<JsonDocument>(json);
+
+        // Assert
+        var result = openapi!.RootElement.GetProperty("components")
+                                        .GetProperty("schemas")
+                                        .GetProperty("AdminEventDetails")
+                                        .GetProperty("properties")
+                                        .TryGetProperty(attribute, out var property) ? property : default;
+        result.ValueKind.Should().Be(JsonValueKind.Object);
+    }
+
+    [Theory]
+    [MemberData(nameof(AttributeData))]
+    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Type
+        (string attribute, bool isRequired, string type)
+    {
+        // Arrange
+        using var httpClient = host.App!.CreateHttpClient("apiapp");
+        var isReq = isRequired;
+        var typeStr = type;
+
+        // Act
+        var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
+        var openapi = JsonSerializer.Deserialize<JsonDocument>(json);
+
+        // Assert
+        var result = openapi!.RootElement.GetProperty("components")
+                                        .GetProperty("schemas")
+                                        .GetProperty("AdminEventDetails")
+                                        .GetProperty("properties")
+                                        .GetProperty(attribute);
+        result.TryGetString("type").Should().Be(type);
     }
 }
