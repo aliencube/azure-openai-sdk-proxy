@@ -1,6 +1,7 @@
 using System.Text.Json;
 
 using FluentAssertions;
+
 using IdentityModel.Client;
 
 using AzureOpenAIProxy.AppHost.Tests.Fixtures;
