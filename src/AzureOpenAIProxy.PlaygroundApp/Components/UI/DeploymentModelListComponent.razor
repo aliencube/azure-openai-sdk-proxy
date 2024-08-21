@@ -7,8 +7,9 @@
     </label>
 
     <FluentSelect Id="deployment-model-list" name="deployment-models" ValueChanged="@(e => selectValue = e)"
-        TOption="string" Height="300px" Style="margin-top: 5px;">
-        <FluentOption Value="AL">Alabama</FluentOption>
+        TOption="string" aria-roledescription="combobox" aria-labelledby="deployment-model-list" Height="300px"
+        Style="margin: 5px;">
+        <FluentOption aria-selected="true" Value="AL">Alabama</FluentOption>
         <FluentOption Value="AK">Alaska</FluentOption>
         <FluentOption Value="AZ">Arizona</FluentOption>
         <FluentOption Value="AR">Arkansas</FluentOption>
@@ -61,5 +62,17 @@
 </p>
 
 @code {
-    string? selectValue;
+    public string? selectValue;
+    protected void ValueChanged(string value)
+    {
+        selectValue = value;
+        if (!string.IsNullOrEmpty(selectValue))
+        {
+            Console.WriteLine($"Selected Value: {selectValue}");
+        }
+        else
+        {
+            Console.WriteLine("none");
+        }
+    }
 }
