@@ -15,8 +15,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddFluentUIComponents();
 
 builder.Services.AddScoped<IOpenAIApiClient, OpenAIApiClient>();
-
-builder.Services.AddSingleton<Microsoft.FluentUI.AspNetCore.Components.LibraryConfiguration>();
+builder.Services.AddFluentUIComponents();
 
 var app = builder.Build();
 
