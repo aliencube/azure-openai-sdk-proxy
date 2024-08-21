@@ -4,9 +4,6 @@ using Microsoft.Playwright.NUnit;
 using Microsoft.Playwright;
 using Assert = NUnit.Framework.Assert;
 using Bunit;
-using AzureOpenAIProxy.PlaygroundApp.Components.UI;
-
-
 
 namespace AzureOpenAIProxy.PlaygroundApp.Tests
 {
