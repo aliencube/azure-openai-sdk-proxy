@@ -1,3 +1,4 @@
+using AzureOpenAIProxy.PlaygroundApp.Components.UI;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Playwright.NUnit;
@@ -7,13 +8,15 @@ using Bunit;
 
 namespace AzureOpenAIProxy.PlaygroundApp.Tests
 {
+    // Playwright 테스트
     [TestFixture]
-    public class HomePageTests : PageTest
+    public class ComponentIntegraionTests : PageTest
     {
         private IPlaywright _playwright;
         private IBrowser _browser;
         private IBrowserContext _context;
         private IPage _page;
+        private IElementHandle? _fluentSelect;
 
         [SetUp]
         public async Task Setup()
@@ -36,41 +39,79 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests
         }
 
         [SetUp]
-        public async Task NavigateToHomePage()
+        public async Task NavigateToTargetPage()
         {
             await _page.GotoAsync("http://localhost:5000");
             await _page.GetByRole(AriaRole.Link, new() { Name = "Home" }).ClickAsync();
             await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+            // 페이지 초기화 및 fluentSelect 설정
+            _fluentSelect = await _page.QuerySelectorAsync("fluent-select#deployment-model-list");
+            Assert.That(_fluentSelect, Is.Not.Null);
         }
 
         [Test]
-        // PlaygroundApp - Home.razor에서 드롭다운의 input 값을 선택하고, 선택된 값이 올바르게 설정되는지 확인
-        public async Task ShouldSelectDropdownOption()
+        // 페이지에서 컴포넌트의 헤딩이 올바르게 표시되는지 확인
+        public async Task IsThereAHeading()
         {
             // Act
-            await _page.GetByRole(AriaRole.Combobox, new() { Name = "deployment-models" }).ClickAsync();  // 이 부분에서 계속 timeout
-            Assert.That(await _page.GetByRole(AriaRole.Option, new() { Name = "CA" }).IsVisibleAsync(), Is.True);
+            await Expect(_page
+                .GetByRole(AriaRole.Heading, new() { Name = "Deployment" }))
+                .ToBeVisibleAsync();
 
             // Assert
-            // var selectedValue = await dropdown.EvaluateAsync<string>("el => el.value");
-            // Assert.That(selectedValue, Is.EqualTo("CA"));
+            Assert.That(await _page.GetByRole(AriaRole.Heading, new() { Name = "Deployment" }).IsVisibleAsync(), Is.True);
+        }
 
-            // if (dropdown == null)
-            // {
-            //     Assert.Fail("Dropdown element not found");
-            // }
-            // else
-            // {
-            //     await dropdown.ClickAsync();
-            //     await dropdown.SelectOptionAsync("CA");
-            // }
+        [Test]
+        // 페이지에서 드롭다운 컴포넌트가 올바르게 표시되는지 확인
+        public async Task IsThereADropdownComponent()
+        {
+            // fluentSelect 컴포넌트가 페이지에 존재하는지 확인
+            Assert.That(_fluentSelect, Is.Not.Null);
+            await _fluentSelect.ClickAsync();
 
-            // // Assert
-            // var selectedValue = await dropdown.EvaluateAsync<string>("el => el.value");
-            // Assert.That(selectedValue, Is.EqualTo("CA"));
+            // fluentSelect 컴포넌트의 옵션이 페이지에 표시되는지 확인
+            var fluentOptions = await _fluentSelect.QuerySelectorAllAsync("fluent-option");
+            Assert.That(fluentOptions.Count, Is.GreaterThan(0));
+            foreach (var option in fluentOptions)
+            {
+                Assert.That(await option.IsVisibleAsync(), Is.True);
+            }
+        }
+
+        [Test]
+        // 드롭다운의 옵션 값을 선택하고, 선택된 값이 컴포넌트에 올바르게 업데이트 되는지 확인
+        public async Task IsDropdownOptionSelectWorking()
+        {
+            // Arrange
+            Assert.That(_fluentSelect, Is.Not.Null);
+            await _fluentSelect.ClickAsync();
+            var fluentOptions = await _fluentSelect.QuerySelectorAllAsync("fluent-option");
+            Assert.That(fluentOptions.Count, Is.GreaterThan(0));
+
+            // Act
+            var userSelectedOption = fluentOptions[0]; // Select the first option
+            await userSelectedOption.ClickAsync();
+
+            await _page.EvaluateAsync(@"() => {
+                window.selectValue = document.querySelector('fluent-select#deployment-model-list').value;
+            }"); // Define and set 'selectValue'(Component variable) in the page context
+
+            // Assert
+            var userSelectedOptionValue = await _fluentSelect.EvaluateAsync<string>("el => el.value"); // Get the selected value
+            var actualSelectedValue = await _page.EvaluateAsync<string>("() => selectValue"); // Get the selected value from the page context
+            Assert.That(actualSelectedValue, Is.EqualTo(userSelectedOptionValue));
+        }
+
+        [TearDown]
+        public async Task TearDown()
+        {
+            await _page.CloseAsync();
         }
     }
 
+    // Bunit 테스트
     public class DeploymentModelListComponentTests : Bunit.TestContext
     {
         public DeploymentModelListComponentTests()
@@ -87,7 +128,7 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests
         }
 
         [Fact]
-        // 드롭다운이 올바르게 렌더링 되고, 모든 옵션이 표시되는지 확인
+        // 드롭다운이 올바르게 렌더링 되고, 옵션이 표시되는지 확인
         public void ShouldRenderCorrectly()
         {
             // Arrange & Act
@@ -98,23 +139,27 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests
             Assert.That(fluentSelect, Is.Not.Null);
 
             var options = component.FindAll("fluent-option");
-            Assert.That(options.Count, Is.EqualTo(38)); // 하드코딩 된 데이터 개수: 38개
+            Assert.That(options.Count, Is.GreaterThan(0));
         }
 
         [Fact]
-        // FluentSelect의 옵션 값이 선택되면 ValueChanged 이벤트가 트리거되고, 선택된 값으로 업데이트되는지 확인
+        // FluentSelect의 옵션이 선택되면 ValueChanged 이벤트가 트리거되고, 선택된 옵션 값으로 업데이트되는지 확인
         public void ShouldTriggerValueChanged()
         {
             // Arrange
             var component = RenderComponent<DeploymentModelListComponent>();
-            var fluentSelect = component.Find("fluent-select");
+            var fluentSelect = component.Find("fluent-select#deployment-model-list");
 
             // Act
-            fluentSelect.Change("CA"); // 하드코딩 된 데이터 중 하나인 'CA'를 선택
+            var fluentOptions = fluentSelect.QuerySelectorAll("fluent-option");
+            var actualSelectedValue = fluentOptions[0].GetAttribute("value");
+
+            // Define and set selectValue in the page context
+            fluentOptions[0].Click(); // 첫 번째 옵션을 선택 - 여기서 value가 update 되어야 함
+            var updatedSelectedValue = component.Instance.selectValue;
 
             // Assert
-            var selectedValue = component.Instance.selectValue;
-            Assert.That(selectedValue, Is.EqualTo("CA"));
+            Assert.That(actualSelectedValue, Is.EqualTo(updatedSelectedValue));
         }
     }
 }

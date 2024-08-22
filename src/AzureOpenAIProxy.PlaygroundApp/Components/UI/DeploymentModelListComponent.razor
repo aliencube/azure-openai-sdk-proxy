@@ -1,14 +1,17 @@
+@using AzureOpenAIProxy.PlaygroundApp.Clients
 @using Microsoft.FluentUI.AspNetCore.Components
 
 <FluentLayout Style="margin: 10px;">
     <label for="deployment-model-list">
-        Deployment
-        <span style="color: red;">*</span>
+        <h6>
+            Deployment
+            <span style="color: red;">*</span>
+        </h6>
+
     </label>
 
     <FluentSelect Id="deployment-model-list" name="deployment-models" ValueChanged="@(e => selectValue = e)"
-        TOption="string" aria-roledescription="combobox" aria-labelledby="deployment-model-list" Height="300px"
-        Style="margin: 5px;">
+        TOption="string" aria-labelledby="deployment-model-list" Height="300px">
         <FluentOption aria-selected="true" Value="AL">Alabama</FluentOption>
         <FluentOption Value="AK">Alaska</FluentOption>
         <FluentOption Value="AZ">Arizona</FluentOption>
