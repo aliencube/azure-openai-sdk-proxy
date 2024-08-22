@@ -45,19 +45,21 @@ while [[ "$1" != "" ]]; do
 done
 
 # Builds apps
-echo -e "\e[36mBuilding apps...\e[0m"
+echo -e "\033[36mBuilding apps...\033[0m"
 
 dotnet restore
 dotnet build -c $CONFIGURATION
 
 # Runs unit tests
-echo -e "\e[36mInvoking unit tests...\e[0m"
+echo -e "\033[36mInvoking unit tests...\033[0m"
 
 dotnet test ./test/AzureOpenAIProxy.AppHost.Tests -c $CONFIGURATION --no-build --logger "trx" --collect:"XPlat Code Coverage"
 dotnet test ./test/AzureOpenAIProxy.ApiApp.Tests -c $CONFIGURATION --no-build --logger "trx" --collect:"XPlat Code Coverage"
 
 # Runs integration tests
-echo -e "\e[36mInvoking integration tests...\e[0m"
+echo -e "\033[36mInvoking integration tests...\033[0m"
+
+pwsh ./test/AzureOpenAIProxy.PlaygroundApp.Tests/bin/Debug/net8.0/playwright.ps1 install
 
 dotnet run --project ./src/AzureOpenAIProxy.AppHost --no-build &
 APP_PID=$!

@@ -42,11 +42,15 @@ dotnet test ./test/AzureOpenAIProxy.ApiApp.Tests -c $Configuration --no-build --
 # Runs integration tests
 Write-Host "Invoking integration tests..." -ForegroundColor Cyan
 
+$playwright = Get-ChildItem -File Microsoft.Playwright.dll -Path . -Recurse
+$installer = "$($playwright[0].Directory.FullName)/playwright.ps1"
+& "$installer" install
+
 Start-Process -NoNewWindow "dotnet" @("run", "--project", "./src/AzureOpenAIProxy.AppHost", "--no-build")
 Start-Sleep -s 30
 
 dotnet test ./test/AzureOpenAIProxy.PlaygroundApp.Tests -c $Configuration --logger "trx" --collect:"XPlat Code Coverage"
 
 # Cleans up
-$process = Get-Process | Where-Object { $_.ProcessName -eq "AzureOpenAIProxy.AppHost" }
+$process = Get-Process | Where-Object { $_.Path -like "*AzureOpenAIProxy.AppHost" }
 Stop-Process -Id $process.Id
