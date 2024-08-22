@@ -15,6 +15,7 @@
     <OpenTelemetryExtensionsVersion>1.*</OpenTelemetryExtensionsVersion>
     <OpenTelemetryInstrumentationVersion>1.*</OpenTelemetryInstrumentationVersion>
     <SwashbuckleVersion>6.*</SwashbuckleVersion>
+    <FluentUIVersion>4.*</FluentUIVersion>
 
     <CoverletVersion>6.*</CoverletVersion>
     <FluentAssertionsVersion>6.*</FluentAssertionsVersion>
