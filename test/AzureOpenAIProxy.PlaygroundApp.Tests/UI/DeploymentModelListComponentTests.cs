@@ -10,13 +10,18 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests
 {
     // Playwright 테스트
     [TestFixture]
-    public class ComponentIntegraionTests : PageTest
+    public class ComponentIntegrationTests : PageTest
     {
         private IPlaywright _playwright;
         private IBrowser _browser;
         private IBrowserContext _context;
         private IPage _page;
         private IElementHandle? _fluentSelect;
+
+        public override BrowserNewContextOptions ContextOptions() => new()
+        {
+            IgnoreHTTPSErrors = true,
+        };
 
         [SetUp]
         public async Task fieldSetup()
@@ -30,19 +35,10 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests
             _page = await _context.NewPageAsync();
         }
 
-        [TearDown]
-        public async Task Teardown()
-        {
-            await _page.CloseAsync();
-            await _browser.CloseAsync();
-            _playwright.Dispose();
-        }
-
         [SetUp]
         public async Task NavigateToTargetPage()
         {
-            await _page.GotoAsync("http://localhost:5000");
-            // await _page.GetByRole(AriaRole.Link, new() { Name = "Home" }).ClickAsync();
+            await _page.GotoAsync("http://localhost:5000/tests");
             await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
             // 페이지 초기화 및 fluentSelect 설정
@@ -105,9 +101,11 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests
         }
 
         [TearDown]
-        public async Task TearDown()
+        public async Task Teardown()
         {
             await _page.CloseAsync();
+            await _browser.CloseAsync();
+            _playwright.Dispose();
         }
     }
 

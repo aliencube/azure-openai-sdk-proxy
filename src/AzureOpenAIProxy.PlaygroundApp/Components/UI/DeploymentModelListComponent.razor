@@ -7,7 +7,6 @@
             Deployment
             <span style="color: red;">*</span>
         </h6>
-
     </label>
 
     <FluentSelect Id="deployment-model-list" name="deployment-models" ValueChanged="@(e => selectValue = e)"
@@ -65,7 +64,8 @@
 </p>
 
 @code {
-    public string? selectValue;
+    [Parameter]
+    public string? selectValue { get; set; }
     protected void ValueChanged(string value)
     {
         selectValue = value;
