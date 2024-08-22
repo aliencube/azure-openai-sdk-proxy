@@ -97,3 +97,9 @@ This provides a proxy server application of Azure OpenAI Service API that round-
     # PowerShell
     ./scripts/Run-Tests.ps1 -Configuration Debug
     ```
+
+   > **NOTE**: While running the integration tests using the script above, you might be seeing the error like
+   > 
+   > `System.IO.IOException: Failed to bind to address https://127.0.0.1:22000: address already in use.`
+   > 
+   > It can sometimes happen. However, it doesn't impact on the test results.

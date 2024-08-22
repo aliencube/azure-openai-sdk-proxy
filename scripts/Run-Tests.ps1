@@ -52,5 +52,9 @@ Start-Sleep -s 30
 dotnet test ./test/AzureOpenAIProxy.PlaygroundApp.Tests -c $Configuration --logger "trx" --collect:"XPlat Code Coverage"
 
 # Cleans up
-$process = Get-Process | Where-Object { $_.Path -like "*AzureOpenAIProxy.AppHost" }
+$process = if ($IsWindows -eq $true) {
+    Get-Process | Where-Object { $_.ProcessName -eq "AzureOpenAIProxy.AppHost" }
+} else {
+    Get-Process | Where-Object { $_.Path -like "*AzureOpenAIProxy.AppHost" }
+}
 Stop-Process -Id $process.Id
