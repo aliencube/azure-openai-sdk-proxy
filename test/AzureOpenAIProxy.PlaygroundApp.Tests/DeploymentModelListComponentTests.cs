@@ -24,7 +24,7 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests
             _playwright = await Microsoft.Playwright.Playwright.CreateAsync();
             _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
             {
-                Headless = false // 브라우저를 헤드리스 모드로 실행하지 않으려면 false로 설정
+                Headless = true // Integration test를 위해 Headless 모드로 설정
             });
             _context = await _browser.NewContextAsync();
             _page = await _context.NewPageAsync();
