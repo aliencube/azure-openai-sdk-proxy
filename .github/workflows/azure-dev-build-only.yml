@@ -44,16 +44,16 @@ jobs:
         dotnet workload update
         dotnet workload install aspire
 
-    - name: Restore NuGet packages
-      shell: bash
-      run: |
-        dotnet restore
-    
     - name: Install SwashBuckle Cli
       shell: bash
       run: |
         dotnet new tool-manifest
         dotnet tool install SwashBuckle.AspNetCore.Cli
+
+    - name: Restore NuGet packages
+      shell: bash
+      run: |
+        dotnet restore
 
     - name: Build solution
       shell: bash

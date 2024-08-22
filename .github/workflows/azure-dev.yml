@@ -58,16 +58,16 @@ jobs:
         $appsettings.Azure.KeyVault.SecretName = "${{ env.AZURE_KEYVAULT_SECRET_NAME }}"
         $appsettings | ConvertTo-Json -Depth 100 | Set-Content -Path "./src/AzureOpenAIProxy.ApiApp/appsettings.json" -Encoding UTF8 -Force
 
-    - name: Restore NuGet packages
-      shell: bash
-      run: |
-        dotnet restore
-
     - name: Install SwashBuckle Cli
       shell: bash
       run: |
         dotnet new tool-manifest
         dotnet tool install SwashBuckle.AspNetCore.Cli
+    
+    - name: Restore NuGet packages
+      shell: bash
+      run: |
+        dotnet restore
 
     - name: Build solution
       shell: bash
