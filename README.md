@@ -85,3 +85,15 @@ This provides a proxy server application of Azure OpenAI Service API that round-
         --parameters environmentName=$AZURE_ENV_NAME `
         --parameters location=$AZURE_LOCATION
     ```
+
+## Unit Testing & Integration Testing
+
+1. Run the following command to run both unit tests and integration tests at once on your local machine.
+
+    ```bash
+    # zsh/bash
+    ./scripts/run-tests.sh -c Debug
+
+    # PowerShell
+    ./scripts/Run-Tests.ps1 -Configuration Debug
+    ```
