@@ -1,10 +1,10 @@
-using AzureOpenAIProxy.PlaygroundApp.Components.UI;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Playwright.NUnit;
 using Microsoft.Playwright;
 using Assert = NUnit.Framework.Assert;
 using Bunit;
+using AzureOpenAIProxy.PlaygroundApp.Components.UI;
 
 namespace AzureOpenAIProxy.PlaygroundApp.Tests
 {
@@ -19,7 +19,7 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests
         private IElementHandle? _fluentSelect;
 
         [SetUp]
-        public async Task Setup()
+        public async Task fieldSetup()
         {
             _playwright = await Microsoft.Playwright.Playwright.CreateAsync();
             _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
@@ -42,7 +42,7 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests
         public async Task NavigateToTargetPage()
         {
             await _page.GotoAsync("http://localhost:5000");
-            await _page.GetByRole(AriaRole.Link, new() { Name = "Home" }).ClickAsync();
+            // await _page.GetByRole(AriaRole.Link, new() { Name = "Home" }).ClickAsync();
             await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
             // 페이지 초기화 및 fluentSelect 설정
@@ -112,6 +112,7 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests
     }
 
     // Bunit 테스트
+    [TestFixture]
     public class DeploymentModelListComponentTests : Bunit.TestContext
     {
         public DeploymentModelListComponentTests()
@@ -127,28 +128,28 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests
             JSInterop.Mode = JSRuntimeMode.Loose;
         }
 
-        [Fact]
+        [Test]
         // 드롭다운이 올바르게 렌더링 되고, 옵션이 표시되는지 확인
         public void ShouldRenderCorrectly()
         {
             // Arrange & Act
-            var component = RenderComponent<DeploymentModelListComponent>();
+            var cut = RenderComponent<DeploymentModelListComponent>();
+            var fluentSelect = cut.Find("fluent-select#deployment-model-list");
 
             // Assert
-            var fluentSelect = component.Find("fluent-select");
             Assert.That(fluentSelect, Is.Not.Null);
 
-            var options = component.FindAll("fluent-option");
-            Assert.That(options.Count, Is.GreaterThan(0));
+            var fluentOptions = cut.FindAll("fluent-option");
+            Assert.That(fluentOptions.Count, Is.GreaterThan(0));
         }
 
-        [Fact]
+        [Test]
         // FluentSelect의 옵션이 선택되면 ValueChanged 이벤트가 트리거되고, 선택된 옵션 값으로 업데이트되는지 확인
         public void ShouldTriggerValueChanged()
         {
             // Arrange
-            var component = RenderComponent<DeploymentModelListComponent>();
-            var fluentSelect = component.Find("fluent-select#deployment-model-list");
+            var cut = RenderComponent<DeploymentModelListComponent>();
+            var fluentSelect = cut.Find("fluent-select#deployment-model-list");
 
             // Act
             var fluentOptions = fluentSelect.QuerySelectorAll("fluent-option");
@@ -156,7 +157,7 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests
 
             // Define and set selectValue in the page context
             fluentOptions[0].Click(); // 첫 번째 옵션을 선택 - 여기서 value가 update 되어야 함
-            var updatedSelectedValue = component.Instance.selectValue;
+            var updatedSelectedValue = cut.Instance.selectValue;
 
             // Assert
             Assert.That(actualSelectedValue, Is.EqualTo(updatedSelectedValue));

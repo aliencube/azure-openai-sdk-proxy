@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="bunit" Version="1.31.3" />
     <PackageReference Include="coverlet.collector" Version="$(CoverletVersion)">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -28,9 +29,9 @@
     <PackageReference Include="NUnit3TestAdapter" Version="$(NUnitVersion)" />
   </ItemGroup>
 
-  <!--<ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\src\AzureOpenAIProxy.PlaygroundApp\AzureOpenAIProxy.PlaygroundApp.csproj" />
-  </ItemGroup>-->
+  </ItemGroup>
 
   <ItemGroup>
     <Using Include="NUnit.Framework" />
