@@ -12,13 +12,13 @@ public class EventListEntity
     /// Event Id
     /// </summary>
     [JsonPropertyName("eventId")]
-    public required string EventId { get; set; }
+    public required string? EventId { get; set; }
 
     /// <summary>
     /// Event name
     /// </summary>
     [JsonPropertyName("eventName")]
-    public required string EventName { get; set; }
+    public required string? EventName { get; set; }
 
     /// <summary>
     ///  Event start time
@@ -42,20 +42,20 @@ public class EventListEntity
     /// Organizer's name
     /// </summary>
     [JsonPropertyName("organizerName")]
-    public required string OrganizerName { get; set; }
+    public required string? OrganizerName { get; set; }
 
     /// <summary>
     /// Organizer's email address.
     /// </summary>
     [EmailAddress]
     [JsonPropertyName("OrganizerEmail")]
-    public required string OrganizerEmail { get; set; }
+    public required string? OrganizerEmail { get; set; }
 
     /// <summary>
     /// The number of registered users
     /// </summary>
     [JsonPropertyName("registered")]
-    public required int Registered { get; set; }
+    public required int? Registered { get; set; }
 
     /// <summary>
     /// List of resources that the organizer deploys
@@ -67,7 +67,7 @@ public class EventListEntity
     /// Shows whether the event is active or not
     /// </summary>
     [JsonPropertyName("isActive")]
-    public required bool IsActive { get; set; }
+    public required bool? IsActive { get; set; }
 
     /// <summary>
     ///  Define the list entity of Resources
@@ -78,12 +78,12 @@ public class EventListEntity
         /// Resource's Id
         /// </summary>
         [JsonPropertyName("id")]
-        public required string ResourceId {get; set; }
+        public required string? ResourceId {get; set; }
 
         /// <summary>
         /// Resource's name. e.g. gpt4o
         /// </summary>
         [JsonPropertyName("name")]
-        public required string ResourceName {get; set; }
+        public required string? ResourceName {get; set; }
     }
 }

@@ -6,11 +6,19 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AzureOpenAIProxy.ApiApp.Endpoints
 {
+    /// <summary>
+    /// Defines an endpoint for events
+    /// </summary>
     public static class EventEndpoint
     {
+        /// <summary>
+        /// Adds EventEndpoint to WebApplication.
+        /// </summary>
+        /// <param name="app"></param>
+        /// <returns></returns>
         public static RouteHandlerBuilder AddEventEndpoint(this WebApplication app)
         {
-            // TODO: Authorization process with bearer token (JWT) with endpoint filter
+            // TODO: Parameter validation
             var rt = app.MapGet(EndpointUrls.Events,
                 (
                     HttpRequest request
@@ -36,6 +44,7 @@ namespace AzureOpenAIProxy.ApiApp.Endpoints
                     };
                     // TODO: Should add 404 logic if the server failed to retrieve data with TypedResult
                     return TypedResults.Ok(sampleEvents);
+                    // return TypedResults.Problem(statusCode: StatusCodes.Status404NotFound);
                 })
                 // Note: RouteHandlerBuilder does not have ProducesProblem extension method yet, but it will be added on .NET 9
                 // Source: https://github.com/dotnet/aspnetcore/issues/56178
