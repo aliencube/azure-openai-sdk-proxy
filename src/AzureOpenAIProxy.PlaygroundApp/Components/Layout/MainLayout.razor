@@ -1,15 +1,15 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager NavMan
 
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+    @if (this._isAdmin == true)
+    {
+        <div class="sidebar">
+            <NavMenu />
+        </div>
+    }
 
     <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
         <article class="content px-4">
             @Body
         </article>
@@ -26,3 +26,16 @@
 <FluentDialogProvider />
 <FluentTooltipProvider />
 <FluentMessageBarProvider />
+
+@code
+{
+    private bool _isAdmin;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var path = new Uri(this.NavMan.Uri).AbsolutePath;
+        this._isAdmin = path.StartsWith("/admin", StringComparison.CurrentCultureIgnoreCase);
+
+        await Task.CompletedTask;
+    }
+}
