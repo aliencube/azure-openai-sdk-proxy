@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 using AzureOpenAIProxy.ApiApp.Models;
 
 /// <summary>
-/// Data transfer model for showing all events 
+/// Data transfer model for showing all events
 /// </summary>
 public class EventListEntity
 {
@@ -36,7 +36,7 @@ public class EventListEntity
     /// Event's time zone. It could be serialized to string
     /// </summary>
     [JsonPropertyName("tz")]
-    public required TimeZoneInfo? TimeZone { get; set; }
+    public required string? TimeZone { get; set; }
 
     /// <summary>
     /// Organizer's name
@@ -61,7 +61,7 @@ public class EventListEntity
     /// List of resources that the organizer deploys
     /// </summary>
     [JsonPropertyName("resources")]
-    public required virtual IList<ResourceEntity> Resources { get; set; }
+    public virtual IEnumerable<ResourceEntity>? Resources { get; set; }
 
     /// <summary>
     /// Shows whether the event is active or not

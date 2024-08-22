@@ -35,5 +35,6 @@ app.UseHttpsRedirection();
 
 app.AddWeatherForecast();
 app.AddChatCompletions();
+app.AddEventEndpoint();
 
 await app.RunAsync();
