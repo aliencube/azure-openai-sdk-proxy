@@ -65,7 +65,7 @@ jobs:
     - name: Build solution
       shell: bash
       run: |
-        dotnet build
+        dotnet build -c Release
 
     - name: Install playwright
       shell: pwsh
@@ -77,8 +77,8 @@ jobs:
     - name: Run unit tests
       shell: bash
       run: |
-        dotnet test ./test/AzureOpenAIProxy.AppHost.Tests --logger "trx" --collect:"XPlat Code Coverage"
-        dotnet test ./test/AzureOpenAIProxy.ApiApp.Tests --logger "trx" --collect:"XPlat Code Coverage"
+        dotnet test ./test/AzureOpenAIProxy.AppHost.Tests -c Release --no-build --logger "trx" --collect:"XPlat Code Coverage"
+        dotnet test ./test/AzureOpenAIProxy.ApiApp.Tests -c Release --no-build --logger "trx" --collect:"XPlat Code Coverage"
 
     - name: Run integration tests
       shell: bash
@@ -89,7 +89,7 @@ jobs:
 
         sleep 30
 
-        dotnet test ./test/AzureOpenAIProxy.PlaygroundApp.Tests --logger "trx" --collect:"XPlat Code Coverage"
+        dotnet test ./test/AzureOpenAIProxy.PlaygroundApp.Tests -c Release --no-build --logger "trx" --collect:"XPlat Code Coverage"
 
         kill $DOTNET_PID
 

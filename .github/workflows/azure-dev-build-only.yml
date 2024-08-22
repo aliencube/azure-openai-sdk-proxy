@@ -63,8 +63,8 @@ jobs:
     - name: Run unit tests
       shell: bash
       run: |
-        dotnet test ./test/AzureOpenAIProxy.AppHost.Tests --logger "trx" --collect:"XPlat Code Coverage"
-        dotnet test ./test/AzureOpenAIProxy.ApiApp.Tests --logger "trx" --collect:"XPlat Code Coverage"
+        dotnet test ./test/AzureOpenAIProxy.AppHost.Tests --no-build --logger "trx" --collect:"XPlat Code Coverage"
+        dotnet test ./test/AzureOpenAIProxy.ApiApp.Tests --no-build --logger "trx" --collect:"XPlat Code Coverage"
 
     - name: Run integration tests
       shell: bash
@@ -75,7 +75,7 @@ jobs:
 
         sleep 30
 
-        dotnet test ./test/AzureOpenAIProxy.PlaygroundApp.Tests --logger "trx" --collect:"XPlat Code Coverage"
+        dotnet test ./test/AzureOpenAIProxy.PlaygroundApp.Tests --no-build --logger "trx" --collect:"XPlat Code Coverage"
 
         kill $DOTNET_PID
 
