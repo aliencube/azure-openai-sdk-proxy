@@ -63,6 +63,11 @@ jobs:
       run: |
         dotnet new tool-manifest
         dotnet tool install SwashBuckle.AspNetCore.Cli
+
+    - name: Install Spectral Cli
+      shell: bash
+      run: |
+        curl -L https://raw.github.com/stoplightio/spectral/master/scripts/install.sh | sh
     
     - name: Restore NuGet packages
       shell: bash
@@ -75,9 +80,11 @@ jobs:
         dotnet build
 
     - name: OpenAPI linting
-      uses: stoplightio/spectral-action@latest
-      with:
-        file_glob: './src/AzureOpenAIProxy.ApiApp/openapi.json'
+      shell: bash
+      run: |
+        API_VERSION=$(grep -oP 'public const string Version = "\K[^"]+' ./src/AzureOpenAIProxy.ApiApp/Constants.cs)
+        dotnet swagger tofile --output ./openapi.json  ./src/AzureOpenAIProxy.ApiApp/bin/Debug/net8.0/AzureOpenAIProxy.ApiApp.dll $API_VERSION
+        spectral lint openapi.json
 
     - name: Test solution
       shell: bash
