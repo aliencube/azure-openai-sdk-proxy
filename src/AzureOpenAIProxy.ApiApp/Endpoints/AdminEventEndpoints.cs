@@ -40,4 +40,35 @@ public static class AdminEventEndpoints
 
         return builder;
     }
+
+    /// <summary>
+    /// Adds the update event details by admin endpoint
+    /// </summary>
+    /// <param name="app"><see cref="WebApplication"/> instance.</param>
+    /// <returns>Returns <see cref="RouteHandlerBuilder"/> instance.</returns>
+    public static RouteHandlerBuilder AddUpdateAdminEvents(this WebApplication app)
+    {
+        // Todo: Issue #19 https://github.com/aliencube/azure-openai-sdk-proxy/issues/19
+        // Need authorization by admin
+        var builder = app.MapPut(AdminEndpointUrls.AdminEventDetails, (
+            [FromRoute] string eventId) =>
+        {
+            // Todo: Issue #203 https://github.com/aliencube/azure-openai-sdk-proxy/issues/203
+            return Results.Ok();
+        })
+        .Produces(statusCode: StatusCodes.Status200OK)
+        .Produces(statusCode: StatusCodes.Status401Unauthorized)
+        .Produces<string>(statusCode: StatusCodes.Status500InternalServerError, contentType: "text/plain")
+        .WithTags("admin")
+        .WithName("UpdateAdminEventDetails")
+        .WithOpenApi(operation =>
+        {
+            operation.Summary = "Updates event details by the given event ID";
+            operation.Description = "This endpoint updates event details by event id, api for admin users";
+
+            return operation;
+        });
+
+        return builder;
+    }
 }
