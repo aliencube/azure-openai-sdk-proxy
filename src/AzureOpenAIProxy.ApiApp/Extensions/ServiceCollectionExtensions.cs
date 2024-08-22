@@ -1,4 +1,6 @@
-﻿using AzureOpenAIProxy.ApiApp.Builders;
+using System.Reflection;
+
+using AzureOpenAIProxy.ApiApp.Builders;
 using AzureOpenAIProxy.ApiApp.Configurations;
 using AzureOpenAIProxy.ApiApp.Filters;
 using AzureOpenAIProxy.ApiApp.Services;
@@ -68,6 +70,7 @@ public static class ServiceCollectionExtensions
                     Url = new Uri("https://aka.ms/aoai-proxy.net")
                 },
             };
+            options.IncludeXmlComments(Assembly.GetExecutingAssembly());
             options.SwaggerDoc(Constants.Version, info);
 
             options.AddSecurityDefinition(

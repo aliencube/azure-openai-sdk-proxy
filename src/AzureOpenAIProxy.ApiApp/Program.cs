@@ -1,5 +1,9 @@
+using System.Reflection;
+
 using AzureOpenAIProxy.ApiApp.Endpoints;
 using AzureOpenAIProxy.ApiApp.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +27,7 @@ app.UseRouting();
 // Configure the HTTP request pipeline.
 // Use Swagger UI
 app.UseSwaggerUI(basePath);
+app.UseSwagger();
 
 // Enable buffering
 app.Use(async (context, next) =>
