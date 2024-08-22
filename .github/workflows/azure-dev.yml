@@ -67,10 +67,24 @@ jobs:
       run: |
         dotnet build
 
-    - name: Test solution
+    - name: Run unit tests
       shell: bash
       run: |
-        dotnet test --logger "trx" --collect:"XPlat Code Coverage"
+        dotnet test ./test/AzureOpenAIProxy.AppHost.Tests --logger "trx" --collect:"XPlat Code Coverage"
+        dotnet test ./test/AzureOpenAIProxy.ApiApp.Tests --logger "trx" --collect:"XPlat Code Coverage"
+
+    - name: Run integration tests
+      shell: bash
+      run: |
+        dotnet run --project ./src/AzureOpenAIProxy.AppHost &
+
+        DOTNET_PID=$!
+
+        sleep 30
+
+        dotnet test ./test/AzureOpenAIProxy.PlaygroundApp.Tests --logger "trx" --collect:"XPlat Code Coverage"
+
+        kill $DOTNET_PID
 
     - name: Publish test results
       uses: bibipkins/dotnet-test-reporter@main
