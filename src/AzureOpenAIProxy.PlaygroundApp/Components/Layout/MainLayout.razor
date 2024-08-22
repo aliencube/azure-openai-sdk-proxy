@@ -1,5 +1,4 @@
 ﻿@inherits LayoutComponentBase
-@inject NavigationManager NavMan
 
 <div class="page">
     @if (this._isAdmin == true)
@@ -26,16 +25,3 @@
 <FluentDialogProvider />
 <FluentTooltipProvider />
 <FluentMessageBarProvider />
-
-@code
-{
-    private bool _isAdmin;
-
-    protected override async Task OnInitializedAsync()
-    {
-        var path = new Uri(this.NavMan.Uri).AbsolutePath;
-        this._isAdmin = path.StartsWith("/admin", StringComparison.CurrentCultureIgnoreCase);
-
-        await Task.CompletedTask;
-    }
-}
