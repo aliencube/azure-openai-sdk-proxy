@@ -15,6 +15,10 @@
     </PackageReference>
     <PackageReference Include="FluentAssertions" Version="$(FluentAssertionsVersion)" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftTestSdkVersion)" />
+    <PackageReference Include="Microsoft.Playwright.NUnit" Version="1.46.0" />
+    <PackageReference Include="NUnit" Version="$(NUnitVersion)" />
+    <PackageReference Include="NUnit.Analyzers" Version="$(NUnitAnalyzersVersion)" />
+    <PackageReference Include="NUnit3TestAdapter" Version="$(NUnit3TestAdapterVersion)" />
     <PackageReference Include="xunit" Version="$(XunitVersion)" />
     <PackageReference Include="xunit.runner.visualstudio" Version="$(XunitVersion)">
       <PrivateAssets>all</PrivateAssets>
@@ -27,6 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="NUnit.Framework" />
     <Using Include="Xunit" />
   </ItemGroup>
 

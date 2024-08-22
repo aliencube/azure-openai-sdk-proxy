@@ -23,5 +23,9 @@
     <NSubstituteVersion>5.*</NSubstituteVersion>
     <SystemTextJsonVersion>8.*</SystemTextJsonVersion>
     <XunitVersion>2.*</XunitVersion>
+    <PlaywrightNUnitVersion>1.*</PlaywrightNUnitVersion>
+    <NUnitVersion>3.*</NUnitVersion>
+    <NUnitAnalyzersVersion>3.*</NUnitAnalyzersVersion>
+    <NUnit3TestAdapterVersion>4.*</NUnit3TestAdapterVersion>
   </PropertyGroup>
 </Project>
