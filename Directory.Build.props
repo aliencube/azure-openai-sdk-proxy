@@ -15,13 +15,15 @@
     <OpenTelemetryExtensionsVersion>1.*</OpenTelemetryExtensionsVersion>
     <OpenTelemetryInstrumentationVersion>1.*</OpenTelemetryInstrumentationVersion>
     <SwashbuckleVersion>6.*</SwashbuckleVersion>
+    <SystemTextJsonVersion>8.*</SystemTextJsonVersion>
     <FluentUIVersion>4.*</FluentUIVersion>
 
     <CoverletVersion>6.*</CoverletVersion>
     <FluentAssertionsVersion>6.*</FluentAssertionsVersion>
     <MicrosoftTestSdkVersion>17.*</MicrosoftTestSdkVersion>
     <NSubstituteVersion>5.*</NSubstituteVersion>
-    <SystemTextJsonVersion>8.*</SystemTextJsonVersion>
+    <NUnitVersion>4.*</NUnitVersion>
+    <PlaywrightVersion>1.*</PlaywrightVersion>
     <XunitVersion>2.*</XunitVersion>
   </PropertyGroup>
 </Project>
