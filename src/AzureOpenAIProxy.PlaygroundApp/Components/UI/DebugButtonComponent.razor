@@ -1,0 +1,24 @@
+@using Microsoft.FluentUI.AspNetCore.Components
+
+<!-- This component displays the given input when the button is clicked. -->
+<FluentButton Appearance="Appearance.Accent" OnClick="@DisplayInput">Debug</FluentButton>
+<p id="displayText">@displayText</p>
+
+@code {
+    [Parameter]
+    public object? Input { get; set; }
+
+    private string displayText { get; set; } = "No input provided.";
+
+    private void DisplayInput()
+    {
+        if (Input == null)
+        {
+            displayText = "Input is null.";
+        }
+        else
+        {
+            displayText = $"{Input} (Type: {Input.GetType()})";
+        }
+    }
+}
