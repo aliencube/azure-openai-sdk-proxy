@@ -7,15 +7,15 @@ using Microsoft.AspNetCore.Mvc;
 namespace AzureOpenAIProxy.ApiApp.Endpoints
 {
     /// <summary>
-    /// Defines an endpoint for events
+    /// This represents the endpoint entity for events.
     /// </summary>
     public static class EventEndpoint
     {
         /// <summary>
-        /// Adds EventEndpoint to WebApplication.
+        /// Adds the event endpoint.
         /// </summary>
-        /// <param name="app"></param>
-        /// <returns></returns>
+        /// <param name="app"><see cref="WebApplication"/> instance.</param>
+        /// <returns>Returns <see cref="RouteHandlerBuilder"/> instance.</returns>
         public static RouteHandlerBuilder AddEventEndpoint(this WebApplication app)
         {
             // TODO: Parameter validation
