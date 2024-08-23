@@ -103,7 +103,6 @@ public static class ServiceCollectionExtensions
                     Url = new Uri("https://aka.ms/aoai-proxy.net")
                 },
             };
-            options.IncludeXmlComments(Assembly.GetExecutingAssembly());
             options.SwaggerDoc(Constants.Version, info);
 
             options.AddSecurityDefinition(
