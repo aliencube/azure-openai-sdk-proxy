@@ -2,7 +2,7 @@ using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace AzureOpenAIProxy.ApiApp.Models.Converters;
+namespace AzureOpenAIProxy.ApiApp.Converters;
 
 public class EnumMemberConverter<T> : JsonConverter<T> where T : Enum
 {
