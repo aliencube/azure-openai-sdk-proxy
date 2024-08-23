@@ -18,11 +18,7 @@ namespace AzureOpenAIProxy.ApiApp.Endpoints
         /// <returns>Returns <see cref="RouteHandlerBuilder"/> instance.</returns>
         public static RouteHandlerBuilder AddEventEndpoint(this WebApplication app)
         {
-            // TODO: Parameter validation
-            var rt = app.MapGet(EndpointUrls.Events,
-                (
-                    HttpRequest request
-                ) =>
+            var rt = app.MapGet(EndpointUrls.Events, () =>
                 {
                     // These events are mock for now.
                     var sampleEvents = new List<EventListEntity>
