@@ -30,7 +30,6 @@ app.UseRouting();
 // Configure the HTTP request pipeline.
 // Use Swagger UI
 app.UseSwaggerUI(basePath);
-app.UseSwagger();
 
 // Enable buffering
 app.Use(async (context, next) =>
