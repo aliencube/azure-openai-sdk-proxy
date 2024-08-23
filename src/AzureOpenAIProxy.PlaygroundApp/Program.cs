@@ -1,5 +1,7 @@
 using AzureOpenAIProxy.PlaygroundApp.Clients;
 
+using Microsoft.FluentUI.AspNetCore.Components;
+
 using App = AzureOpenAIProxy.PlaygroundApp.Components.App;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +11,8 @@ builder.AddServiceDefaults();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddFluentUIComponents();
 
 builder.Services.AddScoped<IOpenAIApiClient, OpenAIApiClient>();
 
