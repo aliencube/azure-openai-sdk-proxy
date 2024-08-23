@@ -25,9 +25,8 @@ namespace AzureOpenAIProxy.ApiApp.Endpoints
                 return Results.Ok();
                 })
                 .Produces<EventListEntity>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
-                .Produces<ProblemHttpResult>(statusCode: StatusCodes.Status401Unauthorized, contentType: "application/problem+json")
-                .Produces<ProblemHttpResult>(statusCode: StatusCodes.Status404NotFound, contentType: "application/problem+json")
-                .Produces<ProblemHttpResult>(statusCode: StatusCodes.Status500InternalServerError, contentType: "application/problem+json")
+            .Produces(statusCode: StatusCodes.Status401Unauthorized)
+            .Produces<string>(statusCode: StatusCodes.Status500InternalServerError, contentType: "text/plain")
                 .WithTags("events")
                 .WithName("GetEvents")
                 .WithOpenApi(operations =>
