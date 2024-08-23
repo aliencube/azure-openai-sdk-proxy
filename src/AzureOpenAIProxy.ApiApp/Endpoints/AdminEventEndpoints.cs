@@ -33,7 +33,7 @@ public static class AdminEventEndpoints
         // TODO: Check both request/response payloads
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
         .Produces<string>(statusCode: StatusCodes.Status500InternalServerError, contentType: "text/plain")
-        .WithTags("event")
+        .WithTags("admin")
         .WithName("CreateAdminEvent")
         .WithOpenApi(operation =>
         {
