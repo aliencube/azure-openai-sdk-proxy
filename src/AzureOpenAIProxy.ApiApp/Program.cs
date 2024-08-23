@@ -9,6 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
+// Add KeyVault service
+builder.Services.AddKeyVaultService();
+
 // Add Azure OpenAI service.
 builder.Services.AddOpenAIService();
 
@@ -41,5 +44,8 @@ app.UseHttpsRedirection();
 app.AddWeatherForecast();
 app.AddChatCompletions();
 app.AddEventEndpoint();
+
+// Admin Endpoints
+app.AddAdminEvents();
 
 await app.RunAsync();

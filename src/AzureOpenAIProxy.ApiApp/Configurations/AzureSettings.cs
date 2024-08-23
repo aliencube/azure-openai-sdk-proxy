@@ -14,4 +14,9 @@ public class AzureSettings
     /// Gets or sets the <see cref="OpenAISettings"/> instance.
     /// </summary>
     public OpenAISettings OpenAI { get; set; } = new();
+
+    /// <summary>
+    /// Gets or sets the <see cref="KeyVaultSettings"/> instance.
+    /// </summary>
+    public KeyVaultSettings KeyVault { get; set; } = new();
 }

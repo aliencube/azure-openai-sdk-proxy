@@ -11,8 +11,6 @@ on:
 permissions:
   id-token: write
   contents: read
-  # issues: write
-  # pull-requests: write
 
 jobs:
   build-test-deploy:
@@ -26,6 +24,8 @@ jobs:
       AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
       AZURE_OPENAI_KEYS: ${{ secrets.AZURE_OPENAI_KEYS }}
+      AZURE_KEYVAULT_URI: ${{ secrets.AZURE_KEYVAULT_URI }}
+      AZURE_KEYVAULT_SECRET_NAME: ${{ vars.AZURE_KEYVAULT_SECRET_NAME }}
 
     steps:
     - name: Checkout
@@ -52,7 +52,9 @@ jobs:
       shell: pwsh
       run: |
         $appsettings = Get-Content -Path "./src/AzureOpenAIProxy.ApiApp/appsettings.json" -Raw | ConvertFrom-Json
-        $appsettings.Azure.OpenAI.Instances = '${{ env.AZURE_OPENAI_KEYS }}' | ConvertFrom-Json
+        $appsettings.Azure.OpenAI.Instances = @()
+        $appsettings.Azure.KeyVault.VaultUri = "${{ env.AZURE_KEYVAULT_URI }}"
+        $appsettings.Azure.KeyVault.SecretName = "${{ env.AZURE_KEYVAULT_SECRET_NAME }}"
         $appsettings | ConvertTo-Json -Depth 100 | Set-Content -Path "./src/AzureOpenAIProxy.ApiApp/appsettings.json" -Encoding UTF8 -Force
 
     - name: Restore NuGet packages
@@ -63,17 +65,38 @@ jobs:
     - name: Build solution
       shell: bash
       run: |
-        dotnet build
+        dotnet build -c Release
 
-    - name: Test solution
+    - name: Install playwright
+      shell: pwsh
+      run: |
+        $playwright = Get-ChildItem -File Microsoft.Playwright.dll -Path . -Recurse
+        $installer = "$($playwright[0].Directory.FullName)/playwright.ps1"
+        & "$installer" install
+
+    - name: Run unit tests
       shell: bash
       run: |
-        dotnet test --logger "trx" --collect:"XPlat Code Coverage"
+        dotnet test ./test/AzureOpenAIProxy.AppHost.Tests -c Release --no-build --logger "trx" --collect:"XPlat Code Coverage"
+        dotnet test ./test/AzureOpenAIProxy.ApiApp.Tests -c Release --no-build --logger "trx" --collect:"XPlat Code Coverage"
+
+    - name: Run integration tests
+      shell: bash
+      run: |
+        dotnet run --project ./src/AzureOpenAIProxy.AppHost &
+
+        DOTNET_PID=$!
+
+        sleep 30
+
+        dotnet test ./test/AzureOpenAIProxy.PlaygroundApp.Tests -c Release --no-build --logger "trx" --collect:"XPlat Code Coverage"
+
+        kill $DOTNET_PID
 
     - name: Publish test results
       uses: bibipkins/dotnet-test-reporter@main
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.GH_PAT_GRAINED }}
         results-path: ./**/TestResults/**/*.trx
         # coverage-path: ./**/TestResults/**/*.xml
         # coverage-type: cobertura

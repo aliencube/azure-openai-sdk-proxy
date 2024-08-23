@@ -1,4 +1,7 @@
-﻿using AzureOpenAIProxy.ApiApp.Builders;
+﻿using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+
+using AzureOpenAIProxy.ApiApp.Builders;
 using AzureOpenAIProxy.ApiApp.Extensions;
 
 using FluentAssertions;
@@ -216,5 +219,57 @@ public class OpenAISettingsBuilderExtensionsTests
         {
             result.Instances.First().DeploymentNames.Should().Contain(dn);
         }
+    }
+
+    [Fact]
+    public void Given_Empty_KeyVaultSettings_When_Invoked_WithKeyVault_Then_It_Should_Throw_Exception()
+    {
+        // Arrange
+        var dict = new Dictionary<string, string>()
+        {
+            { "Azure:KeyVault", string.Empty }
+        };
+#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
+        var config = new ConfigurationBuilder().AddInMemoryCollection(dict).Build();
+#pragma warning restore CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
+
+        var sp = Substitute.For<IServiceProvider>();
+        ServiceProviderServiceExtensions.GetService<IConfiguration>(sp).Returns(config);
+
+        var builder = new OpenAISettingsBuilder();
+
+        // Act
+        Action action = () => builder.WithKeyVault(sp)
+                                     .Build();
+
+        // Assert
+        action.Should().Throw<InvalidOperationException>();
+    }
+
+    [Theory]
+    [InlineData("http://localhost")]
+    public void Given_Null_SecretClient_When_Invoked_WithKeyVault_Then_It_Should_Throw_Exception(string vaultUri)
+    {
+        // Arrange
+        var dict = new Dictionary<string, string>()
+        {
+            { "Azure:KeyVault:VaultUri", vaultUri }
+        };
+#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
+        var config = new ConfigurationBuilder().AddInMemoryCollection(dict).Build();
+#pragma warning restore CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
+
+        var client = new SecretClient(new Uri(vaultUri), new DefaultAzureCredential());
+
+        var sp = Substitute.For<IServiceProvider>();
+        ServiceProviderServiceExtensions.GetService<IConfiguration>(sp).Returns(config);
+
+        var builder = new OpenAISettingsBuilder();
+
+        // Act
+        Action action = () => builder.WithKeyVault(sp).Build();
+
+        // Assert
+        action.Should().Throw<InvalidOperationException>();
     }
 }

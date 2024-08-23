@@ -2,11 +2,12 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <IsAspireHost>true</IsAspireHost>
+
     <UserSecretsId>f6c81741-4dbe-4a07-86e3-83a42810f5ec</UserSecretsId>
+
+    <AssemblyName>AzureOpenAIProxy.AppHost</AssemblyName>
+    <RootNamespace>AzureOpenAIProxy.AppHost</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

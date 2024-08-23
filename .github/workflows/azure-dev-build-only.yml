@@ -6,6 +6,7 @@ on:
     - 'feature/*'
     paths-ignore:
     - '.github/**'
+  # pull_request_target:
   pull_request:
     branches:
     - main
@@ -52,16 +53,38 @@ jobs:
       run: |
         dotnet build
 
-    - name: Test solution
+    - name: Install playwright
+      shell: pwsh
+      run: |
+        $playwright = Get-ChildItem -File Microsoft.Playwright.dll -Path . -Recurse
+        $installer = "$($playwright[0].Directory.FullName)/playwright.ps1"
+        & "$installer" install
+
+    - name: Run unit tests
       shell: bash
       run: |
-        dotnet test --logger "trx" --collect:"XPlat Code Coverage"
+        dotnet test ./test/AzureOpenAIProxy.AppHost.Tests --no-build --logger "trx" --collect:"XPlat Code Coverage"
+        dotnet test ./test/AzureOpenAIProxy.ApiApp.Tests --no-build --logger "trx" --collect:"XPlat Code Coverage"
+
+    - name: Run integration tests
+      shell: bash
+      run: |
+        dotnet run --project ./src/AzureOpenAIProxy.AppHost &
+
+        DOTNET_PID=$!
+
+        sleep 30
+
+        dotnet test ./test/AzureOpenAIProxy.PlaygroundApp.Tests --no-build --logger "trx" --collect:"XPlat Code Coverage"
+
+        kill $DOTNET_PID
 
     - name: Publish test results
+      if: ${{ !cancelled() }}
       id: test-report
       uses: bibipkins/dotnet-test-reporter@main
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.GH_PAT_GRAINED }}
         results-path: ./**/TestResults/**/*.trx
         # coverage-path: ./**/TestResults/**/*.xml
         # coverage-type: cobertura
@@ -71,18 +94,18 @@ jobs:
         post-new-comment: true
         comment-title: "Test Results"
 
-    - name: Comment to issue
-      if: ${{ !cancelled() && github.event_name == 'pull_request' }}
-      uses: actions-cool/issues-helper@v3
-      with:
-        actions: "create-comment"
-        token: ${{ secrets.GITHUB_TOKEN }}
-        issue-number: ${{ github.event.pull_request.number }}
-        body: |
-          ## Test Results
+    # - name: Comment to issue
+    #   if: ${{ !cancelled() && (github.event_name == 'pull_request_target' || github.event_name == 'pull_request') }}
+    #   uses: actions-cool/issues-helper@v3
+    #   with:
+    #     actions: "create-comment"
+    #     token: ${{ secrets.GH_PAT_GRAINED }}
+    #     issue-number: ${{ github.event.pull_request.number }}
+    #     body: |
+    #       ## Test Results
 
-          ### Tests
+    #       ### Tests
 
-          | :clipboard: Total | :heavy_check_mark: Passed | :x: Failed | :warning: Skipped |
-          |-------------------|---------------------------|------------|-------------------|
-          | ${{ steps.test-report.outputs.tests-total }} | ${{ steps.test-report.outputs.tests-passed }} | ${{ steps.test-report.outputs.tests-failed }} | ${{ steps.test-report.outputs.tests-skipped }} |
+    #       | :clipboard: Total | :heavy_check_mark: Passed | :x: Failed | :warning: Skipped |
+    #       |-------------------|---------------------------|------------|-------------------|
+    #       | ${{ steps.test-report.outputs.tests-total }} | ${{ steps.test-report.outputs.tests-passed }} | ${{ steps.test-report.outputs.tests-failed }} | ${{ steps.test-report.outputs.tests-skipped }} |
