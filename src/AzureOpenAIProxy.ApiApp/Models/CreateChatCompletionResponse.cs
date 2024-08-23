@@ -2,8 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
-using AzureOpenAIProxy.ApiApp.Attributes;
-
+using AzureOpenAIProxy.ApiApp.Converters;
 
 namespace AzureOpenAIProxy.ApiApp.Models;
 
@@ -242,7 +241,7 @@ public class ChatCompletionTokenLogProb
     [JsonPropertyName("bytes"), Required]
     public List<int>? Bytes { get; set; }
 
-    [JsonPropertyName("top_logprob"), Required]
+    [JsonPropertyName("top_logprobs"), Required]
     public List<TopLogProbs>? TopLogProbs { get; set; }
 }
 
@@ -318,10 +317,10 @@ public class Citation
 /// </summary>
 public class ContentFilterDetectedResult
 {
-    [JsonPropertyName("filtered")]
+    [JsonPropertyName("filtered"), Required]
     public bool? Filtered { get; set; }
 
-    [JsonPropertyName("detected")]
+    [JsonPropertyName("detected"), Required]
     public bool? Detected { get; set; }
 }
 
@@ -352,66 +351,66 @@ public class ErrorBase
 /// <summary>
 /// The type of the tool call, in this case `function`.
 /// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(EnumMemberConverter<ToolCallType>))]
 public enum ToolCallType
 {
     /// <summary>
     /// The tool call type is function.
     /// </summary>
-    [EnumMember(Value = "function")] 
+    [EnumMember(Value = "function")]
     Function
 }
 
 /// <summary>
 /// The role of the author of the response message.
 /// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(EnumMemberConverter<ChatCompletionResponseMessageRole>))]
 public enum ChatCompletionResponseMessageRole
 {
-    [EnumMember(Value = "assistant")] 
+    [EnumMember(Value = "assistant")]
     Assistant
 }
 
 /// <summary>
 /// The object type.
 /// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(EnumMemberConverter<ChatCompletionResponseObject>))]
 public enum ChatCompletionResponseObject
 {
     /// <summary>
     /// The object type is chat completion.
     /// </summary>
-    [EnumMember(Value = "chat.completion")] 
+    [EnumMember(Value = "chat.completion")]
     ChatCompletion
 }
 
 /// <summary>
 /// Severity levels for content filtering.
 /// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(EnumMemberConverter<ContentFilterSeverity>))]
 public enum ContentFilterSeverity
 {
     /// <summary>
     /// General content or related content in generic or non-harmful contexts.
     /// </summary>
-    [EnumMember(Value = "safe")] 
-    Saf,
-    
+    [EnumMember(Value = "safe")]
+    Safe,
+
     /// <summary>
     /// Harmful content at a low intensity and risk level.
     /// </summary>
-    [EnumMember(Value = "low")]  
+    [EnumMember(Value = "low")]
     Low,
-    
+
     /// <summary>
     /// Harmful content at a medium intensity and risk level.
     /// </summary>
-    [EnumMember(Value = "medium")] 
+    [EnumMember(Value = "medium")]
     Medium,
-    
+
     /// <summary>
     /// Harmful content at a high intensity and risk level.
     /// </summary>
-    [EnumMember(Value = "high")] 
+    [EnumMember(Value = "high")]
     High
 }
