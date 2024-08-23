@@ -25,7 +25,7 @@ namespace AzureOpenAIProxy.ApiApp.Endpoints
                 // Need authorization
                 return Results.Ok();
             })
-            .Produces<EventListEntity>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
+            .Produces<EventDetails>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
             .Produces(statusCode: StatusCodes.Status401Unauthorized)
             .Produces<string>(statusCode: StatusCodes.Status500InternalServerError, contentType: "text/plain")
             .WithTags("events")
