@@ -8,42 +8,21 @@ using AzureOpenAIProxy.PlaygroundApp.Components.UI;
 
 namespace AzureOpenAIProxy.PlaygroundApp.Tests.UI
 {
-    // Playwright 테스트
+    // 1. Playwright 테스트
+    [Parallelizable(ParallelScope.Self)]
     [TestFixture]
     public class ComponentIntegrationTests : PageTest
     {
-        private IPlaywright _playwright;
-        private IBrowser _browser;
-        private IBrowserContext _context;
-        private IPage _page;
-        private IElementHandle? _fluentSelect;
-
         public override BrowserNewContextOptions ContextOptions() => new()
         {
             IgnoreHTTPSErrors = true,
         };
 
         [SetUp]
-        public async Task fieldSetup()
-        {
-            _playwright = await Microsoft.Playwright.Playwright.CreateAsync();
-            _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
-            {
-                Headless = true // Integration test를 위해 Headless 모드로 설정
-            });
-            _context = await _browser.NewContextAsync();
-            _page = await _context.NewPageAsync();
-        }
-
-        [SetUp]
         public async Task NavigateToTargetPage()
         {
-            await _page.GotoAsync("http://localhost:5001/tests");
-            await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-
-            // 페이지 초기화 및 fluentSelect 설정
-            _fluentSelect = await _page.QuerySelectorAsync("fluent-select#deployment-model-list");
-            Assert.That(_fluentSelect, Is.Not.Null);
+            await Page.GotoAsync("http://localhost:5000/tests");
+            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         }
 
         [Test]
@@ -51,12 +30,12 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests.UI
         public async Task IsThereAHeading()
         {
             // Act
-            await Expect(_page
+            await Expect(Page
                 .GetByRole(AriaRole.Heading, new() { Name = "Deployment" }))
                 .ToBeVisibleAsync();
 
             // Assert
-            Assert.That(await _page.GetByRole(AriaRole.Heading, new() { Name = "Deployment" }).IsVisibleAsync(), Is.True);
+            Assert.That(await Page.GetByRole(AriaRole.Heading, new() { Name = "Deployment" }).IsVisibleAsync(), Is.True);
         }
 
         [Test]
@@ -64,11 +43,12 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests.UI
         public async Task IsThereADropdownComponent()
         {
             // fluentSelect 컴포넌트가 페이지에 존재하는지 확인
-            Assert.That(_fluentSelect, Is.Not.Null);
-            await _fluentSelect.ClickAsync();
+            var fluentSelect = await Page.QuerySelectorAsync("fluent-select#deployment-model-list");
+            Assert.That(fluentSelect, Is.Not.Null);
+            await fluentSelect.ClickAsync();
 
             // fluentSelect 컴포넌트의 옵션이 페이지에 표시되는지 확인
-            var fluentOptions = await _fluentSelect.QuerySelectorAllAsync("fluent-option");
+            var fluentOptions = await fluentSelect.QuerySelectorAllAsync("fluent-option");
             Assert.That(fluentOptions.Count, Is.GreaterThan(0));
             foreach (var option in fluentOptions)
             {
@@ -81,35 +61,34 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests.UI
         public async Task IsDropdownOptionSelectWorking()
         {
             // Arrange
-            Assert.That(_fluentSelect, Is.Not.Null);
-            await _fluentSelect.ClickAsync();
-            var fluentOptions = await _fluentSelect.QuerySelectorAllAsync("fluent-option");
+            var fluentSelect = await Page.QuerySelectorAsync("fluent-select#deployment-model-list");
+            Assert.That(fluentSelect, Is.Not.Null);
+            await fluentSelect.ClickAsync();
+            var fluentOptions = await fluentSelect.QuerySelectorAllAsync("fluent-option");
             Assert.That(fluentOptions.Count, Is.GreaterThan(0));
 
             // Act
             var userSelectedOption = fluentOptions[0]; // Select the first option
             await userSelectedOption.ClickAsync();
 
-            await _page.EvaluateAsync(@"() => {
+            await Page.EvaluateAsync(@"() => {
                 window.selectValue = document.querySelector('fluent-select#deployment-model-list').value;
             }"); // Define and set 'selectValue'(Component variable) in the page context
 
             // Assert
-            var userSelectedOptionValue = await _fluentSelect.EvaluateAsync<string>("el => el.value"); // Get the selected value
-            var actualSelectedValue = await _page.EvaluateAsync<string>("() => selectValue"); // Get the selected value from the page context
+            var userSelectedOptionValue = await fluentSelect.EvaluateAsync<string>("el => el.value"); // Get the selected value
+            var actualSelectedValue = await Page.EvaluateAsync<string>("() => selectValue"); // Get the selected value from the page context
             Assert.That(actualSelectedValue, Is.EqualTo(userSelectedOptionValue));
         }
 
         [TearDown]
         public async Task Teardown()
         {
-            await _page.CloseAsync();
-            await _browser.CloseAsync();
-            _playwright.Dispose();
+            await Page.CloseAsync();
         }
     }
 
-    // Bunit 테스트
+    // 2. Bunit 테스트
     [TestFixture]
     public class DeploymentModelListComponentTests : Bunit.TestContext
     {
