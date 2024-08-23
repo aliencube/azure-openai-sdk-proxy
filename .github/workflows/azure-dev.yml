@@ -79,7 +79,7 @@ jobs:
       run: |
         dotnet build -c Release
 
-    - name: OpenAPI linting
+    - name: Lint OpenAPI doc
       shell: bash
       run: |
         API_VERSION=$(grep -oP 'public const string Version = "\K[^"]+' ./src/AzureOpenAIProxy.ApiApp/Constants.cs)
