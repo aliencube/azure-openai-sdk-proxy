@@ -1,4 +1,5 @@
 using System.Text.Json;
+
 using AzureOpenAIProxy.ApiApp.Models;
 
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace AzureOpenAIProxy.ApiApp.Endpoints
 {
     /// <summary>
-    /// This represents the endpoint entity for events.
+    /// This represents the endpoint entity for events that the logged user joined.
     /// </summary>
     public static class EventEndpoint
     {
@@ -19,22 +20,22 @@ namespace AzureOpenAIProxy.ApiApp.Endpoints
         public static RouteHandlerBuilder AddEventEndpoint(this WebApplication app)
         {
             var rt = app.MapGet(EndpointUrls.Events, () =>
-                {
+            {
                 // TODO: Implement logic of endpoints
                 // Need authorization
                 return Results.Ok();
-                })
-                .Produces<EventListEntity>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
+            })
+            .Produces<EventListEntity>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
             .Produces(statusCode: StatusCodes.Status401Unauthorized)
             .Produces<string>(statusCode: StatusCodes.Status500InternalServerError, contentType: "text/plain")
-                .WithTags("events")
-                .WithName("GetEvents")
-                .WithOpenApi(operations =>
-                {
-                    operations.Description = "Show all events in Azure OpenAI Proxy services.";
-                    operations.Summary = "Get all events";
-                    return operations;
-                });
+            .WithTags("events")
+            .WithName("GetEvents")
+            .WithOpenApi(operations =>
+            {
+                operations.Description = "Show all events in Azure OpenAI Proxy services that the logged user joined.";
+                operations.Summary = "Show the logged user's joined events.";
+                return operations;
+            });
 
             return rt;
         }
