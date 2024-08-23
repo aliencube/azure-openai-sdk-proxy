@@ -138,7 +138,7 @@ public class CreateChatCompletionResponseTests
                                 ""bytes"": [
                                     0
                                 ],
-                                ""top_logprob"": [
+                                ""top_logprobs"": [
                                     {
                                         ""token"": ""string"",
                                         ""logprob"": 0,
