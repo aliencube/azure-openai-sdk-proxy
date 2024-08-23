@@ -6,7 +6,7 @@ using Assert = NUnit.Framework.Assert;
 using Bunit;
 using AzureOpenAIProxy.PlaygroundApp.Components.UI;
 
-namespace AzureOpenAIProxy.PlaygroundApp.Tests
+namespace AzureOpenAIProxy.PlaygroundApp.Tests.UI
 {
     // Playwright 테스트
     [TestFixture]
@@ -38,7 +38,7 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests
         [SetUp]
         public async Task NavigateToTargetPage()
         {
-            await _page.GotoAsync("http://localhost:5000/tests");
+            await _page.GotoAsync("http://localhost:5001/tests");
             await _page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
             // 페이지 초기화 및 fluentSelect 설정
