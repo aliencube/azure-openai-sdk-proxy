@@ -5,16 +5,53 @@ using Microsoft.AspNetCore.Mvc;
 namespace AzureOpenAIProxy.ApiApp.Endpoints;
 
 /// <summary>
-/// This represents the endpoint entity for get event details by admin
+/// This represents the endpoint entity for admin event
 /// </summary>
 public static class AdminEventEndpoints
 {
     /// <summary>
-    /// Adds the get event details by admin endpoint
+    /// Adds the admin event endpoint
     /// </summary>
     /// <param name="app"><see cref="WebApplication"/> instance.</param>
     /// <returns>Returns <see cref="RouteHandlerBuilder"/> instance.</returns>
-    public static RouteHandlerBuilder AddAdminEvents(this WebApplication app)
+    public static RouteHandlerBuilder CreateAdminEvent(this WebApplication app)
+    {
+        var builder = app.MapPost(AdminEndpointUrls.AdminEvent, async (
+            [FromBody] AdminEvent payload,
+            HttpRequest request) =>
+        {
+            await Task.Run(() =>
+            {
+                // TODO: Save the admin event in DB
+            });
+
+            return Results.Ok();
+        })
+        // TODO: Check both request/response payloads
+        .Accepts<AdminEvent>(contentType: "application/json")
+        .Produces<AdminEventDetails>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
+        // TODO: Check both request/response payloads
+        .Produces(statusCode: StatusCodes.Status401Unauthorized)
+        .Produces<string>(statusCode: StatusCodes.Status500InternalServerError, contentType: "text/plain")
+        .WithTags("event")
+        .WithName("CreateAdminEvent")
+        .WithOpenApi(operation =>
+        {
+            operation.Summary = "Create admin event";
+            operation.Description = "Create admin event";
+
+            return operation;
+        });
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Adds the create event by admin endpoint
+    /// </summary>
+    /// <param name="app"><see cref="WebApplication"/> instance.</param>
+    /// <returns>Returns <see cref="RouteHandlerBuilder"/> instance.</returns>
+    public static RouteHandlerBuilder GetAdminEventDetails(this WebApplication app)
     {
         // Todo: Issue #19 https://github.com/aliencube/azure-openai-sdk-proxy/issues/19
         // Need authorization by admin
