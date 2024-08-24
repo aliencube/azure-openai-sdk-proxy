@@ -6,16 +6,6 @@
 public class AdminEventDetails : EventDetails
 {
     /// <summary>
-    /// Gets or sets the event coorganizer name.
-    /// </summary>
-    public string? CoorganizerName { get; set; }
-
-    /// <summary>
-    /// Gets or sets the event coorganizer email.
-    /// </summary>
-    public string? CoorganizerEmail { get; set; }
-
-    /// <summary>
     /// Gets or sets the event description.
     /// </summary>
     public string? Description { get; set; }
@@ -49,4 +39,14 @@ public class AdminEventDetails : EventDetails
     /// Gets or sets the organizer's email address.
     /// </summary>
     public required string? OrganizerEmail { get; set; }
+
+    /// <summary>
+    /// Gets or sets the event coorganizer name.
+    /// </summary>
+    public string? CoorganizerName { get; set; }
+
+    /// <summary>
+    /// Gets or sets the event coorganizer email.
+    /// </summary>
+    public string? CoorganizerEmail { get; set; }
 }
