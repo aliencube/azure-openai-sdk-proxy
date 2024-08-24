@@ -2,9 +2,6 @@ using System.Text.Json;
 
 using AzureOpenAIProxy.ApiApp.Models;
 
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-
 namespace AzureOpenAIProxy.ApiApp.Endpoints;
 
 /// <summary>

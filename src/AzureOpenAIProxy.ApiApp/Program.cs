@@ -1,9 +1,5 @@
-using System.Reflection;
-
 using AzureOpenAIProxy.ApiApp.Endpoints;
 using AzureOpenAIProxy.ApiApp.Extensions;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
