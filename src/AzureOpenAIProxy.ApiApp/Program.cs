@@ -40,7 +40,7 @@ app.AddWeatherForecast();
 app.AddChatCompletions();
 
 // Event Endpoints
-app.AddEvents();
+app.AddEventList();
 
 // Admin Endpoints
 app.AddAdminEvents();

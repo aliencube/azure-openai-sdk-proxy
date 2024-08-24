@@ -14,7 +14,7 @@ public static class EventEndpoint
     /// </summary>
     /// <param name="app"><see cref="WebApplication"/> instance.</param>
     /// <returns>Returns <see cref="RouteHandlerBuilder"/> instance.</returns>
-    public static RouteHandlerBuilder AddEvents(this WebApplication app)
+    public static RouteHandlerBuilder AddEventList(this WebApplication app)
     {
         var builder = app.MapGet(EndpointUrls.Events, () =>
         {
