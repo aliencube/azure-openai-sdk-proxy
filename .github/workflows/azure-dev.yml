@@ -10,7 +10,8 @@ on:
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
+  # checks: write
 
 jobs:
   build-test-deploy:
@@ -62,12 +63,7 @@ jobs:
       run: |
         dotnet new tool-manifest
         dotnet tool install SwashBuckle.AspNetCore.Cli
-
-    - name: Install Spectral Cli
-      shell: bash
-      run: |
-        curl -L https://raw.github.com/stoplightio/spectral/master/scripts/install.sh | sh
-
+    
     - name: Restore NuGet packages
       shell: bash
       run: |
@@ -78,13 +74,18 @@ jobs:
       run: |
         dotnet build -c Release
 
-    - name: Lint OpenAPI doc
+    - name: Create openapi.json
       shell: bash
       run: |
         API_VERSION=$(grep -oP 'public const string Version = "\K[^"]+' ./src/AzureOpenAIProxy.ApiApp/Constants.cs)
         dotnet swagger tofile --output ./openapi.json  ./src/AzureOpenAIProxy.ApiApp/bin/Debug/net8.0/AzureOpenAIProxy.ApiApp.dll $API_VERSION
 
-        spectral lint -f json -f github-actions -F warn openapi.json
+    - name: Lint OpenAPI doc
+      uses: stoplightio/spectral-action@latest
+      with:
+        file_glob: './openapi.json'
+        repo_token: ${{ secrets.GH_PAT_GRAINED }}
+
 
     - name: Test solution
 
