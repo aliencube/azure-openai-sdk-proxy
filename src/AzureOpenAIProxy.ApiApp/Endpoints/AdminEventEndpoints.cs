@@ -82,8 +82,8 @@ public static class AdminEventEndpoints
         // Todo: Issue #19 https://github.com/aliencube/azure-openai-sdk-proxy/issues/19
         // Need authorization by admin
         var builder = app.MapPut(AdminEndpointUrls.AdminEventDetails, (
-            [FromBody] AdminEventDetails payload,
-            [FromRoute] string eventId) =>
+            [FromRoute] string eventId,
+            [FromBody] AdminEventDetails payload) =>
         {
             // Todo: Issue #203 https://github.com/aliencube/azure-openai-sdk-proxy/issues/203
             return Results.Ok();
@@ -91,7 +91,7 @@ public static class AdminEventEndpoints
         .Accepts<AdminEventDetails>(contentType: "application/json")
         .Produces<AdminEventDetails>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
-        .Produces<string>(statusCode: StatusCodes.Status404NotFound, contentType: "text/plain")
+        .Produces(statusCode: StatusCodes.Status404NotFound, contentType: "text/plain")
         .Produces<string>(statusCode: StatusCodes.Status500InternalServerError, contentType: "text/plain")
         .WithTags("admin")
         .WithName("UpdateAdminEventDetails")
