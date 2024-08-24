@@ -8,7 +8,7 @@ public class AdminEventDetails
     /// <summary>
     /// Gets or sets the event id.
     /// </summary>
-    public Guid? EventId { get; set; }
+    public required Guid? EventId { get; set; }
 
     /// <summary>
     /// Gets or sets the event title name.
