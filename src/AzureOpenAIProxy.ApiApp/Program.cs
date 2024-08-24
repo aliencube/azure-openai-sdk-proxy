@@ -42,7 +42,9 @@ app.UseHttpsRedirection();
 
 app.AddWeatherForecast();
 app.AddChatCompletions();
-app.AddEventEndpoint();
+
+// Events Endpoints
+app.AddEvents();
 
 // Admin Endpoints
 app.AddAdminEvents();
