@@ -93,10 +93,10 @@ jobs:
 
         if( $LINT_RESULT.Count -gt 0) {
           $LINT_RESULT | ForEach-Object {
-            echo ("code: " + $_.code)
-            echo ("message: " + $_.message)
-            echo ("path: " + $_.path)
-            echo "`n"
+            Write-Host ("code: " + $_.code)
+            Write-Host ("message: " + $_.message)
+            Write-Host ("path: " + $($_.path -join "."))
+            Write-Host "`n"
           }
           exit 1
         }
