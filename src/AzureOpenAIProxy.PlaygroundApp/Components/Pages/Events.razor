@@ -1,93 +1,12 @@
 ﻿@page "/events"
 @attribute [StreamRendering]
 
+@using AzureOpenAIProxy.PlaygroundApp.Components.UI.Admin
+
 <PageTitle>Events</PageTitle>
 
 <h1>Events</h1>
 
 <p>This component demonstrates showing events.</p>
 
-@if (eventDetails == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-    <thead>
-        <tr>
-            <th>Event</th>
-            <th>Owner</th>
-            <th>Start</th>
-            <th>Expire</th>
-            <th>Usage</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var eventDetail in eventDetails)
-            {
-                <tr>
-                    <td>
-                        <p style="margin-bottom: 0px;">@eventDetail.EventName</p>
-                        <p style="color: gray;">@eventDetail.EventCode</p>
-                    </td>
-                    <td>
-                        <p style="margin-bottom: 0px;">@eventDetail.OrganizerName</p>
-                        <p style="color: gray;">@eventDetail.OrganizerEmail</p>
-                    </td>
-                    <td>
-                        <p>@eventDetail.StartDate.ToShortDateString()</p>
-                    </td>
-                    <td>
-                        <p>@eventDetail.EndDate.ToShortDateString()</p>
-                    </td>
-                    <td>
-                        <p style="margin-bottom: 0px;">@eventDetail.TokenUsage</p>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-
-@code {
-    private EventDetails[]? eventDetails;
-
-    protected override async Task OnInitializedAsync()
-    {
-        // Simulate asynchronous loading to demonstrate streaming rendering
-        await Task.Delay(500);
-
-        var startDate = DateOnly.FromDateTime(DateTime.Now);
-
-        // make dummy data
-        eventDetails = Enumerable.Range(1, 5).Select(index => new EventDetails
-            {
-                StartDate = DateOnly.FromDateTime(DateTime.Now).AddDays(index),
-                EndDate = DateOnly.FromDateTime(DateTime.Now).AddDays(index + 7),
-                EventName = index % 2 == 0 ? "GPT35_ON_HACKATHON" : "DALLE_ON_SDK",
-                EventCode = Guid.NewGuid().ToString(),
-                OrganizerName = $"charlie_{index}",
-                OrganizerEmail = $"aoai-{index}@microsoft.co.kr",
-                MaxTokenCap = 100 + index,
-                DailyRequestCap = 10 + index,
-                TokenUsage = (new Random()).Next(1, 1001)
-            }).ToArray();
-    }
-
-    private class EventDetails
-    {
-        public required string EventName { get; set; }
-        public required string EventCode { get; set; }
-
-        public required string OrganizerName { get; set; }
-        public string? OrganizerEmail { get; set; }
-
-        public DateOnly StartDate { get; set; }
-        public DateOnly EndDate { get; set; }
-
-        public int MaxTokenCap { get; set; }
-        public int DailyRequestCap { get; set; }
-        public int TokenUsage { get; set; }
-    }
-}
+<ListEventDetailsComponent @rendermode="InteractiveServer" />

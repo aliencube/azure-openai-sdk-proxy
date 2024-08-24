@@ -1,0 +1,162 @@
+<div>
+    @if (eventDetails == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Event</th>
+                    <th>Description</th>
+                    <th>When</th>
+                    <th>Active</th>
+                    <th>Organizer</th>
+                    <th>Coorganizer</th>
+                    <th>Cap</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var eventDetail in eventDetails)
+                {
+                    <tr>
+                        <td>
+                            <p style="margin-bottom: 0px;">@eventDetail.Title</p>
+                            <p style="color: gray;">@eventDetail.EventId</p>
+                        </td>
+                        <td>
+                            <p style="margin-bottom: 0px;">@eventDetail.Summary</p>
+                            <p style="color: gray;">@eventDetail.Description</p>
+                        </td>
+                        <td>
+                            <p style="margin-bottom: 0px;">@eventDetail.DateStart</p>
+                            <p style="margin-bottom: 0px;">@eventDetail.DateEnd</p>
+                            <p style="color: gray;">@eventDetail.TimeZone</p>
+                        </td>
+                        <td>
+                            <p>@eventDetail.IsActive</p>
+                        </td>
+                        <td>
+                            <p style="margin-bottom: 0px;">@eventDetail.OrganizerName</p>
+                            <p style="color: gray;">@eventDetail.OrganizerEmail</p>
+                        </td>
+                        <td>
+                            <p style="margin-bottom: 0px;">@eventDetail.CoorganizerName</p>
+                            <p style="color: gray;">@eventDetail.CoorganizerEmail</p>
+                        </td>
+                        <td>
+                            <p style="margin-bottom: 0px;">@eventDetail.MaxTokenCap</p>
+                            <p>@eventDetail.DailyRequestCap</p>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@code {
+    private AdminEventDetails[]? eventDetails;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Simulate asynchronous loading to demonstrate streaming rendering
+        await Task.Delay(100);
+
+        var startDate = DateOnly.FromDateTime(DateTime.Now);
+
+        // make dummy data
+        eventDetails = Enumerable.Range(1, 5).Select(index => new AdminEventDetails
+            {
+                EventId = Guid.NewGuid().ToString(),
+                Title = "dummy event!",
+                Summary = "dummy summary!",
+                Description = "dummy description!",
+                DateStart = DateTimeOffset.Now,
+                DateEnd = DateTimeOffset.Now.AddDays(7 + index),
+                TimeZone = "KST",
+                IsActive = index % 2 == 0,
+                OrganizerName = $"Charlie_{index}",
+                OrganizerEmail = $"user_{index}@gmail.com",
+                CoorganizerName = $"Bravo_{index}",
+                CoorganizerEmail = $"support_{index}@gmail.com",
+                MaxTokenCap = 100 + index,
+                DailyRequestCap = 10 + index
+            }).ToArray();
+    }
+
+    // AdminEventDetails - declared in AzureOpenAIProxy.ApiApp.Models
+    private class AdminEventDetails
+    {
+        /// <summary>
+        /// Gets or sets the event id.
+        /// </summary>
+        public required string? EventId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the event title name.
+        /// </summary>
+        public required string? Title { get; set; }
+
+        /// <summary>
+        /// Gets or sets the event summary.
+        /// </summary>
+        public required string? Summary { get; set; }
+
+        /// <summary>
+        /// Gets or sets the event description.
+        /// </summary>
+        public string? Description { get; set; }
+
+        /// <summary>
+        /// Gets or sets the event start date.
+        /// </summary>
+        public required DateTimeOffset? DateStart { get; set; }
+
+        /// <summary>
+        /// Gets or sets the event end date.
+        /// </summary>
+        public required DateTimeOffset? DateEnd { get; set; }
+
+        /// <summary>
+        /// Gets or sets the event start to end date timezone.
+        /// </summary>
+        public required string? TimeZone { get; set; }
+
+        /// <summary>
+        /// Gets or sets the event active status.
+        /// </summary>
+        public required bool? IsActive { get; set; }
+
+        /// <summary>
+        /// Gets or sets the event organizer name.
+        /// </summary>
+        public required string? OrganizerName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the event organizer email.
+        /// </summary>
+        public required string? OrganizerEmail { get; set; }
+
+        /// <summary>
+        /// Gets or sets the event coorganizer name.
+        /// </summary>
+        public string? CoorganizerName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the event coorganizer email.
+        /// </summary>
+        public string? CoorganizerEmail { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Azure OpenAI Service request max token capacity.
+        /// </summary>
+        public required int? MaxTokenCap { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Azure OpenAI Service daily request capacity.
+        /// </summary>
+        public required int? DailyRequestCap { get; set; }
+    }
+}
