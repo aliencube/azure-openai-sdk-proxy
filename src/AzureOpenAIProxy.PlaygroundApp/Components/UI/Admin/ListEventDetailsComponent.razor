@@ -121,16 +121,6 @@
             }).ToArray();
     }
 
-    private string GetActiveClass(bool? isActive)
-    {
-        if (!isActive.HasValue)
-        {
-            return "deactivated";
-        }
-
-        return isActive.Value ? "activated" : "deactivated";
-    }
-
     // AdminEventDetails - declared in AzureOpenAIProxy.ApiApp.Models
     private class AdminEventDetails
     {
