@@ -145,7 +145,7 @@ public class AdminUpdateEventDetailsOpenApiTests(AspireAppHostFixture host) : IC
 
 
     [Theory]
-    [InlineData("204")]
+    [InlineData("200")]
     [InlineData("401")]
     [InlineData("500")]
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Response(string attribute)

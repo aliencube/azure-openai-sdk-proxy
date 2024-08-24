@@ -88,7 +88,7 @@ public static class AdminEventEndpoints
             return Results.Ok();
         })
         .Accepts<AdminEventDetails>(contentType: "application/json")
-        .Produces(statusCode: StatusCodes.Status204NoContent)
+        .Produces<AdminEventDetails>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
         .Produces<string>(statusCode: StatusCodes.Status500InternalServerError, contentType: "text/plain")
         .WithTags("admin")
