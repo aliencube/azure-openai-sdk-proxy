@@ -8,6 +8,7 @@
   <ItemGroup>
     <PackageReference Include="Azure.AI.OpenAI" Version="$(AzureOpenAIVersion)" />
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="$(FluentUIVersion)" />
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.DataGrid.EntityFrameworkAdapter" Version="4.9.3" />
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Emoji" Version="$(FluentUIVersion)" />
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="$(FluentUIVersion)" />
   </ItemGroup>

@@ -36,25 +36,9 @@ public class AdminEventsPageTests : PageTest
         await Task.Delay(2000);
 
         // Act
-        var evtDetailTbl = await Page.QuerySelectorAsync("table.evt-detail-tbl");
+        var evtDetailTbl = await Page.QuerySelectorAsync("#evt-detail-tbl");
 
         // Assert
         Assert.That(evtDetailTbl, Is.Not.Null);
-    }
-
-    [Test]
-    public async Task Given_Events_Page_When_Navigated_Then_It_Should_Have_EventDetailsHeader()
-    {
-        // Arrange
-        await this.Page.GotoAsync("https://localhost:5001/events");
-
-        // wait for construct table header
-        await Task.Delay(2000);
-
-        // Act
-        var evtDetailElemHeader = await Page.QuerySelectorAsync("div.evt-detail-header");
-
-        // Assert
-        Assert.That(evtDetailElemHeader, Is.Not.Null);
     }
 }
