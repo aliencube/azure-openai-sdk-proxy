@@ -85,16 +85,13 @@ jobs:
         dotnet test ./test/AzureOpenAIProxy.AppHost.Tests -c Release --no-build --logger "trx" --collect:"XPlat Code Coverage"
         dotnet test ./test/AzureOpenAIProxy.ApiApp.Tests -c Release --no-build --logger "trx" --collect:"XPlat Code Coverage"
 
-    - name: Run AzureOpenAIProxy.AppHost in background
+    - name: Run integration tests
       shell: bash
       run: |
         dotnet run --project ./src/AzureOpenAIProxy.AppHost &
 
         sleep 30
 
-    - name: Run integration tests
-      shell: bash
-      run: |
         dotnet test ./test/AzureOpenAIProxy.PlaygroundApp.Tests -c Release --no-build --logger "trx" --collect:"XPlat Code Coverage"
 
     - name: Create openapi.json
