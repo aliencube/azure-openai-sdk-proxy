@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AzureOpenAIProxy.ServiceDefaults\AzureOpenAIProxy.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\AzureOpenAIProxy.ApiApp\AzureOpenAIProxy.ApiApp.csproj" />
   </ItemGroup>
 
 </Project>

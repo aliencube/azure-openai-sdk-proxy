@@ -6,7 +6,7 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests.Pages;
 [Parallelizable(ParallelScope.Self)]
 [TestFixture]
 [Property("Category", "Integration")]
-public class EventsPageTests : PageTest
+public class AdminEventsPageTests : PageTest
 {
     public override BrowserNewContextOptions ContextOptions() => new()
     {
@@ -23,7 +23,7 @@ public class EventsPageTests : PageTest
         var listEvtDetailsComp = await Page.QuerySelectorAsync("#evt-detail-comp");
 
         // Assert
-        Assert.IsNotNull(listEvtDetailsComp, "Test Failed: #evt-detail-comp not found");
+        Assert.That(listEvtDetailsComp, Is.Not.Null);
     }
 
     [Test]
@@ -33,13 +33,13 @@ public class EventsPageTests : PageTest
         await this.Page.GotoAsync("https://localhost:5001/events");
 
         // wait for construct table
-        await Task.Delay(200);
+        await Task.Delay(2000);
 
         // Act
         var evtDetailTbl = await Page.QuerySelectorAsync("table.evt-detail-tbl");
 
         // Assert
-        Assert.IsNotNull(evtDetailTbl, "Test Failed: table.evt-detail-tbl not found");
+        Assert.That(evtDetailTbl, Is.Not.Null);
     }
 
     [Test]
@@ -49,12 +49,12 @@ public class EventsPageTests : PageTest
         await this.Page.GotoAsync("https://localhost:5001/events");
 
         // wait for construct table header
-        await Task.Delay(200);
+        await Task.Delay(2000);
 
         // Act
         var evtDetailElemHeader = await Page.QuerySelectorAsync("div.evt-detail-header");
 
         // Assert
-        Assert.IsNotNull(evtDetailElemHeader, "Test Failed: div.evt-detail-header not found");
+        Assert.That(evtDetailElemHeader, Is.Not.Null);
     }
 }
