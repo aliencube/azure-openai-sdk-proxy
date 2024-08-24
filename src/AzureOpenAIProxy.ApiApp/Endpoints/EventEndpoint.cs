@@ -21,7 +21,7 @@ public static class EventEndpoint
             // TODO: Issue #179 https://github.com/aliencube/azure-openai-sdk-proxy/issues/179
             return Results.Ok();
         })
-        .Produces<EventDetails>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
+        .Produces<List<EventDetails>>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
         .Produces<string>(statusCode: StatusCodes.Status500InternalServerError, contentType: "text/plain")
         .WithTags("events")
