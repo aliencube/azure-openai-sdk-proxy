@@ -16,6 +16,7 @@ public class OpenApiTagFilter : IDocumentFilter
         [
             new OpenApiTag { Name = "weather", Description = "Weather forecast operations" },
             new OpenApiTag { Name = "openai", Description = "Azure OpenAI operations" },
+            new OpenApiTag { Name = "admin", Description = "Admin for organizing events" }
         ];
     }
 }

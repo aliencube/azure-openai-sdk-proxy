@@ -41,5 +41,6 @@ app.AddChatCompletions();
 
 // Admin Endpoints
 app.AddAdminEvents();
+app.AddAdminEventList();
 
 await app.RunAsync();
