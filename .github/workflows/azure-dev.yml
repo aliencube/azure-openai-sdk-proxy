@@ -63,11 +63,6 @@ jobs:
       run: |
         dotnet new tool-manifest
         dotnet tool install SwashBuckle.AspNetCore.Cli
-
-    - name: Install Spectral Cli
-      shell: bash
-      run: |
-        curl -L https://raw.github.com/stoplightio/spectral/master/scripts/install.sh | sh
     
     - name: Restore NuGet packages
       shell: bash
