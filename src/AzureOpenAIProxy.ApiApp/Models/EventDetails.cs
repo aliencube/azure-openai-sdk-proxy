@@ -14,7 +14,7 @@ public class EventDetails
     public required string? EventId { get; set; }
 
     /// <summary>
-    /// Gets or sets the event title.
+    /// Gets or sets the event title name.
     /// </summary>
     public required string? Title { get; set; }
 
@@ -24,12 +24,12 @@ public class EventDetails
     public required string? Summary { get; set; }
 
     /// <summary>
-    /// Gets or sets the event's maximum token capacity.
+    /// Gets or sets the Azure OpenAI Service request max token capacity.
     /// </summary>
     public required int? MaxTokenCap { get; set; }
 
     /// <summary>
-    /// Gets or sets the event's daily request capacity.
+    /// Gets or sets the Azure OpenAI Service daily request capacity.
     /// </summary>
     public required int? DailyRequestCap { get; set; }
 }
