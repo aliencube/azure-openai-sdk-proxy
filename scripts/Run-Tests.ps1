@@ -7,6 +7,10 @@ Param(
 
     [switch]
     [Parameter(Mandatory=$false)]
+    $KillPorts,
+
+    [switch]
+    [Parameter(Mandatory=$false)]
     $Help
 )
 
@@ -15,16 +19,31 @@ function Show-Usage {
 
     Usage: $(Split-Path $MyInvocation.ScriptName -Leaf) ``
             [-Configuration     <Configuration>] ``
+            [-KillPorts] ``
 
             [-Help]
 
     Options:
         -Configuration      Configuration. Possible values are 'Debug' or 'Release'. Default is 'Debug'.
+        -KillPorts          Kill the processes that are using the ports 21000 and 22000.
 
         -Help:              Show this message.
 "
 
     Exit 0
+}
+
+if ($KillPorts -eq $true) {
+    Write-Host "Killing any running ports..." -ForegroundColor Cyan
+
+    $OTLP_PID = Get-NetTCPConnection -LocalPort 21000 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess | Get-Unique
+    if ($OTLP_PID) {
+        $OTLP_PID | ForEach-Object { Stop-Process -Id $_ -Force }
+    }
+    $SERVICE_PID = Get-NetTCPConnection -LocalPort 22000 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess | Get-Unique
+    if ($SERVICE_PID) {
+        $SERVICE_PID | ForEach-Object { Stop-Process -Id $_ -Force }
+    }
 }
 
 # Builds apps
@@ -51,6 +70,22 @@ Start-Sleep -s 30
 
 dotnet test ./test/AzureOpenAIProxy.PlaygroundApp.Tests -c $Configuration --logger "trx" --collect:"XPlat Code Coverage"
 
+# Generates OpenAPI document
+Write-Host "Invoking OpenAPI lint..." -ForegroundColor Cyan
+
+$OPENAPI_DOCVERSION = $(Get-Content ./src/AzureOpenAIProxy.ApiApp/appsettings.json | ConvertFrom-Json).OpenApi.DocVersion
+Invoke-WebRequest -Uri "https://localhost:7001/swagger/$OPENAPI_DOCVERSION/swagger.json" -OutFile ./swagger.json
+
+# Lints OpenAPI document
+$SPECTRAL_PATH = Get-Command spectral -ErrorAction SilentlyContinue
+if ($SPECTRAL_PATH -eq $null) {
+    Write-Host "Spectral CLI has not been installed. Installing Spectral CLI first." -ForegroundColor Cyan
+    Exit 1
+}
+spectral lint -F warn -D -q ./swagger.json
+
+Write-Host "... Done" -ForegroundColor Cyan
+
 # Cleans up
 $process = if ($IsWindows -eq $true) {
     Get-Process | Where-Object { $_.ProcessName -eq "AzureOpenAIProxy.AppHost" }
@@ -58,11 +93,11 @@ $process = if ($IsWindows -eq $true) {
     Get-Process | Where-Object { $_.Path -like "*AzureOpenAIProxy.AppHost" }
 }
 Stop-Process -Id $process.Id
-# # Get the process ID (PID) of the process listening on port 21000
-# $OTLP_PID = Get-NetTCPConnection -LocalPort 21000 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess
-
-# # Check if the PID is not null or empty
-# if ($OTLP_PID) {
-#     # Kill the process
-#     Stop-Process -Id $OTLP_PID -Force
-# }
+$OTLP_PID = Get-NetTCPConnection -LocalPort 21000 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess | Get-Unique
+if ($OTLP_PID) {
+    $OTLP_PID | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }
+}
+$SERVICE_PID = Get-NetTCPConnection -LocalPort 22000 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess | Get-Unique
+if ($SERVICE_PID) {
+    $SERVICE_PID | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }
+}

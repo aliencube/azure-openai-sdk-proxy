@@ -86,7 +86,7 @@ This provides a proxy server application of Azure OpenAI Service API that round-
         --parameters location=$AZURE_LOCATION
     ```
 
-## Unit Testing & Integration Testing
+## Unit Testing & Integration Testing & Linting OpenAPI Document
 
 1. Run the following command to run both unit tests and integration tests at once on your local machine.
 
@@ -95,11 +95,5 @@ This provides a proxy server application of Azure OpenAI Service API that round-
     ./scripts/run-tests.sh -c Debug -k || ./scripts/run-tests.sh -c Debug
 
     # PowerShell
-    ./scripts/Run-Tests.ps1 -Configuration Debug -KillPorts || ./scripts/Run-Tests.ps1 -Configuration Debug
+    ./scripts/Run-Tests.ps1 -Configuration Debug -KillPorts
     ```
-
-   > **NOTE**: While running the integration tests using the script above, you might be seeing the error like
-   > 
-   > `System.IO.IOException: Failed to bind to address https://127.0.0.1:22000: address already in use.`
-   > 
-   > It can sometimes happen. However, it doesn't impact on the test results.
