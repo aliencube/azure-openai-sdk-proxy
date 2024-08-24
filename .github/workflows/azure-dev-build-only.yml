@@ -16,6 +16,7 @@ permissions:
   contents: read
   issues: write
   pull-requests: write
+  checks: write
 
 jobs:
   build-test:
@@ -43,6 +44,17 @@ jobs:
         dotnet workload update
         dotnet workload install aspire
 
+    - name: Install SwashBuckle Cli
+      shell: bash
+      run: |
+        dotnet new tool-manifest
+        dotnet tool install SwashBuckle.AspNetCore.Cli
+    
+    - name: Install Spectral Cli
+      shell: bash
+      run: |
+        curl -L https://raw.github.com/stoplightio/spectral/master/scripts/install.sh | sh
+
     - name: Restore NuGet packages
       shell: bash
       run: |
@@ -53,12 +65,24 @@ jobs:
       run: |
         dotnet build
 
+    - name: Create openapi.json
+      shell: bash
+      run: |
+        API_VERSION=$(grep -oP 'public const string Version = "\K[^"]+' ./src/AzureOpenAIProxy.ApiApp/Constants.cs)
+        dotnet swagger tofile --output ./openapi.json  ./src/AzureOpenAIProxy.ApiApp/bin/Debug/net8.0/AzureOpenAIProxy.ApiApp.dll $API_VERSION
+
+    - name: Lint OpenAPI doc
+      uses: stoplightio/spectral-action@latest
+      with:
+        file_glob: './openapi.json'
+
     - name: Install playwright
       shell: pwsh
       run: |
         $playwright = Get-ChildItem -File Microsoft.Playwright.dll -Path . -Recurse
         $installer = "$($playwright[0].Directory.FullName)/playwright.ps1"
         & "$installer" install
+
 
     - name: Run unit tests
       shell: bash

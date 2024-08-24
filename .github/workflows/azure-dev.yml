@@ -11,6 +11,7 @@ on:
 permissions:
   id-token: write
   contents: read
+  checks: write
 
 jobs:
   build-test-deploy:
@@ -57,6 +58,17 @@ jobs:
         $appsettings.Azure.KeyVault.SecretName = "${{ env.AZURE_KEYVAULT_SECRET_NAME }}"
         $appsettings | ConvertTo-Json -Depth 100 | Set-Content -Path "./src/AzureOpenAIProxy.ApiApp/appsettings.json" -Encoding UTF8 -Force
 
+    - name: Install SwashBuckle Cli
+      shell: bash
+      run: |
+        dotnet new tool-manifest
+        dotnet tool install SwashBuckle.AspNetCore.Cli
+
+    - name: Install Spectral Cli
+      shell: bash
+      run: |
+        curl -L https://raw.github.com/stoplightio/spectral/master/scripts/install.sh | sh
+    
     - name: Restore NuGet packages
       shell: bash
       run: |
@@ -66,6 +78,19 @@ jobs:
       shell: bash
       run: |
         dotnet build -c Release
+
+    - name: Create openapi.json
+      shell: bash
+      run: |
+        API_VERSION=$(grep -oP 'public const string Version = "\K[^"]+' ./src/AzureOpenAIProxy.ApiApp/Constants.cs)
+        dotnet swagger tofile --output ./openapi.json  ./src/AzureOpenAIProxy.ApiApp/bin/Debug/net8.0/AzureOpenAIProxy.ApiApp.dll $API_VERSION
+
+    - name: Lint OpenAPI doc
+      uses: stoplightio/spectral-action@latest
+      with:
+        file_glob: './openapi.json'
+
+    - name: Test solution
 
     - name: Install playwright
       shell: pwsh
