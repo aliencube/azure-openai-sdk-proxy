@@ -16,7 +16,6 @@ permissions:
   contents: write
   issues: write
   pull-requests: write
-  # checks: write
 
 jobs:
   build-test:
@@ -44,11 +43,10 @@ jobs:
         dotnet workload update
         dotnet workload install aspire
 
-    - name: Install SwashBuckle Cli
+    - name: Install Spectral Cli
       shell: bash
       run: |
-        dotnet new tool-manifest
-        dotnet tool install SwashBuckle.AspNetCore.Cli
+        curl -L https://raw.github.com/stoplightio/spectral/master/scripts/install.sh | sh
 
     - name: Restore NuGet packages
       shell: bash
@@ -61,16 +59,28 @@ jobs:
         dotnet build
 
     - name: Create openapi.json
-      shell: bash
+      shell: pwsh
       run: |
-        API_VERSION=$(grep -oP 'public const string Version = "\K[^"]+' ./src/AzureOpenAIProxy.ApiApp/Constants.cs)
-        dotnet swagger tofile --output ./openapi.json  ./src/AzureOpenAIProxy.ApiApp/bin/Debug/net8.0/AzureOpenAIProxy.ApiApp.dll $API_VERSION
+        $fileContent = Get-Content './src/AzureOpenAIProxy.ApiApp/Constants.cs'
+        $API_VERSION = [regex]::Match($fileContent, 'public const string Version = "([^"]+)"').Groups[1].Value
+
+        $PROCESS = Start-Process -FilePath "dotnet" -ArgumentList "run --project src/AzureOpenAIProxy.AppHost" -PassThru
+
+        Start-Sleep -Seconds 30
+
+        Invoke-WebRequest -Uri "https://localhost:7001/swagger/$API_VERSION/swagger.json" -OutFile "openapi.json"
+
+        $PROCESS.Kill()
 
     - name: Lint OpenAPI doc
-      uses: stoplightio/spectral-action@latest
-      with:
-        file_glob: './openapi.json'
-        repo_token: ${{ secrets.GH_PAT_GRAINED }}
+      shell: pwsh
+      run: |
+        $LINT_RESULT = spectral lint -f json -F warn -D openapi.json
+
+        if( $LINT_RESULT.Count -ge 1) {
+          $LINT_RESULT
+          exit 1
+        }
 
     - name: Install playwright
       shell: pwsh
@@ -78,7 +88,6 @@ jobs:
         $playwright = Get-ChildItem -File Microsoft.Playwright.dll -Path . -Recurse
         $installer = "$($playwright[0].Directory.FullName)/playwright.ps1"
         & "$installer" install
-
 
     - name: Run unit tests
       shell: bash
