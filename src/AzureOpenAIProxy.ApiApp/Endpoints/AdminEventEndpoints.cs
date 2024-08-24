@@ -16,16 +16,11 @@ public static class AdminEventEndpoints
     /// <returns>Returns <see cref="RouteHandlerBuilder"/> instance.</returns>
     public static RouteHandlerBuilder CreateAdminEvent(this WebApplication app)
     {
-        var builder = app.MapPost(AdminEndpointUrls.AdminEvent, async (
+        var builder = app.MapPost(AdminEndpointUrls.AdminEvents, async (
             [FromBody] AdminEvent payload,
             HttpRequest request) =>
         {
-            await Task.Run(() =>
-            {
-                // TODO: Save the admin event in DB
-            });
-
-            return Results.Ok();
+            return await Task.FromResult(Results.Ok());
         })
         // TODO: Check both request/response payloads
         .Accepts<AdminEvent>(contentType: "application/json")
