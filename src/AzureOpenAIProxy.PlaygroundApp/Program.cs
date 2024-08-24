@@ -7,10 +7,6 @@ using App = AzureOpenAIProxy.PlaygroundApp.Components.App;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
-builder.Services.AddHttpClient();
-
-// Add services to the FluentUI
-builder.Services.AddFluentUIComponents();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
