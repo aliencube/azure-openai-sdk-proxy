@@ -11,5 +11,5 @@ public static class AdminEndpointUrls
     /// Declares the admin event list endpoint.
     /// </summary>
     //TODO: [tae0y] endpoint 이름 정하기 /admin/events or /admin/eventlist
-    public const string AdminEventList = "/admin/eventlist";
+    public const string AdminEventList = "/admin/events";
 }

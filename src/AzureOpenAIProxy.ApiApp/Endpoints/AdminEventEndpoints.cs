@@ -62,11 +62,11 @@ public static class AdminEventEndpoints
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
         .Produces<string>(statusCode: StatusCodes.Status500InternalServerError, contentType: "text/plain")
         .WithTags("admin")
-        .WithName("GetAdminEventList")
+        .WithName("GetAdminEvents")
         .WithOpenApi(operation =>
         {
-            operation.Summary = "Gets all event list";
-            operation.Description = "This endpoint gets all event list";
+            operation.Summary = "Gets all events";
+            operation.Description = "This endpoint gets all events";
 
             return operation;
         });

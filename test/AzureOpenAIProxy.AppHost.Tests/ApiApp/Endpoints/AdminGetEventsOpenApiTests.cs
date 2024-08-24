@@ -8,7 +8,7 @@ using IdentityModel.Client;
 
 namespace AzureOpenAIProxy.AppHost.Tests.ApiApp.Endpoints;
 
-public class AdminGetEventListOpenApiTests(AspireAppHostFixture host) : IClassFixture<AspireAppHostFixture>
+public class AdminGetEventsOpenApiTests(AspireAppHostFixture host) : IClassFixture<AspireAppHostFixture>
 {
     // TODO: [tae0y] 테스트코드 작성하기
     [Fact]
@@ -23,7 +23,7 @@ public class AdminGetEventListOpenApiTests(AspireAppHostFixture host) : IClassFi
 
         // Assert
         var result = openapi!.RootElement.GetProperty("paths")
-                                         .TryGetProperty("/admin/eventlist", out var property) ? property : default;
+                                         .TryGetProperty("/admin/events", out var property) ? property : default;
         result.ValueKind.Should().Be(JsonValueKind.Object);
     }
 
@@ -39,7 +39,7 @@ public class AdminGetEventListOpenApiTests(AspireAppHostFixture host) : IClassFi
 
         // Assert
         var result = openapi!.RootElement.GetProperty("paths")
-                                         .GetProperty("/admin/eventlist")
+                                         .GetProperty("/admin/events")
                                          .TryGetProperty("get", out var property) ? property : default;
         result.ValueKind.Should().Be(JsonValueKind.Object);
     }
@@ -57,7 +57,7 @@ public class AdminGetEventListOpenApiTests(AspireAppHostFixture host) : IClassFi
 
         // Assert
         var result = openapi!.RootElement.GetProperty("paths")
-                                         .GetProperty("/admin/eventlist")
+                                         .GetProperty("/admin/events")
                                          .GetProperty("get")
                                          .TryGetProperty("tags", out var property) ? property : default;
         result.ValueKind.Should().Be(JsonValueKind.Array);
@@ -79,7 +79,7 @@ public class AdminGetEventListOpenApiTests(AspireAppHostFixture host) : IClassFi
 
         // Assert
         var result = openapi!.RootElement.GetProperty("paths")
-                                         .GetProperty("/admin/eventlist")
+                                         .GetProperty("/admin/events")
                                          .GetProperty("get")
                                          .TryGetProperty(attribute, out var property) ? property : default;
         result.ValueKind.Should().Be(JsonValueKind.String);
@@ -98,7 +98,7 @@ public class AdminGetEventListOpenApiTests(AspireAppHostFixture host) : IClassFi
 
         // Assert
         var result = openapi!.RootElement.GetProperty("paths")
-                                         .GetProperty("/admin/eventlist")
+                                         .GetProperty("/admin/events")
                                          .GetProperty("get")
                                          .TryGetProperty(attribute, out var property) ? property : default;
         result.ValueKind.Should().Be(JsonValueKind.Object);
@@ -119,7 +119,7 @@ public class AdminGetEventListOpenApiTests(AspireAppHostFixture host) : IClassFi
 
         // Assert
         var result = openapi!.RootElement.GetProperty("paths")
-                                         .GetProperty("/admin/eventlist")
+                                         .GetProperty("/admin/events")
                                          .GetProperty("get")
                                          .GetProperty("responses")
                                          .TryGetProperty(attribute, out var property) ? property : default;
