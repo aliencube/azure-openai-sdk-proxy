@@ -58,35 +58,6 @@ jobs:
       run: |
         dotnet build
 
-    - name: Create openapi.json
-      shell: pwsh
-      run: |
-        $fileContent = Get-Content './src/AzureOpenAIProxy.ApiApp/Constants.cs'
-        $API_VERSION = [regex]::Match($fileContent, 'public const string Version = "([^"]+)"').Groups[1].Value
-
-        $PROCESS = Start-Process -FilePath "dotnet" -ArgumentList "run --project src/AzureOpenAIProxy.AppHost" -PassThru
-
-        Start-Sleep -Seconds 30
-
-        Invoke-WebRequest -Uri "https://localhost:7001/swagger/$API_VERSION/swagger.json" -OutFile "openapi.json"
-
-        $PROCESS.Kill()
-
-    - name: Lint OpenAPI doc
-      shell: pwsh
-      run: |
-        $LINT_RESULT = spectral lint -f json -F warn -D -q openapi.json | ConvertFrom-Json
-
-        if( $LINT_RESULT.Count -gt 0) {
-          $LINT_RESULT | ForEach-Object {
-            Write-Host ("code: " + $_.code)
-            Write-Host ("message: " + $_.message)
-            Write-Host ("path: " + $($_.path -join "."))
-            Write-Host "`n"
-          }
-          exit 1
-        }
-
     - name: Install playwright
       shell: pwsh
       run: |
@@ -105,13 +76,32 @@ jobs:
       run: |
         dotnet run --project ./src/AzureOpenAIProxy.AppHost &
 
-        DOTNET_PID=$!
-
         sleep 30
 
         dotnet test ./test/AzureOpenAIProxy.PlaygroundApp.Tests --no-build --logger "trx" --collect:"XPlat Code Coverage"
 
-        kill $DOTNET_PID
+    - name: Create openapi.json
+      shell: pwsh
+      run: |
+        $fileContent = Get-Content './src/AzureOpenAIProxy.ApiApp/Constants.cs'
+        $API_VERSION = [regex]::Match($fileContent, 'public const string Version = "([^"]+)"').Groups[1].Value
+
+        Invoke-WebRequest -Uri "https://localhost:7001/swagger/$API_VERSION/swagger.json" -OutFile "openapi.json"
+
+    - name: Lint OpenAPI doc
+      shell: pwsh
+      run: |
+        $LINT_RESULT = spectral lint -f json -F warn -D -q openapi.json | ConvertFrom-Json
+
+        if( $LINT_RESULT.Count -gt 0) {
+          $LINT_RESULT | ForEach-Object {
+            Write-Host ("code: " + $_.code)
+            Write-Host ("message: " + $_.message)
+            Write-Host ("path: " + $($_.path -join "."))
+            Write-Host "`n"
+          }
+          exit 1
+        }
 
     - name: Publish test results
       if: ${{ !cancelled() }}
