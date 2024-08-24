@@ -59,16 +59,6 @@ public class EventDetails
     public required string? OrganizerEmail { get; set; }
 
     /// <summary>
-    /// Gets or sets the co-organizer's name.
-    /// </summary>
-    public string? CoorganizerName { get; set; }
-
-    /// <summary>
-    /// Gets or sets the co-organizer's email address.
-    /// </summary>
-    public string? CoorganizerEmail { get; set; }
-
-    /// <summary>
     /// Gets or sets the event's maximum token capacity.
     /// </summary>
     public required int? MaxTokenCap { get; set; }
