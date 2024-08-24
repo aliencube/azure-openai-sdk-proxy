@@ -1,0 +1,44 @@
+<div class="evt-detail-active">
+    <div class="@GetActiveClass(IsActive)"></div>
+</div>
+
+<style>
+    .evt-detail-active {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100px;
+    }
+
+    .activated {
+        width: 10px;
+        height: 10px;
+        background-color: green;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .deactivated {
+        width: 10px;
+        height: 10px;
+        background-color: red;
+        border-radius: 50%;
+        display: inline-block;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public required bool IsActive { get; set; }
+
+    private string GetActiveClass(bool? isActive)
+    {
+        if (!isActive.HasValue)
+        {
+            return "deactivated";
+        }
+
+        return isActive.Value ? "activated" : "deactivated";
+    }
+}
