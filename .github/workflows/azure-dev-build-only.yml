@@ -53,16 +53,31 @@ jobs:
       run: |
         dotnet build
 
+    - name: Install playwright
+      shell: pwsh
+      run: |
+        $playwright = Get-ChildItem -File Microsoft.Playwright.dll -Path . -Recurse
+        $installer = "$($playwright[0].Directory.FullName)/playwright.ps1"
+        & "$installer" install
+
     - name: Run unit tests
       shell: bash
       run: |
-        dotnet test ./test/AzureOpenAIProxy.AppHost.Tests --logger "trx" --collect:"XPlat Code Coverage"
-        dotnet test ./test/AzureOpenAIProxy.ApiApp.Tests --logger "trx" --collect:"XPlat Code Coverage"
+        dotnet test ./test/AzureOpenAIProxy.AppHost.Tests --no-build --logger "trx" --collect:"XPlat Code Coverage"
+        dotnet test ./test/AzureOpenAIProxy.ApiApp.Tests --no-build --logger "trx" --collect:"XPlat Code Coverage"
 
-    # - name: Run integration tests
-    #   shell: bash
-    #   run: |
-    #     dotnet test ./test/AzureOpenAIProxy.PlaygroundApp.Tests --logger "trx" --collect:"XPlat Code Coverage"
+    - name: Run integration tests
+      shell: bash
+      run: |
+        dotnet run --project ./src/AzureOpenAIProxy.AppHost &
+
+        DOTNET_PID=$!
+
+        sleep 30
+
+        dotnet test ./test/AzureOpenAIProxy.PlaygroundApp.Tests --no-build --logger "trx" --collect:"XPlat Code Coverage"
+
+        kill $DOTNET_PID
 
     - name: Publish test results
       if: ${{ !cancelled() }}
