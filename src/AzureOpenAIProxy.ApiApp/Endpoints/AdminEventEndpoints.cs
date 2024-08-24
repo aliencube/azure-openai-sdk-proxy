@@ -56,15 +56,16 @@ public static class AdminEventEndpoints
             // Todo: Issue #203 https://github.com/aliencube/azure-openai-sdk-proxy/issues/203
             return Results.Ok();
         })
-        .Produces(statusCode: StatusCodes.Status200OK)
+        .Accepts<AdminEventDetails>(contentType: "application/json")
+        .Produces(statusCode: StatusCodes.Status204NoContent)
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
         .Produces<string>(statusCode: StatusCodes.Status500InternalServerError, contentType: "text/plain")
         .WithTags("admin")
         .WithName("UpdateAdminEventDetails")
         .WithOpenApi(operation =>
         {
-            operation.Summary = "Updates event details by the given event ID";
-            operation.Description = "This endpoint updates event details by event id, api for admin users";
+            operation.Summary = "Updates event details from the given event ID";
+            operation.Description = "This endpoint updates the event details from the given event ID.";
 
             return operation;
         });
