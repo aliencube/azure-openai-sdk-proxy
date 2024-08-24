@@ -10,7 +10,7 @@ on:
 
 permissions:
   id-token: write
-  contents: write
+  contents: read
 
 jobs:
   build-test-deploy:
@@ -82,8 +82,6 @@ jobs:
 
         Start-Sleep -Seconds 30
 
-        Remove-Item -Path "openapi.json" -Force
-
         Invoke-WebRequest -Uri "https://localhost:7001/swagger/$API_VERSION/swagger.json" -OutFile "openapi.json"
 
         $PROCESS.Kill()
@@ -91,10 +89,15 @@ jobs:
     - name: Lint OpenAPI doc
       shell: pwsh
       run: |
-        $LINT_RESULT = spectral lint -f json -F warn -D openapi.json
+        $LINT_RESULT = spectral lint -f json -F warn -D -q openapi.json | ConvertFrom-Json
 
-        if( $LINT_RESULT.Count -ge 1) {
-          $LINT_RESULT
+        if( $LINT_RESULT.Count -gt 0) {
+          $LINT_RESULT | ForEach-Object {
+            echo ("code: " + $_.code)
+            echo ("message: " + $_.message)
+            echo ("path: " + $_.path)
+            echo "`n"
+          }
           exit 1
         }
 
