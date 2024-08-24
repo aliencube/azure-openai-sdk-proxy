@@ -17,13 +17,13 @@ public static class AdminEventEndpoints
     public static RouteHandlerBuilder CreateAdminEvent(this WebApplication app)
     {
         var builder = app.MapPost(AdminEndpointUrls.AdminEvents, async (
-            [FromBody] AdminEvent payload,
+            [FromBody] AdminEventDetails payload,
             HttpRequest request) =>
         {
             return await Task.FromResult(Results.Ok());
         })
         // TODO: Check both request/response payloads
-        .Accepts<AdminEvent>(contentType: "application/json")
+        .Accepts<AdminEventDetails>(contentType: "application/json")
         .Produces<AdminEventDetails>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
         // TODO: Check both request/response payloads
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
