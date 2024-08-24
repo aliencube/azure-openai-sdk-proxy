@@ -13,10 +13,10 @@ on:
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
   issues: write
   pull-requests: write
-  checks: write
+  # checks: write
 
 jobs:
   build-test:
@@ -70,6 +70,7 @@ jobs:
       uses: stoplightio/spectral-action@latest
       with:
         file_glob: './openapi.json'
+        repo_token: ${{ secrets.GH_PAT_GRAINED }}
 
     - name: Install playwright
       shell: pwsh

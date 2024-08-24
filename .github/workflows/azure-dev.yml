@@ -10,8 +10,8 @@ on:
 
 permissions:
   id-token: write
-  contents: read
-  checks: write
+  contents: write
+  # checks: write
 
 jobs:
   build-test-deploy:
@@ -84,6 +84,8 @@ jobs:
       uses: stoplightio/spectral-action@latest
       with:
         file_glob: './openapi.json'
+        repo_token: ${{ secrets.GH_PAT_GRAINED }}
+
 
     - name: Test solution
 
