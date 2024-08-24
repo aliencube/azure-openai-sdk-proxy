@@ -58,3 +58,11 @@ $process = if ($IsWindows -eq $true) {
     Get-Process | Where-Object { $_.Path -like "*AzureOpenAIProxy.AppHost" }
 }
 Stop-Process -Id $process.Id
+# # Get the process ID (PID) of the process listening on port 21000
+# $OTLP_PID = Get-NetTCPConnection -LocalPort 21000 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess
+
+# # Check if the PID is not null or empty
+# if ($OTLP_PID) {
+#     # Kill the process
+#     Stop-Process -Id $OTLP_PID -Force
+# }

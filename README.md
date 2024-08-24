@@ -92,10 +92,10 @@ This provides a proxy server application of Azure OpenAI Service API that round-
 
     ```bash
     # zsh/bash
-    ./scripts/run-tests.sh -c Debug
+    ./scripts/run-tests.sh -c Debug -k || ./scripts/run-tests.sh -c Debug
 
     # PowerShell
-    ./scripts/Run-Tests.ps1 -Configuration Debug
+    ./scripts/Run-Tests.ps1 -Configuration Debug -KillPorts || ./scripts/Run-Tests.ps1 -Configuration Debug
     ```
 
    > **NOTE**: While running the integration tests using the script above, you might be seeing the error like
