@@ -4,7 +4,7 @@ using AzureOpenAIProxy.ApiApp.Models;
 
 using FluentAssertions;
 
-namespace AzureOpenAIProxy.ApiApp.Tests;
+namespace AzureOpenAIProxy.ApiApp.Tests.Models;
 public class CreateChatCompletionResponseTests
 {
     [Fact]
