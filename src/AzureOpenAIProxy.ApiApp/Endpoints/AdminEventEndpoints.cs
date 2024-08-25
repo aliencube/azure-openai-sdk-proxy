@@ -91,7 +91,7 @@ public static class AdminEventEndpoints
         .Accepts<AdminEventDetails>(contentType: "application/json")
         .Produces<AdminEventDetails>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
-        .Produces(statusCode: StatusCodes.Status404NotFound, contentType: "text/plain")
+        .Produces(statusCode: StatusCodes.Status404NotFound)
         .Produces<string>(statusCode: StatusCodes.Status500InternalServerError, contentType: "text/plain")
         .WithTags("admin")
         .WithName("UpdateAdminEventDetails")
