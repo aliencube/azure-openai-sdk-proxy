@@ -493,6 +493,9 @@ appsettings.Production.json
 # Live Unit Testing
 *.lutconfig
 
+# Spectral
+swagger.json
+
 # azd
 .azure
 
