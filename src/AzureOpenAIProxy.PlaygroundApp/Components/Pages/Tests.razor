@@ -3,32 +3,14 @@
 
 @rendermode InteractiveServer
 
-<h3>UI Test <a href="https://github.com/aliencube/azure-openai-sdk-proxy/issues/171">#171</a></h3>
-
-@foreach (var option in options)
-{
-    <div class="form-check">
-        <input id="@option" class="form-check-input" type="radio" name="inputType" @onchange="() => SetInput(option)" />
-        <label class="form-check-label" for="@option">
-            @option
-        </label>
-    </div>
-}
-
-<DebugButtonComponent Input="@input" />
+<TargetComponent OnChangeCallback="OnValueChanged" />
+<DebugButtonComponent Input="@currentValue" />
 
 @code {
-    private object? input;
+    private object? currentValue;
 
-    private List<object> options = new()
+    private void OnValueChanged(object newValue)
     {
-        123,
-        3.14159,
-        "Hello, World!",
-    };
-    
-    private void SetInput(object value)
-    {
-        input = value;
+        currentValue = newValue;
     }
 }
