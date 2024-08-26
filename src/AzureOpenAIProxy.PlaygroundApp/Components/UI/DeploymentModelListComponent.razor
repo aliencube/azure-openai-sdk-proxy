@@ -2,80 +2,79 @@
 @using Microsoft.FluentUI.AspNetCore.Components
 
 <FluentLayout Style="margin: 10px;">
-    <label for="deployment-model-list">
-        <h6>
-            Deployment
-            <span style="color: red;">*</span>
-        </h6>
-    </label>
+    <div style="display: flex; align-items: center; margin-bottom: 5px;">
+        <label id="deployment-model-label" for="deployment-model-list" style="margin-right: 5px;">Deployment</label>
+        <span style="color: red;">*</span>
+    </div>
 
-    <FluentSelect Id="deployment-model-list" name="deployment-models" ValueChanged="@(e => selectValue = e)"
-        TOption="string" aria-labelledby="deployment-model-list" Height="300px">
-        <FluentOption aria-selected="true" Value="AL">Alabama</FluentOption>
-        <FluentOption Value="AK">Alaska</FluentOption>
-        <FluentOption Value="AZ">Arizona</FluentOption>
-        <FluentOption Value="AR">Arkansas</FluentOption>
-        <FluentOption Value="CA">California</FluentOption>
-        <FluentOption Value="CO">Colorado</FluentOption>
-        <FluentOption Value="CT">Connecticut</FluentOption>
-        <FluentOption Value="DE">Delaware</FluentOption>
-        <FluentOption Value="FL">Florida</FluentOption>
-        <FluentOption Value="GA">Georgia</FluentOption>
-        <FluentOption Value="HI">Hawaii</FluentOption>
-        <FluentOption Value="ID">Idaho</FluentOption>
-        <FluentOption Value="IL">Illinois</FluentOption>
-        <FluentOption Value="IN">Indiana</FluentOption>
-        <FluentOption Value="IA">Iowa</FluentOption>
-        <FluentOption Value="KS">Kansas</FluentOption>
-        <FluentOption Value="KY">Kentucky</FluentOption>
-        <FluentOption Value="LA">Louisiana</FluentOption>
-        <FluentOption Value="ME">Maine</FluentOption>
-        <FluentOption Value="MD">Maryland</FluentOption>
-        <FluentOption Value="MA">Massachussets</FluentOption>
-        <FluentOption Value="MI">Michigain</FluentOption>
-        <FluentOption Value="MN">Minnesota</FluentOption>
-        <FluentOption Value="MS">Mississippi</FluentOption>
-        <FluentOption Value="MO">Missouri</FluentOption>
-        <FluentOption Value="MT">Montana</FluentOption>
-        <FluentOption Value="NE">Nebraska</FluentOption>
-        <FluentOption Value="NV">Nevada</FluentOption>
-        <FluentOption Value="NH">New Hampshire</FluentOption>
-        <FluentOption Value="NJ">New Jersey</FluentOption>
-        <FluentOption Value="NM">New Mexico</FluentOption>
-        <FluentOption Value="NY">New York</FluentOption>
-        <FluentOption Value="NC">North Carolina</FluentOption>
-        <FluentOption Value="ND">North Dakota</FluentOption>
-        <FluentOption Value="OH">Ohio</FluentOption>
-        <FluentOption Value="OK">Oklahoma</FluentOption>
-        <FluentOption Value="OR">Oregon</FluentOption>
-        <FluentOption Value="PA">Pennsylvania</FluentOption>
+    <FluentSelect Items=@deploymentModelOptions Id="deployment-model-list" name="deployment-models"
+        TOption="Option<string>" Height="300px"
+        OptionText="@(e => e.Text?.ToString())"
+        OptionValue="@(e => e.Value?.ToString())" 
+        OptionSelected="@(e => e.Selected)"
+        @bind-Value="@selectedValue" 
+        @bind-SelectedOption="@selectedOption"
+        @onclick="OnValueChanged"
+        aria-labelledby="deployment-model-label">
     </FluentSelect>
 </FluentLayout>
 
-<p style="margin-top: 10px">
-    @if (!string.IsNullOrEmpty(selectValue))
-    {
-    <p>Selected Value: @selectValue</p>
-    }
-    else
-    {
-    <p>none</p>
-    }
-</p>
-
 @code {
     [Parameter]
-    public string? selectValue { get; set; }
-    protected void ValueChanged(string value)
+    public string? selectedValue { get; set; }
+    public Option<string>? selectedOption { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OptionSelected { get; set; }
+
+    private async Task OnValueChanged()
     {
-        selectValue = value;
-        if (!string.IsNullOrEmpty(selectValue))
+        if (selectedOption != null && selectedOption.Value != null)
         {
-            Console.WriteLine($"Selected Value: {selectValue}");
-        }
-        else
-        {
-            Console.WriteLine("none");
+            selectedValue = selectedOption.Value?.ToString();
+            await OptionSelected.InvokeAsync(selectedValue);
         }
     }
+
+    static List<Option<string>> deploymentModelOptions = new()
+    {
+        new Option<string> { Value = "AL", Text = "Alabama", Selected = true },
+        new Option<string> { Value = "AK", Text = "Alaska" },
+        new Option<string> { Value = "AZ", Text = "Arizona" },
+        new Option<string> { Value = "AR", Text = "Arkansas" },
+        new Option<string> { Value = "CA", Text = "California" },
+        new Option<string> { Value = "CO", Text = "Colorado" },
+        new Option<string> { Value = "CT", Text = "Connecticut" },
+        new Option<string> { Value = "DE", Text = "Delaware" },
+        new Option<string> { Value = "FL", Text = "Florida" },
+        new Option<string> { Value = "GA", Text = "Georgia" },
+        new Option<string> { Value = "HI", Text = "Hawaii" },
+        new Option<string> { Value = "ID", Text = "Idaho" },
+        new Option<string> { Value = "IL", Text = "Illinois" },
+        new Option<string> { Value = "IN", Text = "Indiana" },
+        new Option<string> { Value = "IA", Text = "Iowa" },
+        new Option<string> { Value = "KS", Text = "Kansas" },
+        new Option<string> { Value = "KY", Text = "Kentucky" },
+        new Option<string> { Value = "LA", Text = "Louisiana" },
+        new Option<string> { Value = "ME", Text = "Maine" },
+        new Option<string> { Value = "MD", Text = "Maryland" },
+        new Option<string> { Value = "MA", Text = "Massachussets" },
+        new Option<string> { Value = "MI", Text = "Michigain" },
+        new Option<string> { Value = "MN", Text = "Minnesota" },
+        new Option<string> { Value = "MS", Text = "Mississippi" },
+        new Option<string> { Value = "MO", Text = "Missouri" },
+        new Option<string> { Value = "MT", Text = "Montana" },
+        new Option<string> { Value = "NE", Text = "Nebraska" },
+        new Option<string> { Value = "NV", Text = "Nevada" },
+        new Option<string> { Value = "NH", Text = "New Hampshire" },
+        new Option<string> { Value = "NJ", Text = "New Jersey" },
+        new Option<string> { Value = "NM", Text = "New Mexico" },
+        new Option<string> { Value = "NY", Text = "New York" },
+        new Option<string> { Value = "NC", Text = "North Carolina" },
+        new Option<string> { Value = "ND", Text = "North Dakota" },
+        new Option<string> { Value = "OH", Text = "Ohio" },
+        new Option<string> { Value = "OK", Text = "Oklahoma" },
+        new Option<string> { Value = "OR", Text = "Oregon" },
+        new Option<string> { Value = "PA", Text = "Pennsylvania" }
+    };
 }

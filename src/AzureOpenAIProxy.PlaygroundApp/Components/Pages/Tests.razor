@@ -2,4 +2,14 @@
 @using AzureOpenAIProxy.PlaygroundApp.Components.UI
 @rendermode InteractiveServer
 
-<DeploymentModelListComponent />
+<DeploymentModelListComponent OptionSelected="HandleSelectedValue" />
+
+<p style="margin-top: 10px">Selected Value: @value</p>
+
+@code {
+    private string? value;
+    private void HandleSelectedValue(string val)
+    {
+        value = val;
+    }
+}
