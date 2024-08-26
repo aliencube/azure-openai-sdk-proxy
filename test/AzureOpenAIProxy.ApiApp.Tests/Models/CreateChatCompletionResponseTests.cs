@@ -8,7 +8,7 @@ namespace AzureOpenAIProxy.ApiApp.Tests.Models;
 public class CreateChatCompletionResponseTests
 {
     [Fact]
-    public void DeserializeAndSerializeChatCompletionResponse_ShouldMatchExpectedJson()
+    public void Given_ExampleJson_When_DeserializedAndSerialized_Then_ShouldMatchExpectedJson()
     {
         // Arrange
         var exampleJson = @"

@@ -3,7 +3,6 @@ using AzureOpenAIProxy.AppHost.Tests.Fixtures;
 using FluentAssertions;
 namespace AzureOpenAIProxy.AppHost.Tests.ApiApp.Schemas;
 
-
 /// <summary>
 /// It includes tests for required fields, reference validation, enum values, and properties
 /// </summary>
@@ -12,7 +11,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     // Required Fields Validation
 
     [Fact]
-    public async Task Validate_CreateChatCompletionResponseSchema_RequiredFields()
+    public async Task Given_ChatCompletionResponseSchema_When_ValidatingRequiredFields_Then_RequiredFieldsShouldBePresent()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -29,7 +28,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ChatCompletionChoiceLogProbsSchema_RequiredFields()
+    public async Task Given_ChatCompletionChoiceLogProbsSchema_When_ValidatingRequiredFields_Then_RequiredFieldsShouldBePresent()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -46,7 +45,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_CompletionUsageSchema_RequiredFields()
+    public async Task Given_CompletionUsageSchema_When_ValidatingRequiredFields_Then_RequiredFieldsShouldBePresent()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -63,7 +62,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ChatCompletionMessageToolCallSchema_RequiredFields()
+    public async Task Given_ChatCompletionMessageToolCallSchema_When_ValidatingRequiredFields_Then_RequiredFieldsShouldBePresent()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -80,7 +79,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_FunctionObjectSchema_RequiredFields()
+    public async Task Given_FunctionObjectSchema_When_ValidatingRequiredFields_Then_RequiredFieldsShouldBePresent()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -97,7 +96,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ChatCompletionFunctionCallSchema_RequiredFields()
+    public async Task Given_ChatCompletionFunctionCallSchema_When_ValidatingRequiredFields_Then_RequiredFieldsShouldBePresent()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -114,7 +113,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ContentFilterDetectedResultSchema_RequiredFields()
+    public async Task Given_ContentFilterDetectedResultSchema_When_ValidatingRequiredFields_Then_RequiredFieldsShouldBePresent()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -131,7 +130,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ContentFilterDetectedWithCitationResultSchema_RequiredFields()
+    public async Task Given_ContentFilterDetectedWithCitationResultSchema_When_ValidatingRequiredFields_Then_RequiredFieldsShouldBePresent()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -148,7 +147,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ChatCompletionTokenLogProbSchema_RequiredFields()
+    public async Task Given_ChatCompletionTokenLogProbSchema_When_ValidatingRequiredFields_Then_RequiredFieldsShouldBePresent()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -165,7 +164,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_TopLogProbsSchema_RequiredFields()
+    public async Task Given_TopLogProbsSchema_When_ValidatingRequiredFields_Then_RequiredFieldsShouldBePresent()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -182,7 +181,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_CitationSchema_RequiredFields()
+    public async Task Given_CitationSchema_When_ValidatingRequiredFields_Then_RequiredFieldsShouldBePresent()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -199,7 +198,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ContentFilterSeverityResultSchema_RequiredFields()
+    public async Task Given_ContentFilterSeverityResultSchema_When_ValidatingRequiredFields_Then_RequiredFieldsShouldBePresent()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -218,7 +217,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     // $ref Validation
 
     [Fact]
-    public async Task Validate_CreateChatCompletionResponseSchema_PromptFilterResultsRef()
+    public async Task Given_CreateChatCompletionResponseSchema_When_ValidatingPromptFilterResultsRef_Then_RefShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -237,7 +236,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_CreateChatCompletionResponseSchema_ChoicesRef()
+    public async Task Given_CreateChatCompletionResponseSchema_When_ValidatingChoicesRef_Then_RefShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -257,7 +256,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ChatCompletionChoiceSchema_MessageRef()
+    public async Task Given_ChatCompletionChoiceSchema_When_ValidatingMessageRef_Then_RefShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -276,7 +275,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ChatCompletionChoiceSchema_ContentFilterResultsRef()
+    public async Task Given_ChatCompletionChoiceSchema_When_ValidatingContentFilterResultsRef_Then_RefShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -295,7 +294,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ChatCompletionChoiceSchema_LogProbsRef()
+    public async Task Given_ChatCompletionChoiceSchema_When_ValidatingLogProbsRef_Then_RefShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -314,7 +313,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_CreateChatCompletionResponseSchema_ObjectRef()
+    public async Task Given_CreateChatCompletionResponseSchema_When_ValidatingObjectRef_Then_RefShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -333,7 +332,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_CreateChatCompletionResponseSchema_UsageRef()
+    public async Task Given_CreateChatCompletionResponseSchema_When_ValidatingUsageRef_Then_RefShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -352,7 +351,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ChatCompletionResponseMessageSchema_RoleRef()
+    public async Task Given_ChatCompletionResponseMessageSchema_When_ValidatingRoleRef_Then_RefShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -371,7 +370,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ChatCompletionResponseMessageSchema_ToolCallsRef()
+    public async Task Given_ChatCompletionResponseMessageSchema_When_ValidatingToolCallsRef_Then_RefShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -390,7 +389,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ChatCompletionResponseMessageSchema_FunctionCallRef()
+    public async Task Given_ChatCompletionResponseMessageSchema_When_ValidatingFunctionCallRef_Then_RefShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -409,7 +408,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ChatCompletionResponseMessageSchema_ContextRef()
+    public async Task Given_ChatCompletionResponseMessageSchema_When_ValidatingContextRef_Then_RefShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -428,7 +427,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ContentFilterChoiceResultsSchema_ProtectedMaterialTextRef()
+    public async Task Given_ContentFilterChoiceResultsSchema_When_ValidatingProtectedMaterialTextRef_Then_RefShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -447,7 +446,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ContentFilterChoiceResultsSchema_ProtectedMaterialCodeRef()
+    public async Task Given_ContentFilterChoiceResultsSchema_When_ValidatingProtectedMaterialCodeRef_Then_RefShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -466,7 +465,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ChatCompletionChoiceLogProbsSchema_ContentRef()
+    public async Task Given_ChatCompletionChoiceLogProbsSchema_When_ValidatingContentRef_Then_RefShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -485,7 +484,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_PromptFilterResultSchema_ContentFilterResultsRef()
+    public async Task Given_PromptFilterResultSchema_When_ValidatingContentFilterResultsRef_Then_RefShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -504,7 +503,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ChatCompletionMessageToolCallSchema_TypeRef()
+    public async Task Given_ChatCompletionMessageToolCallSchema_When_ValidatingTypeRef_Then_RefShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -523,7 +522,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ChatCompletionMessageToolCallSchema_FunctionRef()
+    public async Task Given_ChatCompletionMessageToolCallSchema_When_ValidatingFunctionRef_Then_RefShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -542,7 +541,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_AzureChatExtensionsMessageContextSchema_CitationsRef()
+    public async Task Given_AzureChatExtensionsMessageContextSchema_When_ValidatingCitationsRef_Then_RefShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -561,7 +560,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ContentFilterPromptResultsSchema_JailbreakRef()
+    public async Task Given_ContentFilterPromptResultsSchema_When_ValidatingJailbreakRef_Then_RefShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -580,7 +579,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ContentFilterPromptResultsSchema_SexualViolenceHateSelfHarmProfanityErrorRefs()
+    public async Task Given_ContentFilterPromptResultsSchema_When_ValidatingSeverityRefs_Then_RefsShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -619,7 +618,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ContentFilterChoiceResultsSchema_SexualViolenceHateSelfHarmProfanityErrorRefs()
+    public async Task Given_ContentFilterChoiceResultsSchema_When_ValidatingSeverityRefs_Then_RefsShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -657,11 +656,10 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
         .GetString().Should().Be("#/components/schemas/ErrorBase");
     }
 
-
     // Enum validation
 
     [Fact]
-    public async Task Validate_ChatCompletionResponseObjectEnum()
+    public async Task Given_ChatCompletionResponseObjectSchema_When_ValidatingEnum_Then_EnumValuesShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -678,7 +676,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ChatCompletionResponseMessageRoleEnum()
+    public async Task Given_ChatCompletionResponseMessageRoleSchema_When_ValidatingEnum_Then_EnumValuesShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -695,7 +693,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ContentFilterSeverityEnum()
+    public async Task Given_ContentFilterSeveritySchema_When_ValidatingEnum_Then_EnumValuesShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -711,11 +709,10 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
         enumValues.Should().Contain(new[] { "safe", "low", "medium", "high" });
     }
 
-
     // Properties validation
 
     [Fact]
-    public async Task Validate_CreateChatCompletionResponseSchema_Properties()
+    public async Task Given_CreateChatCompletionResponseSchema_When_ValidatingProperties_Then_PropertiesShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -732,7 +729,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ChatCompletionChoiceSchema_Properties()
+    public async Task Given_ChatCompletionChoiceSchema_When_ValidatingProperties_Then_PropertiesShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -749,7 +746,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ChatCompletionResponseMessageSchema_Properties()
+    public async Task Given_ChatCompletionResponseMessageSchema_When_ValidatingProperties_Then_PropertiesShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -765,9 +762,8 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
         properties.Should().Contain(new[] { "role", "content", "tool_calls", "function_call", "context" });
     }
 
-
     [Fact]
-    public async Task Validate_ChatCompletionFunctionCallSchema_Properties()
+    public async Task Given_ChatCompletionFunctionCallSchema_When_ValidatingProperties_Then_PropertiesShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -784,7 +780,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_AzureChatExtensionsMessageContextSchema_Properties()
+    public async Task Given_AzureChatExtensionsMessageContextSchema_When_ValidatingProperties_Then_PropertiesShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -801,7 +797,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ContentFilterSeverityResultSchema_Properties()
+    public async Task Given_ContentFilterSeverityResultSchema_When_ValidatingProperties_Then_PropertiesShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -818,7 +814,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_CompletionUsageSchema_Properties()
+    public async Task Given_CompletionUsageSchema_When_ValidatingProperties_Then_PropertiesShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -835,7 +831,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ContentFilterDetectedResultSchema_Properties()
+    public async Task Given_ContentFilterDetectedResultSchema_When_ValidatingProperties_Then_PropertiesShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -852,7 +848,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ContentFilterDetectedWithCitationResultSchema_Properties()
+    public async Task Given_ContentFilterDetectedWithCitationResultSchema_When_ValidatingProperties_Then_PropertiesShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -869,7 +865,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_FunctionObjectSchema_Properties()
+    public async Task Given_FunctionObjectSchema_When_ValidatingProperties_Then_PropertiesShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -885,9 +881,8 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
         properties.Should().Contain(new[] { "name", "arguments" });
     }
 
-
     [Fact]
-    public async Task Validate_ChatCompletionChoiceLogProbsSchema_Properties()
+    public async Task Given_ChatCompletionChoiceLogProbsSchema_When_ValidatingProperties_Then_PropertiesShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -904,7 +899,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ChatCompletionTokenLogProbSchema_Properties()
+    public async Task Given_ChatCompletionTokenLogProbSchema_When_ValidatingProperties_Then_PropertiesShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -921,7 +916,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_TopLogProbsSchema_Properties()
+    public async Task Given_TopLogProbsSchema_When_ValidatingProperties_Then_PropertiesShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -938,7 +933,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_CitationSchema_Properties()
+    public async Task Given_CitationSchema_When_ValidatingProperties_Then_PropertiesShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -955,7 +950,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_PromptFilterResultSchema_Properties()
+    public async Task Given_PromptFilterResultSchema_When_ValidatingProperties_Then_PropertiesShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -972,7 +967,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ContentFilterPromptResultsSchema_Properties()
+    public async Task Given_ContentFilterPromptResultsSchema_When_ValidatingProperties_Then_PropertiesShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -989,7 +984,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ContentFilterChoiceResultsSchema_Properties()
+    public async Task Given_ContentFilterChoiceResultsSchema_When_ValidatingProperties_Then_PropertiesShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -1005,10 +1000,8 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
         properties.Should().Contain(new[] { "sexual", "violence", "hate", "self_harm", "profanity", "error", "protected_material_text", "protected_material_code" });
     }
 
-
-
     [Fact]
-    public async Task Validate_ChatCompletionMessageToolCallSchema_Properties()
+    public async Task Given_ChatCompletionMessageToolCallSchema_When_ValidatingProperties_Then_PropertiesShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -1025,7 +1018,7 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
     }
 
     [Fact]
-    public async Task Validate_ErrorBaseSchema_Properties()
+    public async Task Given_ErrorBaseSchema_When_ValidatingProperties_Then_PropertiesShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -1041,9 +1034,8 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
         properties.Should().Contain(new[] { "code", "message" });
     }
 
-
     [Fact]
-    public async Task Validate_CitationObjectSchema_Properties()
+    public async Task Given_CitationObjectSchema_When_ValidatingProperties_Then_PropertiesShouldBeCorrect()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -1058,5 +1050,4 @@ public class ChatCompletionSchemasOpenApiTests(AspireAppHostFixture host) : ICla
         // Assert
         properties.Should().Contain(new[] { "URL", "license" });
     }
-
 }
