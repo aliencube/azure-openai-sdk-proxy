@@ -25,7 +25,7 @@ public class EnumMemberConverterTests
     private readonly JsonConverter<TestEnum> _converter = new EnumMemberConverter<TestEnum>();
 
     [Fact]
-    public void Read_ShouldDeserializeEnum_WithEnumMemberAttribute()
+    public void Given_EnumMemberAttribute_When_Deserializing_Then_ShouldReturnCorrectEnumValue()
     {
         // Arrange
         var json = "\"first_value\"";
@@ -42,7 +42,7 @@ public class EnumMemberConverterTests
     }
 
     [Fact]
-    public void Read_ShouldDeserializeEnum_WithDotInEnumMemberAttribute()
+    public void Given_DotInEnumMemberAttribute_When_Deserializing_Then_ShouldReturnCorrectEnumValue()
     {
         // Arrange
         var json = "\"second.value\"";
@@ -59,7 +59,7 @@ public class EnumMemberConverterTests
     }
 
     [Fact]
-    public void Read_ShouldDeserializeEnum_WithThirdValueEnumMemberAttribute()
+    public void Given_ThirdEnumMemberAttribute_When_Deserializing_Then_ShouldReturnCorrectEnumValue()
     {
         // Arrange
         var json = "\"thirdvalue\"";
@@ -76,7 +76,7 @@ public class EnumMemberConverterTests
     }
 
     [Fact]
-    public void Read_ShouldDeserializeEnum_WithoutEnumMemberAttribute()
+    public void Given_NoEnumMemberAttribute_When_Deserializing_Then_ShouldReturnCorrectEnumValue()
     {
         // Arrange
         var json = "\"UnmappedValue\"";
@@ -93,7 +93,7 @@ public class EnumMemberConverterTests
     }
 
     [Fact]
-    public void Read_ShouldThrowJsonException_ForInvalidEnumValue()
+    public void Given_InvalidEnumValue_When_Deserializing_Then_ShouldThrowJsonException()
     {
         // Arrange
         var json = "\"invalid_value\"";
@@ -104,15 +104,14 @@ public class EnumMemberConverterTests
             Converters = { _converter }
         };
 
-        Action action = () => JsonSerializer.Deserialize<TestEnum>(json, options);
-
         // Assert
+        Action action = () => JsonSerializer.Deserialize<TestEnum>(json, options);
         action.Should().Throw<JsonException>()
               .WithMessage("Unable to convert \"invalid_value\" to Enum*");
     }
 
     [Fact]
-    public void Read_ShouldThrowJsonException_ForNullValue()
+    public void Given_NullValue_When_Deserializing_Then_ShouldThrowJsonException()
     {
         // Arrange
         var json = "null";
@@ -123,15 +122,14 @@ public class EnumMemberConverterTests
             Converters = { _converter }
         };
 
-        Action action = () => JsonSerializer.Deserialize<TestEnum>(json, options);
-
         // Assert
+        Action action = () => JsonSerializer.Deserialize<TestEnum>(json, options);
         action.Should().Throw<JsonException>()
               .WithMessage("Unable to convert null to Enum*");
     }
 
     [Fact]
-    public void Write_ShouldSerializeEnum_WithEnumMemberAttribute()
+    public void Given_EnumMemberAttribute_When_Serializing_Then_ShouldReturnCorrectJsonString()
     {
         // Arrange
         var value = TestEnum.FirstValue;
@@ -148,7 +146,7 @@ public class EnumMemberConverterTests
     }
 
     [Fact]
-    public void Write_ShouldSerializeEnum_WithDotInEnumMemberAttribute()
+    public void Given_DotInEnumMemberAttribute_When_Serializing_Then_ShouldReturnCorrectJsonString()
     {
         // Arrange
         var value = TestEnum.SecondValue;
@@ -165,7 +163,7 @@ public class EnumMemberConverterTests
     }
 
     [Fact]
-    public void Write_ShouldSerializeEnum_WithThirdValueEnumMemberAttribute()
+    public void Given_ThirdEnumMemberAttribute_When_Serializing_Then_ShouldReturnCorrectJsonString()
     {
         // Arrange
         var value = TestEnum.ThirdValue;
@@ -182,7 +180,7 @@ public class EnumMemberConverterTests
     }
 
     [Fact]
-    public void Write_ShouldSerializeEnum_WithoutEnumMemberAttribute()
+    public void Given_NoEnumMemberAttribute_When_Serializing_Then_ShouldReturnCorrectJsonString()
     {
         // Arrange
         var value = TestEnum.UnmappedValue;
@@ -198,4 +196,3 @@ public class EnumMemberConverterTests
         result.Should().Be("\"UnmappedValue\"");
     }
 }
-
