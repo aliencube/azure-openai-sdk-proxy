@@ -6,7 +6,8 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests.UI
 {
     [Parallelizable(ParallelScope.Self)]
     [TestFixture]
-    public class ComponentIntegrationTests : PageTest
+    [Property("Category", "Integration")]
+    public class ModelDropdownListComponentTests : PageTest
     {
         public override BrowserNewContextOptions ContextOptions() => new()
         {
@@ -21,59 +22,71 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests.UI
         }
 
         [Test]
-        // 페이지에서 컴포넌트의 헤딩이 올바르게 표시되는지 확인
-        public async Task IsThereAHeading()
+        // 페이지에서 컴포넌트 레이블이 올바르게 표시되는지 확인
+        public async Task Given_ComponentLabel_When_Waiting_Then_ShouldBeVisible()
         {
-            // Act
-            await Expect(Page
-                .GetByRole(AriaRole.Heading, new() { Name = "Deployment" }))
-                .ToBeVisibleAsync();
+            // given
+            var componentLabel = Page.GetByText("Deployment");
+            await Expect(componentLabel).ToBeVisibleAsync();
+            
+            // when
+            var expected = await Page.GetByText("Deployment").IsVisibleAsync();
 
-            // Assert
-            Assert.That(await Page.GetByRole(AriaRole.Heading, new() { Name = "Deployment" }).IsVisibleAsync(), Is.True);
+            // then
+            Assert.That(expected, Is.True);
         }
 
         [Test]
         // 페이지에서 드롭다운 컴포넌트가 올바르게 표시되는지 확인
-        public async Task IsThereADropdownComponent()
+        public async Task Given_Dropdown_When_Waiting_Then_ShouldBeVisible()
         {
-            // fluentSelect 컴포넌트가 페이지에 존재하는지 확인
-            var fluentSelect = await Page.QuerySelectorAsync("fluent-select#deployment-model-list");
-            Assert.That(fluentSelect, Is.Not.Null);
-            await fluentSelect.ClickAsync();
+            // given
+            // var fluentSelect = Page.GetByRole(AriaRole.Combobox, new() { Name = "Deployment" });
+            var fluentSelect = Page.Locator("fluent-select#deployment-model-list");
+            await Expect(fluentSelect).ToBeVisibleAsync();
 
-            // fluentSelect 컴포넌트의 옵션이 페이지에 표시되는지 확인
-            var fluentOptions = await fluentSelect.QuerySelectorAllAsync("fluent-option");
-            Assert.That(fluentOptions.Count, Is.GreaterThan(0));
-            foreach (var option in fluentOptions)
-            {
-                Assert.That(await option.IsVisibleAsync(), Is.True);
-            }
+            // when
+            var expected = await fluentSelect.IsVisibleAsync();
+            
+            // then
+            Assert.That(expected, Is.True);
         }
 
         [Test]
-        // 드롭다운의 옵션 값을 선택하고, 선택된 값이 컴포넌트에 올바르게 업데이트 되는지 확인
-        public async Task IsDropdownOptionSelectWorking()
+        // 드롭다운의 옵션 값이 존재하는지 확인
+        public async Task Given_Dropdown_When_CountingOption_Then_ShouldOptionExist()
         {
-            // Arrange
-            var fluentSelect = await Page.QuerySelectorAsync("fluent-select#deployment-model-list");
-            Assert.That(fluentSelect, Is.Not.Null);
+            // given
+            var fluentSelect = Page.Locator("fluent-select#deployment-model-list");
+            await Expect(fluentSelect).ToBeVisibleAsync();
             await fluentSelect.ClickAsync();
-            var fluentOptions = await fluentSelect.QuerySelectorAllAsync("fluent-option");
-            Assert.That(fluentOptions.Count, Is.GreaterThan(0));
 
-            // Act
-            var userSelectedOption = fluentOptions[0]; // Select the first option
-            await userSelectedOption.ClickAsync();
+            // when
+            int count = await fluentSelect.Locator("fluent-option").CountAsync();
+            //int count = await Page.QuerySelectorAllAsync("fluent-option").Count();
 
-            await Page.EvaluateAsync(@"() => {
-                window.selectValue = document.querySelector('fluent-select#deployment-model-list').value;
-            }"); // Define and set 'selectValue'(Component variable) in the page context
+            // then
+            Assert.That(count, Is.GreaterThan(0));
+        }
 
-            // Assert
-            var userSelectedOptionValue = await fluentSelect.EvaluateAsync<string>("el => el.value"); // Get the selected value
-            var actualSelectedValue = await Page.EvaluateAsync<string>("() => selectValue"); // Get the selected value from the page context
-            Assert.That(actualSelectedValue, Is.EqualTo(userSelectedOptionValue));
+        [Test]
+        // 드롭다운의 옵션 값을 선택하면 부모 컴포넌트(페이지 컴포넌트)에 올바르게 업데이트 되는지 확인
+        public async Task Given_Dropdown_When_OptionSelected_Then_ShouldUpdateComponentValue()
+        {
+            // given
+            var fluentSelect = Page.Locator("fluent-select#deployment-model-list");
+            await Expect(fluentSelect).ToBeVisibleAsync();
+            var expectedValue = "AZ"; // 컴포넌트 3번째 옵션 값
+            //var fluentOptions = fluentSelect.Locator("fluent-option");
+            await fluentSelect.ClickAsync(); // 드롭다운 클릭
+            await fluentSelect.Locator("fluent-option").Nth(2).ScrollIntoViewIfNeededAsync(); // 3번째 옵션 보이도록 스크롤
+            await fluentSelect.Locator("fluent-option").Nth(2).ClickAsync(); // 옵션 클릭
+
+            // when
+            var actualValue = await Page.EvaluateAsync<string>("() => document.querySelector('fluent-select#deployment-model-list').value"); // 페이지 내 컴포넌트 값 가져오기
+
+            // then
+            Assert.That(expectedValue, Is.EqualTo(actualValue));
         }
 
         [TearDown]
