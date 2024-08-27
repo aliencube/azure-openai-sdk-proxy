@@ -12,7 +12,6 @@
         OptionText="@(e => e.Text?.ToString())"
         OptionValue="@(e => e.Value?.ToString())" 
         OptionSelected="@(e => e.Selected)"
-        @bind-Value="@selectedValue" 
         @bind-SelectedOption="@selectedOption"
         @onclick="OnValueChanged"
         aria-labelledby="deployment-model-label">
@@ -21,24 +20,26 @@
 
 @code {
     [Parameter]
-    public string? selectedValue { get; set; }
     public Option<string>? selectedOption { get; set; }
 
     [Parameter]
-    public EventCallback<string> OptionSelected { get; set; }
+    public EventCallback<string> UserSelectedOption { get; set; }
 
+    protected override async Task OnInitializedAsync()
+    {
+        selectedOption = new Option<string>();
+        await Task.CompletedTask;
+    }
+    
     private async Task OnValueChanged()
     {
-        if (selectedOption != null && selectedOption.Value != null)
-        {
-            selectedValue = selectedOption.Value?.ToString();
-            await OptionSelected.InvokeAsync(selectedValue);
-        }
+        string? selectedValue = selectedOption?.Value?.ToString();
+        await UserSelectedOption.InvokeAsync(selectedValue);
     }
 
     static List<Option<string>> deploymentModelOptions = new()
     {
-        new Option<string> { Value = "AL", Text = "Alabama", Selected = true },
+        new Option<string> { Value = "AL", Text = "Alabama" },
         new Option<string> { Value = "AK", Text = "Alaska" },
         new Option<string> { Value = "AZ", Text = "Arizona" },
         new Option<string> { Value = "AR", Text = "Arkansas" },
