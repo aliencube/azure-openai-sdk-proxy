@@ -40,7 +40,9 @@ app.AddWeatherForecast();
 app.AddChatCompletions();
 
 // Admin Endpoints
+app.AddAdminEvents();
+app.AddAdminEventList();
+app.AddUpdateAdminEvents();
 app.CreateAdminEvent();
-app.GetAdminEventDetails();
 
 await app.RunAsync();
