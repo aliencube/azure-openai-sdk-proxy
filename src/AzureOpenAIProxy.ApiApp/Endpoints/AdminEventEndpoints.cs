@@ -124,6 +124,7 @@ public static class AdminEventEndpoints
         .Produces<AdminEventDetails>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
         // TODO: Check both request/response payloads
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
+        .Produces(statusCode: StatusCodes.Status404NotFound)
         .Produces<string>(statusCode: StatusCodes.Status500InternalServerError, contentType: "text/plain")
         .WithTags("admin")
         .WithName("CreateAdminEvent")
