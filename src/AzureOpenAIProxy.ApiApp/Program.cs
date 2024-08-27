@@ -45,6 +45,6 @@ app.AddEventList();
 // Admin Endpoints
 app.AddAdminEvents();
 app.AddAdminEventList();
-
+app.AddUpdateAdminEvents();
 
 await app.RunAsync();
