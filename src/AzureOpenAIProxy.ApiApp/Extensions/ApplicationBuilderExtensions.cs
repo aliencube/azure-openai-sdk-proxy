@@ -1,4 +1,6 @@
-﻿namespace AzureOpenAIProxy.ApiApp.Extensions;
+﻿using AzureOpenAIProxy.ApiApp.Configurations;
+
+namespace AzureOpenAIProxy.ApiApp.Extensions;
 
 /// <summary>
 /// This represents the extensions entity for the application builder.
@@ -18,6 +20,8 @@ public static class ApplicationBuilderExtensions
             return app;
         }
 
+        var settings = app.Services.GetRequiredService<OpenApiSettings>();
+
         app.UseSwagger(options =>
         {
             //options.RouteTemplate = $"swagger/{Constants.Version}/swagger.json";
@@ -32,7 +36,7 @@ public static class ApplicationBuilderExtensions
 
         app.UseSwaggerUI(options =>
         {
-            options.SwaggerEndpoint($"{Constants.Version}/swagger.json", Constants.Title);
+            options.SwaggerEndpoint($"{settings.DocVersion}/swagger.json", Constants.Title);
         });
 
         return app;
