@@ -3,30 +3,15 @@
 /// <summary>
 /// This represent the event detail data for response by admin event endpoint.
 /// </summary>
-public class AdminEventDetails
+public class AdminEventDetails : EventDetails
 {
     /// <summary>
-    /// Gets or sets the event id.
-    /// </summary>
-    public required Guid? EventId { get; set; }
-
-    /// <summary>
-    /// Gets or sets the event title name.
-    /// </summary>
-    public required string? Title { get; set; }
-
-    /// <summary>
-    /// Gets or sets the event summary.
-    /// </summary>
-    public required string? Summary { get; set; }
-
-    /// <summary>
-    /// Gets or sets the event description. 
+    /// Gets or sets the event description.
     /// </summary>
     public string? Description { get; set; }
 
     /// <summary>
-    /// Gets or sets the event start date. 
+    /// Gets or sets the event start date.
     /// </summary>
     public required DateTimeOffset? DateStart { get; set; }
 
@@ -46,7 +31,7 @@ public class AdminEventDetails
     public required bool? IsActive { get; set; }
 
     /// <summary>
-    /// Gets or sets the event organizer name. 
+    /// Gets or sets the event organizer name.
     /// </summary>
     public required string? OrganizerName { get; set; }
 
@@ -64,14 +49,4 @@ public class AdminEventDetails
     /// Gets or sets the event coorganizer email.
     /// </summary>
     public string? CoorganizerEmail { get; set; }
-
-    /// <summary>
-    /// Gets or sets the Azure OpenAI Service request max token capacity. 
-    /// </summary>
-    public required int? MaxTokenCap { get; set; }
-
-    /// <summary>
-    /// Gets or sets the Azure OpenAI Service daily request capacity.
-    /// </summary>
-    public required int? DailyRequestCap { get; set; }
 }
