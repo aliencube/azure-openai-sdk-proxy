@@ -1,0 +1,21 @@
+@using AzureOpenAIProxy.PlaygroundApp.Clients
+
+<p>API Key 입력</p>
+<input type="@inputType" id="ApiKey" name="ApiKey" placeholder="Enter your API key" @bind="ApiKeyValue" />
+<button @onclick="ToggleMask">@MaskState</button>
+
+
+@code {
+    private string ApiKeyValue = ""; 
+    private string MaskState = "Mask";
+    private bool isMasked = true;   
+    private string inputType = "password"; 
+
+    private void ToggleMask()
+    {
+        isMasked = !isMasked;
+
+        inputType = isMasked ? "password" : "text";
+        MaskState = isMasked ? "UnMask" : "Mask";
+    }
+}
