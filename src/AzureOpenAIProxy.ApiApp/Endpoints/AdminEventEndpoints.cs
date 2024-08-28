@@ -105,4 +105,37 @@ public static class AdminEventEndpoints
 
         return builder;
     }
+    
+    /// <summary>
+    /// Adds the admin event endpoint
+    /// </summary>
+    /// <param name="app"><see cref="WebApplication"/> instance.</param>
+    /// <returns>Returns <see cref="RouteHandlerBuilder"/> instance.</returns>
+    public static RouteHandlerBuilder CreateAdminEvent(this WebApplication app)
+    {
+        var builder = app.MapPost(AdminEndpointUrls.AdminEvents, async (
+            [FromBody] AdminEventDetails payload,
+            HttpRequest request) =>
+        {
+            return await Task.FromResult(Results.Ok());
+        })
+        // TODO: Check both request/response payloads
+        .Accepts<AdminEventDetails>(contentType: "application/json")
+        .Produces<AdminEventDetails>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
+        // TODO: Check both request/response payloads
+        .Produces(statusCode: StatusCodes.Status400BadRequest)
+        .Produces(statusCode: StatusCodes.Status401Unauthorized)
+        .Produces<string>(statusCode: StatusCodes.Status500InternalServerError, contentType: "text/plain")
+        .WithTags("admin")
+        .WithName("CreateAdminEvent")
+        .WithOpenApi(operation =>
+        {
+            operation.Summary = "Create admin event";
+            operation.Description = "Create admin event";
+
+            return operation;
+        });
+
+        return builder;
+    }
 }
