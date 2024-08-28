@@ -8,10 +8,14 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests
     [TestFixture]
     public class ApiKeyMaskingTests : PageTest
     {
+        public override BrowserNewContextOptions ContextOptions() => new()
+        {
+            IgnoreHTTPSErrors = true,
+        };
+
         [SetUp]
         public async Task SetUp()
         {
-            // SSL 인증서 오류를 무시하도록 설정
             await Page.GotoAsync("https://localhost:5001/");
             await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         }
@@ -46,6 +50,12 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests
 
             await apiKeyInput.FillAsync(apiKey);
             await Expect(apiKeyInput).ToHaveValueAsync(apiKey);
+        }
+
+        [TearDown]
+        public async Task CleanUp()
+        {
+            await Page.CloseAsync();
         }
     }
 }

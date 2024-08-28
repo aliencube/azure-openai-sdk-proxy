@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AzureOpenAIProxy.PlaygroundApp.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4e08afc3dbcf82805af838ddbc95b2d30ed6c230")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a1f960d988959229877b8467c04dabf26327fbf3")]
 [assembly: System.Reflection.AssemblyProductAttribute("AzureOpenAIProxy.PlaygroundApp.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AzureOpenAIProxy.PlaygroundApp.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
