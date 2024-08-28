@@ -1,6 +1,6 @@
 @using AzureOpenAIProxy.PlaygroundApp.Components.UI.Admin
 
-@using AzureOpenAIProxy.ApiApp.Models
+@using AzureOpenAIProxy.PlaygroundApp.Models
 
 <div id="evt-detail-comp">
     @if (eventDetails == null)
@@ -20,7 +20,7 @@
                 <PropertyColumn Class="fluent-datagrid-cell" Property="@(p => p.MaxTokenCap)" Align="@Align.Center" Sortable="true" />
                 <PropertyColumn Class="fluent-datagrid-cell" Property="@(p => p.DailyRequestCap)" Align="@Align.Center" Sortable="true" />
                 <TemplateColumn Class="fluent-datagrid-cell" Title="Active" Align="@Align.Center">
-                    <AdminEventDetailElemActiveComponent 
+                    <AdminEventIsActiveComponent 
                         IsActive="@(((AdminEventDetails)@context).IsActive.HasValue && 
                                     ((AdminEventDetails)@context).IsActive.Value)" />
                 </TemplateColumn>

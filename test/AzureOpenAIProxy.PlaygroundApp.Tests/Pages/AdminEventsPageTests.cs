@@ -17,7 +17,7 @@ public class AdminEventsPageTests : PageTest
     public async Task Given_Events_Page_When_Navigated_Then_It_Should_Have_ListEventDetailsComponent()
     {
         // Arrange
-        await this.Page.GotoAsync("https://localhost:5001/events");
+        await this.Page.GotoAsync("https://localhost:5001/admin/events");
 
         // Act
         var listEvtDetailsComp = await Page.QuerySelectorAsync("#evt-detail-comp");
@@ -30,7 +30,7 @@ public class AdminEventsPageTests : PageTest
     public async Task Given_Events_Page_When_Navigated_Then_It_Should_Have_EventDetailsTable()
     {
         // Arrange
-        await this.Page.GotoAsync("https://localhost:5001/events");
+        await this.Page.GotoAsync("https://localhost:5001/admin/events");
 
         // wait for construct table
         await Task.Delay(2000);
