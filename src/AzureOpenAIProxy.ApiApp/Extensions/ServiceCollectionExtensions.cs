@@ -1,4 +1,4 @@
-using Azure.Identity;
+﻿using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 
 using AzureOpenAIProxy.ApiApp.Builders;
@@ -82,19 +82,41 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
+    /// Adds the OpenApi configuration settings to the service collection by reading appsettings.json.
+    /// </summary>
+    /// <param name="services"><see cref="IServiceCollection"/> instance.</param>
+    /// <returns>Returns <see cref="IServiceCollection"/> instance.</returns>
+    public static IServiceCollection AddOpenApiSettings(this IServiceCollection services)
+    {
+        services.AddSingleton<OpenApiSettings>(sp => {
+            var settings = new OpenApiSettingsBuilder()
+                                .WithDocVersion(sp)
+                                .Build();
+
+            return settings;
+        });
+
+        return services;
+    }
+
+    /// <summary>
     /// Adds the OpenAPI service to the services collection.
     /// </summary>
     /// <param name="services"><see cref="IServiceCollection"/> instance.</param>
     /// <returns>Returns <see cref="IServiceCollection"/> instance.</returns>
     public static IServiceCollection AddOpenApiService(this IServiceCollection services)
     {
+        services.AddOpenApiSettings();
+        var serviceProvider = services.BuildServiceProvider();
+        var settings = serviceProvider.GetRequiredService<OpenApiSettings>();
+
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options =>
         {
             var info = new OpenApiInfo()
             {
-                Version = Constants.Version,
+                Version = settings.DocVersion,
                 Title = Constants.Title,
                 Description = "Providing a proxy service to Azure OpenAI API",
                 Contact = new OpenApiContact()
@@ -104,7 +126,7 @@ public static class ServiceCollectionExtensions
                     Url = new Uri("https://aka.ms/aoai-proxy.net")
                 },
             };
-            options.SwaggerDoc(Constants.Version, info);
+            options.SwaggerDoc(settings.DocVersion, info);
 
             options.AddSecurityDefinition(
                 "apiKey",
