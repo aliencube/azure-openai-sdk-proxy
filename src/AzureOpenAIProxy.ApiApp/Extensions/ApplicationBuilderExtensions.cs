@@ -20,7 +20,7 @@ public static class ApplicationBuilderExtensions
             return app;
         }
 
-        var settings = app.Services.GetRequiredService<OpenApiSettings>();
+        var settings = app.Services.GetOpenApiSettings();
 
         app.UseSwagger(options =>
         {

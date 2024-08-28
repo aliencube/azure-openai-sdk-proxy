@@ -82,33 +82,13 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Adds the OpenApi configuration settings to the service collection by reading appsettings.json.
-    /// </summary>
-    /// <param name="services"><see cref="IServiceCollection"/> instance.</param>
-    /// <returns>Returns <see cref="IServiceCollection"/> instance.</returns>
-    public static IServiceCollection AddOpenApiSettings(this IServiceCollection services)
-    {
-        services.AddSingleton<OpenApiSettings>(sp => {
-            var settings = new OpenApiSettingsBuilder()
-                                .WithDocVersion(sp)
-                                .Build();
-
-            return settings;
-        });
-
-        return services;
-    }
-
-    /// <summary>
     /// Adds the OpenAPI service to the services collection.
     /// </summary>
     /// <param name="services"><see cref="IServiceCollection"/> instance.</param>
     /// <returns>Returns <see cref="IServiceCollection"/> instance.</returns>
     public static IServiceCollection AddOpenApiService(this IServiceCollection services)
     {
-        services.AddOpenApiSettings();
-        var serviceProvider = services.BuildServiceProvider();
-        var settings = serviceProvider.GetRequiredService<OpenApiSettings>();
+        var settings = services.GetOpenApiSettings();
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         services.AddEndpointsApiExplorer();
