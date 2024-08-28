@@ -23,18 +23,18 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests.UI
 
         [Test]
         // 페이지에서 컴포넌트 레이블이 올바르게 표시되는지 확인
-        public async Task Given_ComponentLabel_When_Waiting_Then_ShouldBeVisible()
+        public async Task Given_Label_When_Page_Loaded_Then_Label_Should_Be_Visible()
         {
             // given
-            var componentLabel = Page.GetByText("Deployment");
+            var label = Page.GetByText("Deployment");
             
             // when & then
-            await Expect(componentLabel).ToBeVisibleAsync();
+            await Expect(label).ToBeVisibleAsync();
         }
 
         [Test]
         // 페이지에서 드롭다운 컴포넌트가 올바르게 표시되는지 확인
-        public async Task Given_Dropdown_When_Waiting_Then_ShouldBeVisible()
+        public async Task Given_Dropdown_When_Page_Loaded_Then_Dropdown_Should_Be_Visible()
         {
             // given
             var fluentSelect = Page.Locator("fluent-select#deployment-model-list");
@@ -45,7 +45,7 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests.UI
 
         [Test]
         // 드롭다운의 옵션 값이 존재하는지 확인
-        public async Task Given_Dropdown_When_ClickToShowOption_Then_ShouldOptionExist()
+        public async Task Given_Dropdown_When_Dropdown_Clicked_And_DropdownOptions_Appeared_Then_All_DropdownOptions_Should_Be_Visible()
         {
             // given
             var fluentSelect = Page.Locator("fluent-select#deployment-model-list");
@@ -63,25 +63,25 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests.UI
 
         [Test]
         // 드롭다운의 옵션 값을 선택하면 부모 컴포넌트(페이지 컴포넌트)에 올바르게 업데이트 되는지 확인
-        public async Task Given_DropdownOption_When_OptionSelected_Then_ShouldUpdateComponentValue()
+        public async Task Given_DropdownOptions_And_ExpectedValue_When_Third_DropdownOption_Selected_And_DropdownValue_Updated_Then_DropdownValue_Should_Match_ExpectedValue()
         {
             // given
             var fluentSelect = Page.Locator("fluent-select#deployment-model-list");
-            var expectedValue = "AZ"; // 컴포넌트 3번째 옵션 값
             await fluentSelect.ClickAsync();
             var fluentOptions = fluentSelect.Locator("fluent-option");
+            var expectedValue = "AZ"; // 실제 컴포넌트 3번째 옵션 값
 
             // when
-            await fluentOptions.Nth(2).ScrollIntoViewIfNeededAsync(); // 3번째 옵션 보이도록 스크롤
+            await fluentOptions.Nth(2).ScrollIntoViewIfNeededAsync(); // 컴포넌트 3번째 옵션 보이도록 스크롤
             await fluentOptions.Nth(2).ClickAsync(); // 옵션 클릭
             var actualValue = await Page.EvaluateAsync<string>("() => document.querySelector('fluent-select#deployment-model-list').value"); // 페이지 내 컴포넌트 값 가져오기
 
             // then
-            Assert.That(expectedValue, Is.EqualTo(actualValue));
+            Assert.That(actualValue, Is.EqualTo(expectedValue));
         }
 
         [TearDown]
-        public async Task Teardown()
+        public async Task CleanUp()
         {
             await Page.CloseAsync();
         }

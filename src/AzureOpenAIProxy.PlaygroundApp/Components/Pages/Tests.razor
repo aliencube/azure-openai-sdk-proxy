@@ -2,20 +2,16 @@
 @using AzureOpenAIProxy.PlaygroundApp.Components.UI
 @rendermode InteractiveServer
 
-<DeploymentModelListComponent UserSelectedOption="HandleSelectedValue" />
+<DeploymentModelListComponent OnUserOptionSelected="HandleSelectedValue" />
 
 <p style="margin-top: 10px">Selected Value: @selectedModelValue</p>
 
 @code {
     private string? selectedModelValue;
-    
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+
+    protected override void OnInitialized()
     {
-        if (firstRender)
-        {
-            selectedModelValue = "Initial Value";
-            await Task.CompletedTask;
-        }
+        ;
     }
 
     private void HandleSelectedValue(string val)

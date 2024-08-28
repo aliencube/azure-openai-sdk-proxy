@@ -19,22 +19,15 @@
 </FluentLayout>
 
 @code {
-    [Parameter]
-    public Option<string>? selectedOption { get; set; }
+    public Option<string>? selectedOption { get; set; } = new();
 
     [Parameter]
-    public EventCallback<string> UserSelectedOption { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        selectedOption = new Option<string>();
-        await Task.CompletedTask;
-    }
+    public EventCallback<string> OnUserOptionSelected { get; set; }
     
     private async Task OnValueChanged()
     {
         string? selectedValue = selectedOption?.Value?.ToString();
-        await UserSelectedOption.InvokeAsync(selectedValue);
+        await OnUserOptionSelected.InvokeAsync(selectedValue);
     }
 
     static List<Option<string>> deploymentModelOptions = new()
