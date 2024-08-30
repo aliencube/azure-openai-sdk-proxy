@@ -15,7 +15,6 @@ builder.Services.AddRazorComponents()
 builder.Services.AddFluentUIComponents();
 
 builder.Services.AddScoped<IOpenAIApiClient, OpenAIApiClient>();
-builder.Services.AddFluentUIComponents();
 
 var app = builder.Build();
 
