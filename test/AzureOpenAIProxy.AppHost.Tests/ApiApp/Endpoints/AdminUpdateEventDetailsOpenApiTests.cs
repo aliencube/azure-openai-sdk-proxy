@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
 
-using FluentAssertions;
-
 using AzureOpenAIProxy.AppHost.Tests.Fixtures;
+
+using FluentAssertions;
 
 namespace AzureOpenAIProxy.AppHost.Tests.ApiApp.Endpoints;
 
@@ -13,6 +13,7 @@ public class AdminUpdateEventDetailsOpenApiTests(AspireAppHostFixture host) : IC
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -29,6 +30,7 @@ public class AdminUpdateEventDetailsOpenApiTests(AspireAppHostFixture host) : IC
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -47,6 +49,7 @@ public class AdminUpdateEventDetailsOpenApiTests(AspireAppHostFixture host) : IC
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -69,6 +72,7 @@ public class AdminUpdateEventDetailsOpenApiTests(AspireAppHostFixture host) : IC
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -88,6 +92,7 @@ public class AdminUpdateEventDetailsOpenApiTests(AspireAppHostFixture host) : IC
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -107,6 +112,7 @@ public class AdminUpdateEventDetailsOpenApiTests(AspireAppHostFixture host) : IC
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -130,6 +136,7 @@ public class AdminUpdateEventDetailsOpenApiTests(AspireAppHostFixture host) : IC
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -143,7 +150,6 @@ public class AdminUpdateEventDetailsOpenApiTests(AspireAppHostFixture host) : IC
         result.ValueKind.Should().Be(JsonValueKind.Object);
     }
 
-
     [Theory]
     [InlineData("200")]
     [InlineData("401")]
@@ -153,6 +159,7 @@ public class AdminUpdateEventDetailsOpenApiTests(AspireAppHostFixture host) : IC
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -172,6 +179,7 @@ public class AdminUpdateEventDetailsOpenApiTests(AspireAppHostFixture host) : IC
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -188,6 +196,7 @@ public class AdminUpdateEventDetailsOpenApiTests(AspireAppHostFixture host) : IC
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
