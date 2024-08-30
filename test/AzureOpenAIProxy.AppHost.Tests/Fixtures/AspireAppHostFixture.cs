@@ -1,4 +1,6 @@
-﻿namespace AzureOpenAIProxy.AppHost.Tests.Fixtures;
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace AzureOpenAIProxy.AppHost.Tests.Fixtures;
 
 /// <summary>
 /// This class instance is automatically created before run test.
@@ -7,6 +9,7 @@
 public class AspireAppHostFixture : IAsyncLifetime
 {
     public DistributedApplication? App { get; private set; }
+    public ResourceNotificationService ResourceNotificationService => this.App!.Services.GetRequiredService<ResourceNotificationService>();
 
     public async Task InitializeAsync()
     {

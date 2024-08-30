@@ -1,4 +1,4 @@
-﻿namespace AzureOpenAIProxy.ApiApp.Endpoints;
+namespace AzureOpenAIProxy.ApiApp.Endpoints;
 
 /// <summary>
 /// This represents the collection of the endpoint URLs.
@@ -14,4 +14,9 @@ public static class EndpointUrls
     /// Declares the chat completions endpoint.
     /// </summary>
     public const string ChatCompletions = "/openai/deployments/{deploymentName}/chat/completions";
+
+    /// <summary>
+    /// Declares the event endpoint.
+    /// </summary>
+    public const string Events = "/events";
 }
