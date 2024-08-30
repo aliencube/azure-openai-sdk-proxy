@@ -15,6 +15,7 @@ public class AppHostProgramTests(AspireAppHostFixture host) : IClassFixture<Aspi
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient(resourceName);
+        await host.ResourceNotificationService.WaitForResourceAsync(resourceName, KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var response = await httpClient.GetAsync(endpoint);

@@ -15,6 +15,7 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -31,6 +32,7 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -49,6 +51,7 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -71,6 +74,7 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -90,6 +94,7 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -109,6 +114,7 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -131,6 +137,7 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -152,6 +159,7 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -189,6 +197,7 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -205,6 +214,7 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -219,11 +229,12 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
 
     [Theory]
     [MemberData(nameof(AttributeData))]
-    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Required
-        (string attribute, bool isRequired, string type)
+    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Required(string attribute, bool isRequired, string type)
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
+
         var isReq = isRequired;
         var typeStr = type;
 
@@ -242,11 +253,12 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
 
     [Theory]
     [MemberData(nameof(AttributeData))]
-    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Property
-        (string attribute, bool isRequired, string type)
+    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Property(string attribute, bool isRequired, string type)
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
+
         var isReq = isRequired;
         var typeStr = type;
 
@@ -265,11 +277,12 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
 
     [Theory]
     [MemberData(nameof(AttributeData))]
-    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Type
-        (string attribute, bool isRequired, string type)
+    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Type(string attribute, bool isRequired, string type)
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
+
         var isReq = isRequired;
         var typeStr = type;
 
