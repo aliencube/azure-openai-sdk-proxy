@@ -149,6 +149,122 @@ public class CreateChatCompletionResponseTests
         ]
     }";
 
+    private readonly CreateChatCompletionResponse exampleResponse = new CreateChatCompletionResponse
+    {
+        Id = "string",
+        Object = ChatCompletionResponseObject.ChatCompletion,
+        Created = 1620241923,
+        Model = "string",
+        Usage = new CompletionUsage
+        {
+            PromptTokens = 0,
+            CompletionTokens = 0,
+            TotalTokens = 0
+        },
+        SystemFingerprint = "string",
+        PromptFilterResults = new List<PromptFilterResult>
+        {
+            new PromptFilterResult
+            {
+                PromptIndex = 0,
+                ContentFilterResults = new ContentFilterPromptResults
+                {
+                    Sexual = new ContentFilterSeverityResult { Filtered = true, Severity = ContentFilterSeverity.Safe },
+                    Violence = new ContentFilterSeverityResult { Filtered = true, Severity = ContentFilterSeverity.Safe },
+                    Hate = new ContentFilterSeverityResult { Filtered = true, Severity = ContentFilterSeverity.Safe },
+                    SelfHarm = new ContentFilterSeverityResult { Filtered = true, Severity = ContentFilterSeverity.Safe },
+                    Profanity = new ContentFilterDetectedResult { Filtered = true, Detected = true },
+                    Error = new ErrorBase { Code = "string", Message = "string" },
+                    Jailbreak = new ContentFilterDetectedResult { Filtered = true, Detected = true }
+                }
+            }
+        },
+        Choices = new List<ChatCompletionChoice>
+        {
+            new ChatCompletionChoice
+            {
+                Index = 0,
+                FinishReason = "string",
+                Message = new ChatCompletionResponseMessage
+                {
+                    Role = ChatCompletionResponseMessageRole.Assistant,
+                    Content = "string",
+                    ToolCalls = new List<ChatCompletionMessageToolCall>
+                    {
+                        new ChatCompletionMessageToolCall
+                        {
+                            Id = "string",
+                            Type = ToolCallType.Function,
+                            Function = new FunctionObject
+                            {
+                                Name = "string",
+                                Arguments = "string"
+                            }
+                        }
+                    },
+                    FunctionCall = new ChatCompletionFunctionCall { Name = "string", Arguments = "string" },
+                    Context = new AzureChatExtensionsMessageContext
+                    {
+                        Citations = new List<Citation>
+                        {
+                            new Citation
+                            {
+                                Content = "string",
+                                Title = "string",
+                                Url = "string",
+                                Filepath = "string",
+                                ChunkId = "string"
+                            }
+                        },
+                        Intent = "string"
+                    }
+                },
+                ContentFilterResults = new ContentFilterChoiceResults
+                {
+                    Sexual = new ContentFilterSeverityResult { Filtered = true, Severity = ContentFilterSeverity.Safe },
+                    Violence = new ContentFilterSeverityResult { Filtered = true, Severity = ContentFilterSeverity.Safe },
+                    Hate = new ContentFilterSeverityResult { Filtered = true, Severity = ContentFilterSeverity.Safe },
+                    SelfHarm = new ContentFilterSeverityResult { Filtered = true, Severity = ContentFilterSeverity.Safe },
+                    Profanity = new ContentFilterDetectedResult { Filtered = true, Detected = true },
+                    Error = new ErrorBase { Code = "string", Message = "string" },
+                    ProtectedMaterialText = new ContentFilterDetectedResult { Filtered = true, Detected = true },
+                    ProtectedMaterialCode = new ContentFilterDetectedWithCitationResult
+                    {
+                        Filtered = true,
+                        Detected = true,
+                        Citation = new CitationObject { URL = "string", License = "string" }
+                    }
+                },
+                LogProbs = new ChatCompletionChoiceLogProbs
+                {
+                    Content = new List<ChatCompletionTokenLogProb>
+                    {
+                        new ChatCompletionTokenLogProb
+                        {
+                            Token = "string",
+                            LogProb = 0,
+                            Bytes = new List<int> { 0 },
+                            TopLogProbs = new List<TopLogProbs>
+                            {
+                                new TopLogProbs { Token = "string", LogProb = 0, Bytes = new List<int> { 0 } }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    [Fact]
+    public void Given_ExampleResponse_When_Serialized_Then_ShouldMatchExpectedJson()
+    {
+        // Act
+        var serializedJson = JsonSerializer.Serialize(exampleResponse, new JsonSerializerOptions { WriteIndented = false });
+
+        // Assert
+        serializedJson.Should().Be(exampleJson.Replace("\r", "").Replace("\n", "").Replace(" ", ""));
+    }
+
     [Fact]
     public void Given_ExampleJson_When_Deserialized_Then_ShouldReturnValidObject()
     {
@@ -157,18 +273,6 @@ public class CreateChatCompletionResponseTests
 
         // Assert
         deserializedResponse.Should().NotBeNull();
-    }
-
-    [Fact]
-    public void Given_DeserializedObject_When_Serialized_Then_ShouldMatchOriginalJson()
-    {
-        // Arrange
-        var deserializedResponse = JsonSerializer.Deserialize<CreateChatCompletionResponse>(exampleJson);
-
-        // Act
-        var serializedJson = JsonSerializer.Serialize(deserializedResponse, new JsonSerializerOptions { WriteIndented = false });
-
-        // Assert
-        serializedJson.Should().Be(exampleJson.Replace("\r", "").Replace("\n", "").Replace(" ", ""));
+        deserializedResponse.Should().BeEquivalentTo(exampleResponse);
     }
 }
