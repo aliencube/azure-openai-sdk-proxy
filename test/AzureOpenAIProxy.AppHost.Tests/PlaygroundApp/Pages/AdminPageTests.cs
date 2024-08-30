@@ -5,8 +5,7 @@ using AzureOpenAIProxy.AppHost.Tests.Fixtures;
 using FluentAssertions;
 
 namespace AzureOpenAIProxy.AppHost.Tests.PlaygroundApp.Pages;
-
-public class HomePageTests(AspireAppHostFixture host) : IClassFixture<AspireAppHostFixture>
+public class AdminPageTests(AspireAppHostFixture host) : IClassFixture<AspireAppHostFixture>
 {
     [Fact]
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_OK()
@@ -16,24 +15,10 @@ public class HomePageTests(AspireAppHostFixture host) : IClassFixture<AspireAppH
         await host.ResourceNotificationService.WaitForResourceAsync("playgroundapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
-        var response = await httpClient.GetAsync("/");
+        var response = await httpClient.GetAsync("/admin");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-    }
-
-    [Theory]
-    [InlineData("_content/Microsoft.FluentUI.AspNetCore.Components/css/reboot.css")]
-    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_CSS_Elements(string expected)
-    {
-        // Arrange
-        using var httpClient = host.App!.CreateHttpClient("playgroundapp");
-
-        // Act
-        var html = await httpClient.GetStringAsync("/");
-
-        // Assert
-        html.Should().Contain(expected);
     }
 
     [Theory]
@@ -44,7 +29,7 @@ public class HomePageTests(AspireAppHostFixture host) : IClassFixture<AspireAppH
         using var httpClient = host.App!.CreateHttpClient("playgroundapp");
 
         // Act
-        var html = await httpClient.GetStringAsync("/");
+        var html = await httpClient.GetStringAsync("/admin");
 
         // Assert
         html.Should().Contain(expected);
@@ -58,7 +43,7 @@ public class HomePageTests(AspireAppHostFixture host) : IClassFixture<AspireAppH
         using var httpClient = host.App!.CreateHttpClient("playgroundapp");
 
         // Act
-        var html = await httpClient.GetStringAsync("/");
+        var html = await httpClient.GetStringAsync("/admin");
 
         // Assert
         html.Should().Contain(expected);
