@@ -13,27 +13,11 @@ namespace AzureOpenAIProxy.ApiApp.Models
 
     public class ChatCompletionRequestMessage
     {
-        [JsonPropertyName("role")]
-        public ChatCompletionRequestMessageRole Role { get; set; }
+        [JsonPropertyName("role"), Required]
+        public ChatCompletionRequestMessageRole? Role { get; set; }
 
         [JsonPropertyName("content")]
         public string? Content { get; set; }
-    }
-
-    public class UserChatCompletionRequestMessage : ChatCompletionRequestMessage
-    {
-        public UserChatCompletionRequestMessage()
-        {
-            Role = ChatCompletionRequestMessageRole.User;
-        }
-    }
-
-    public class AssistantChatCompletionRequestMessage : ChatCompletionRequestMessage
-    {
-        public AssistantChatCompletionRequestMessage()
-        {
-            Role = ChatCompletionRequestMessageRole.Assistant;
-        }
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -50,8 +34,5 @@ namespace AzureOpenAIProxy.ApiApp.Models
 
         [JsonPropertyName("tool")]
         Tool,
-
-        [JsonPropertyName("function")]
-        Function // Deprecated. 
     }
 }
