@@ -18,6 +18,8 @@ public static class ApplicationBuilderExtensions
             return app;
         }
 
+        var settings = app.Services.GetOpenApiSettings();
+
         app.UseSwagger(options =>
         {
             //options.RouteTemplate = $"swagger/{Constants.Version}/swagger.json";
@@ -32,7 +34,7 @@ public static class ApplicationBuilderExtensions
 
         app.UseSwaggerUI(options =>
         {
-            options.SwaggerEndpoint($"{Constants.Version}/swagger.json", Constants.Title);
+            options.SwaggerEndpoint($"{settings.DocVersion}/swagger.json", Constants.Title);
         });
 
         return app;

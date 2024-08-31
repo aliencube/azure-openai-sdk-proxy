@@ -19,7 +19,7 @@ public static class WeatherForecastEndpoint
     /// <returns>Returns <see cref="RouteHandlerBuilder"/> instance.</returns>
     public static RouteHandlerBuilder AddWeatherForecast(this WebApplication app)
     {
-        var builder = app.MapGet(EndpointUrls.WeatherForecast, () =>
+        var builder = app.MapGet(ProxyEndpointUrls.WeatherForecast, () =>
         {
             var forecast = Enumerable.Range(1, 5).Select(index =>
                 new WeatherForecast

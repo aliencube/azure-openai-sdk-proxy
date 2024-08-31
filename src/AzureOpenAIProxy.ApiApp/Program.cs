@@ -1,7 +1,7 @@
-using Azure.Data.Tables;
-
 using AzureOpenAIProxy.ApiApp.Endpoints;
 using AzureOpenAIProxy.ApiApp.Extensions;
+
+using Azure.Data.Tables;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +16,7 @@ builder.Services.AddOpenAIService();
 // Add OpenAPI service
 builder.Services.AddOpenApiService();
 
+// Add Table service
 builder.Services.AddSingleton<TableServiceClient>(sp =>
 {
     //TODO: StorageAccount를 bicep으로 배포하기 (지금은 az 명령어로 수동생성함)
@@ -51,15 +52,17 @@ app.Use(async (context, next) =>
 app.UseHttpsRedirection();
 
 app.AddWeatherForecast();
+
+// Proxy endpoints
 app.AddChatCompletions();
 
-// Event Endpoints
-app.AddEventList();
+// Playground endpoints
+app.AddListEvents();
 
-// Admin Endpoints
-app.AddAdminEvents();
-app.AddAdminEventList();
-app.AddUpdateAdminEvents();
-app.CreateAdminEvent();
+// Admin endpoints
+app.AddNewAdminEvent();
+app.AddListAdminEvents();
+app.AddGetAdminEvent();
+app.AddUpdateAdminEvent();
 
 await app.RunAsync();
