@@ -35,7 +35,8 @@ public class TestsPageTests : PageTest
     [TestCase(123, typeof(int))]
     [TestCase(456, typeof(int))]
     [TestCase(789, typeof(int))]
-    public async Task Given_Input_When_DebugButton_Clicked_Then_Toast_Should_Show_Input(int inputValue, Type inputType)    {
+    public async Task Given_Input_When_DebugButton_Clicked_Then_Toast_Should_Show_Input(int inputValue, Type inputType)
+    {
         // Act
         await Page.GetByRole(AriaRole.Radio, new() { Name = $"{inputValue}" }).ClickAsync();
         await Page.GetByRole(AriaRole.Button, new() { Name = "Debug" }).ClickAsync();
