@@ -1,4 +1,4 @@
-<FluentTabs Id="config-tab" ActiveTabId="system-message" OnTabChange="HandleOnTabChange">
+<FluentTabs Id="config-tab" ActiveTabId="system-message" OnTabChange="ChangeTab">
     <FluentTab Label="System message" Id="system-message-tab">
         This is "System message" tab.
     </FluentTab>
@@ -7,13 +7,14 @@
     </FluentTab>
 </FluentTabs>
 
-<p id ="active-tab">[TEST] Active tab changed to: @SelectedTab?.Id</p>
+<p id="active-tab">[TEST] Active tab changed to: @SelectedTab?.Id</p>
 
 @code {
     FluentTab? SelectedTab;
 
-    private void HandleOnTabChange(FluentTab tab)
+    private async Task ChangeTab(FluentTab tab)
     {
         SelectedTab = tab;
+        await Task.CompletedTask;
     }
 }
