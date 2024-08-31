@@ -32,6 +32,6 @@ public static class OpenApiSettingsExtensions
     {
         var serviceProvider = services.BuildServiceProvider();
 
-        return GetOpenApiSettings(serviceProvider);
+        return serviceProvider.GetOpenApiSettings();
     }
 }
