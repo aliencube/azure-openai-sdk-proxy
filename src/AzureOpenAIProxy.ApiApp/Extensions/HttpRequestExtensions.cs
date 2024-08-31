@@ -10,7 +10,7 @@ public static class HttpRequestExtensions
     /// Gets the base URL.
     /// </summary>
     /// <param name="req"><see cref="HttpRequest"/> instance.</param>
-    /// <returns></returns>
+    /// <returns>Returns the base URL from <see cref="HttpRequest"/>.</returns>
     public static string? BaseUrl(this HttpRequest req)
     {
         if (req == null) return null;
