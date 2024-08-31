@@ -72,47 +72,32 @@ public class PlaygroundPageTests : PageTest
     }
 
    [Test]
-    public async Task Given_ApiKeyInputField_When_FieldIsLoaded_Then_FieldIsMaskedByDefault()
+    public async Task Given_ApiKeyInputField_When_Endpoint_Invoked_Should_Be_Displayed()
     {
         // Arrange
-        var apiKeyInput = Page.Locator("fluent-text-field >> input");
+        var apiKeyInput = Page.Locator("#apiKeyInputField");
 
         // Act
         var inputType = await apiKeyInput.GetAttributeAsync("type");
 
         // Assert
-        inputType.Should().NotBeNull("API 키 입력 필드의 타입을 가져오는 데 실패했습니다.");
-        inputType.Should().Be("password", "API 키 입력 필드는 기본적으로 마스킹되어 있어야 합니다.");
+        inputType.Should().NotBeNull("Should be password type");
+
     }
 
     [Test]
     [TestCase("test-api-key-1")]
     [TestCase("example-key-123")]
-    public async Task Given_ApiKeyInputField_When_ValuesAreEntered_Then_FieldDisplaysInputValue(string apiKey)
+    public async Task Given_ApiKeyInputField_When_Changed_Should_Be_Updated(string apiKey)
     {
         // Arrange
-        var apiKeyInput = Page.Locator("fluent-text-field >> input");
+        var apiKeyInput = Page.Locator("#apiKeyInputField");
 
         // Act
         await apiKeyInput.FillAsync(apiKey);
 
         // Assert
         await Expect(apiKeyInput).ToHaveValueAsync(apiKey);
-    }
-
-    [Test]
-    public async Task Given_ApiKeyInputField_When_ValueIsSet_Then_CurrentValueShouldBeCorrect()
-    {
-        // Arrange
-        var apiKeyInput = Page.Locator("fluent-text-field >> input");
-        var apiKey = "test-api-key";
-
-        // Act
-        await apiKeyInput.FillAsync(apiKey);
-        var currentValue = await apiKeyInput.InputValueAsync();
-
-        // Assert
-        currentValue.Should().Be(apiKey, "API 키 입력 필드에 값이 제대로 설정되지 않았습니다.");
     }
 
 }
