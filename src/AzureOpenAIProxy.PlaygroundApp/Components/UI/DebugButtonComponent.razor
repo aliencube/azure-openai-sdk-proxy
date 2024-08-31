@@ -7,15 +7,16 @@
     [Parameter]
     public object? Input { get; set; }
     
-    void ShowToast()
+    private async Task ShowToast()
     {
-        if (Input == null)
+        if (Input is null)
         {
             ToastService.ShowToast(ToastIntent.Warning, "Input is null.");
+            await Task.CompletedTask;
+            return;
         }
-        else
-        {
-            ToastService.ShowToast(ToastIntent.Success, $"{Input} (Type: {Input.GetType()})");
-        }
+
+        ToastService.ShowToast(ToastIntent.Success, $"{Input} (Type: {Input.GetType()})");
+        await Task.CompletedTask;
     }
 }

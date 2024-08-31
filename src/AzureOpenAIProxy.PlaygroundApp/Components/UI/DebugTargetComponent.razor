@@ -6,10 +6,10 @@
 
 @code {
     [Parameter]
-    public EventCallback<int> OnValueChange { get; set; }
+    public EventCallback<int> OnValueChanged { get; set; }
 
     private async Task SetValue(int value)
     {
-        await OnValueChange.InvokeAsync(value);
+        await OnValueChanged.InvokeAsync(value);
     }
 }
