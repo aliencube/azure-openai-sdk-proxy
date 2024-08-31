@@ -12,6 +12,7 @@ public class AdminPageTests(AspireAppHostFixture host) : IClassFixture<AspireApp
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("playgroundapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("playgroundapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var response = await httpClient.GetAsync("/admin");

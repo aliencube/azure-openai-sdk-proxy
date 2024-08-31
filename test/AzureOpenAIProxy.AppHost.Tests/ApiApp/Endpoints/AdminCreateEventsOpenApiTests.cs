@@ -1,21 +1,19 @@
 using System.Text.Json;
-using System.Net;
 
 using AzureOpenAIProxy.AppHost.Tests.Fixtures;
 
 using FluentAssertions;
 
-using System.Text;
-
 namespace AzureOpenAIProxy.AppHost.Tests.ApiApp.Endpoints;
 
 public class AdminCreateEventsOpenApiTests(AspireAppHostFixture host) : IClassFixture<AspireAppHostFixture>
-{   
+{
     [Fact]
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Path()
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -32,6 +30,7 @@ public class AdminCreateEventsOpenApiTests(AspireAppHostFixture host) : IClassFi
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -50,6 +49,7 @@ public class AdminCreateEventsOpenApiTests(AspireAppHostFixture host) : IClassFi
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -72,6 +72,7 @@ public class AdminCreateEventsOpenApiTests(AspireAppHostFixture host) : IClassFi
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -92,6 +93,7 @@ public class AdminCreateEventsOpenApiTests(AspireAppHostFixture host) : IClassFi
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -105,7 +107,6 @@ public class AdminCreateEventsOpenApiTests(AspireAppHostFixture host) : IClassFi
         result.ValueKind.Should().Be(JsonValueKind.Object);
     }
 
-
     [Theory]
     [InlineData("200")]
     [InlineData("400")]
@@ -115,6 +116,7 @@ public class AdminCreateEventsOpenApiTests(AspireAppHostFixture host) : IClassFi
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -134,6 +136,7 @@ public class AdminCreateEventsOpenApiTests(AspireAppHostFixture host) : IClassFi
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -150,6 +153,7 @@ public class AdminCreateEventsOpenApiTests(AspireAppHostFixture host) : IClassFi
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");

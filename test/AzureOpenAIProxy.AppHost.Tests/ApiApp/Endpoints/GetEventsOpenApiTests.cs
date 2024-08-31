@@ -4,8 +4,6 @@ using AzureOpenAIProxy.AppHost.Tests.Fixtures;
 
 using FluentAssertions;
 
-using IdentityModel.Client;
-
 namespace AzureOpenAIProxy.AppHost.Tests.ApiApp.Endpoints;
 
 public class GetEventsOpenApiTests(AspireAppHostFixture host) : IClassFixture<AspireAppHostFixture>
@@ -15,6 +13,7 @@ public class GetEventsOpenApiTests(AspireAppHostFixture host) : IClassFixture<As
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -31,6 +30,7 @@ public class GetEventsOpenApiTests(AspireAppHostFixture host) : IClassFixture<As
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -49,6 +49,7 @@ public class GetEventsOpenApiTests(AspireAppHostFixture host) : IClassFixture<As
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -70,6 +71,7 @@ public class GetEventsOpenApiTests(AspireAppHostFixture host) : IClassFixture<As
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -89,6 +91,7 @@ public class GetEventsOpenApiTests(AspireAppHostFixture host) : IClassFixture<As
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -110,6 +113,7 @@ public class GetEventsOpenApiTests(AspireAppHostFixture host) : IClassFixture<As
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
