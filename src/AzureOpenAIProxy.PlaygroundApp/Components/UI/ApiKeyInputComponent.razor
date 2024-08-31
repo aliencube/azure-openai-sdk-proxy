@@ -1,4 +1,4 @@
-<FluentTextField @bind-Value=apiKeyValue TextFieldType="TextFieldType.Password" @oninput="SetApiKey">API key input</FluentTextField>
+<FluentTextField Id="apiKeyInputField" @bind-Value=apiKeyValue TextFieldType="TextFieldType.Password" @oninput="SetApiKey">API key input</FluentTextField>
 
 @code {
     private string? apiKeyValue { get; set; }
