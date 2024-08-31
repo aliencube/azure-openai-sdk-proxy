@@ -1,7 +1,5 @@
 using AzureOpenAIProxy.ApiApp.Extensions;
 
-using Castle.Components.DictionaryAdapter;
-
 using FluentAssertions;
 
 using Microsoft.Extensions.Configuration;
@@ -24,6 +22,50 @@ public class OpenApiSettingsExtensionsTests
 
         // Act
         Action action = () => sp.GetOpenApiSettings();
+
+        // Assert
+        action.Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void Given_Empty_OpenApiSettings_When_Added_ToServiceProvider_Then_It_Should_Throw_Exception()
+    {
+        // Arrange
+        var dict = new Dictionary<string, string>()
+        {
+            { "OpenApi", "" }
+        };
+#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
+        var config = new ConfigurationBuilder().AddInMemoryCollection(dict).Build();
+#pragma warning restore CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
+
+        var sp = Substitute.For<IServiceProvider>();
+        ServiceProviderServiceExtensions.GetService<IConfiguration>(sp).Returns(config);
+
+        // Act
+        Action action = () => sp.GetOpenApiSettings();
+
+        // Assert
+        action.Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void Given_Empty_OpenApiSettings_When_Added_ToServiceCollection_Then_It_Should_Throw_Exception()
+    {
+        // Arrange
+        var dict = new Dictionary<string, string>()
+        {
+            { "OpenApi", "" }
+        };
+#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
+        var config = new ConfigurationBuilder().AddInMemoryCollection(dict).Build();
+#pragma warning restore CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
+
+        var sc = new ServiceCollection();
+        sc.AddSingleton<IConfiguration>(config);
+
+        // Act
+        Action action = () => sc.GetOpenApiSettings();
 
         // Assert
         action.Should().Throw<InvalidOperationException>();
