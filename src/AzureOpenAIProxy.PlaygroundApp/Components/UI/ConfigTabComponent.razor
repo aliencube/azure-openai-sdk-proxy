@@ -1,0 +1,20 @@
+<FluentTabs Id="config-tab" ActiveTabId="system-message" OnTabChange="ChangeTab">
+    <FluentTab Label="System message" Id="system-message-tab">
+        This is "System message" tab.
+    </FluentTab>
+    <FluentTab Label="Parameters" Id="parameters-tab">
+        This is "Parameters" tab.
+    </FluentTab>
+</FluentTabs>
+
+<p id="active-tab">[TEST] Active tab changed to: @SelectedTab?.Id</p>
+
+@code {
+    FluentTab? SelectedTab;
+
+    private async Task ChangeTab(FluentTab tab)
+    {
+        SelectedTab = tab;
+        await Task.CompletedTask;
+    }
+}
