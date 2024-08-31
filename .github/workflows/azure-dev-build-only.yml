@@ -83,8 +83,7 @@ jobs:
     - name: Create openapi.json
       shell: pwsh
       run: |
-        $fileContent = Get-Content './src/AzureOpenAIProxy.ApiApp/Constants.cs'
-        $API_VERSION = [regex]::Match($fileContent, 'public const string Version = "([^"]+)"').Groups[1].Value
+        $API_VERSION = $(Get-Content ./src/AzureOpenAIProxy.ApiApp/appsettings.json | ConvertFrom-Json).OpenApi.DocVersion
 
         Invoke-WebRequest -Uri "https://localhost:7001/swagger/$API_VERSION/swagger.json" -OutFile "openapi.json"
 

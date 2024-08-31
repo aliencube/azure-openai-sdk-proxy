@@ -1,17 +1,19 @@
 @page "/tests"
-@using AzureOpenAIProxy.PlaygroundApp.Components.UI
 @rendermode InteractiveServer
 
-<DeploymentModelListComponent OnUserOptionSelected="HandleSelectedValue" />
+<DebugTargetComponent OnValueChanged="SetInput" />
+<DebugButtonComponent Input="@currentValue" />
 
+<DeploymentModelListComponent OnUserOptionSelected="HandleSelectedValue" @rendermode="InteractiveServer" />
 <p style="margin-top: 10px">Selected Value: @selectedModelValue</p>
 
 @code {
     private string? selectedModelValue = "";
+    private object? currentValue;
 
-    protected override async Task OnInitializedAsync()
+    private void SetInput(int newValue)
     {
-        await base.OnInitializedAsync();
+        currentValue = newValue;
     }
 
     private void HandleSelectedValue(string val)
