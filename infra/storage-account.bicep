@@ -23,7 +23,14 @@ param minimumTlsVersion string = 'TLS1_2'
 param queues array = []
 param shareDeleteRetentionPolicy object = {}
 param supportsHttpsTrafficOnly bool = true
-param tables array = []
+
+// tables list
+param tables array = [
+    {
+        name: 'events'
+    }
+]
+
 param networkAcls object = {
   bypass: 'AzureServices'
   defaultAction: 'Allow'
@@ -93,6 +100,10 @@ resource storage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   resource tableServices 'tableServices' = if (!empty(tables)) {
     name: 'default'
     properties: {}
+    resource table 'tables' = [for table in tables: {
+      name: table.name
+      properties: {}
+    }]
   }
 }
 
