@@ -68,4 +68,48 @@ public class PlaygroundPageTests : PageTest
         await Expect(selectedPanel).ToBeVisibleAsync();
         await Expect(hiddenPanel).ToBeHiddenAsync();
     }
+
+    [Test]
+    public async Task Given_ApiKeyInputField_When_FieldIsLoaded_Then_FieldIsMaskedByDefault()
+    {
+        // Arrange
+        var apiKeyInput = Page.Locator("fluent-text-field >> input");
+
+        // Act
+        var inputType = await apiKeyInput.GetAttributeAsync("type");
+
+        // Assert
+        Assert.AreEqual("password", inputType, "API 키 입력 필드는 기본적으로 마스킹되어 있어야 합니다.");
+    }
+
+    [Test]
+    [TestCase("test-api-key-1")]
+    [TestCase("example-key-123")]
+    public async Task Given_ApiKeyInputField_When_ValuesAreEntered_Then_FieldDisplaysInputValue(string apiKey)
+    {
+        // Arrange
+        var apiKeyInput = Page.Locator("fluent-text-field >> input");
+
+        // Act
+        await apiKeyInput.FillAsync(apiKey);
+
+        // Assert
+        await Expect(apiKeyInput).ToHaveValueAsync(apiKey);
+    }
+
+    [Test]
+    public async Task Given_ApiKeyInputField_When_ValueIsSet_Then_CurrentValueShouldBeCorrect()
+    {
+        // Arrange
+        var apiKeyInput = Page.Locator("fluent-text-field >> input");
+        var apiKey = "test-api-key";
+
+        // Act
+        await apiKeyInput.FillAsync(apiKey);
+        var currentValue = await apiKeyInput.InputValueAsync();
+
+        // Assert
+        Assert.AreEqual(apiKey, currentValue, "API 키 입력 필드에 값이 제대로 설정되지 않았습니다.");
+    }
+
 }
