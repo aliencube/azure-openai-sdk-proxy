@@ -8,18 +8,15 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests.UI;
 [Property("Category", "Integration")]
 public class ConfigTabComponentTest : PageTest
 {
-    public override BrowserNewContextOptions ContextOptions() => new()
-    {
-        IgnoreHTTPSErrors = true,
-    };  
-    
+    public override BrowserNewContextOptions ContextOptions() => new() { IgnoreHTTPSErrors = true, };
+
     [SetUp]
     public async Task SetUp()
     {
         await Page.GotoAsync("https://localhost:5001/playground/");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
-    
+
     [Test]
     public async Task Given_ConfigTab_When_Endpoint_Invoked_Then_ConfigTab_Should_Be_Displayed()
     {
@@ -29,32 +26,46 @@ public class ConfigTabComponentTest : PageTest
         // Assert
         await Expect(configTab).ToBeVisibleAsync();
     }
-    
+
     [Test]
     public async Task Given_ConfigTab_When_Endpoint_Invoked_Then_Id_Should_Be_System_Message_Tab()
     {
         // Act
         var sysMsgPanel = Page.Locator("fluent-tab-panel#system-message-tab-panel");
         var parameterPanel = Page.Locator("fluent-tab-panel#parameters-tab-panel");
-        
+
         // Assert
         await Expect(sysMsgPanel).ToBeVisibleAsync();
         await Expect(parameterPanel).ToBeHiddenAsync();
     }
 
     [Test]
-    public async Task Given_ConfigTab_When_Changed_Then_Tab_Should_Be_Updated()
+    [TestCase(
+        "fluent-tab#parameters-tab",
+        "fluent-tab-panel#system-message-tab-panel",
+        "fluent-tab-panel#parameters-tab-panel"
+    )]
+    [TestCase(
+        "fluent-tab#system-message-tab",
+        "fluent-tab-panel#parameters-tab-panel",
+        "fluent-tab-panel#system-message-tab-panel"
+    )]
+    public async Task Given_ConfigTab_When_Changed_Then_Tab_Should_Be_Updated(
+        string selectedTabSelector,
+        string selectedPanelSelector,
+        string hiddenPanelSelector
+    )
     {
         // Arrange
-        var parameterTab = Page.Locator("fluent-tab#parameters-tab");
-        var sysMsgPanel = Page.Locator("fluent-tab-panel#system-message-tab-panel");
-        var parameterPanel = Page.Locator("fluent-tab-panel#parameters-tab-panel");
-        
+        var selectedTab = Page.Locator(selectedTabSelector);
+        var selectedPanel = Page.Locator(selectedPanelSelector);
+        var hiddenPanel = Page.Locator(hiddenPanelSelector);
+
         // Act
-        await parameterTab.ClickAsync();
-        
+        await selectedTab.ClickAsync();
+
         // Assert
-        await Expect(sysMsgPanel).ToBeHiddenAsync();
-        await Expect(parameterPanel).ToBeVisibleAsync();
+        await Expect(selectedPanel).ToBeHiddenAsync();
+        await Expect(hiddenPanel).ToBeVisibleAsync();
     }
 }
