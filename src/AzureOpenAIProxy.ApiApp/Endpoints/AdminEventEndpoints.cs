@@ -2,6 +2,9 @@ using AzureOpenAIProxy.ApiApp.Models;
 
 using Microsoft.AspNetCore.Mvc;
 
+using Azure.Data.Tables;
+using Azure;
+
 namespace AzureOpenAIProxy.ApiApp.Endpoints;
 
 /// <summary>
@@ -113,11 +116,42 @@ public static class AdminEventEndpoints
     /// <returns>Returns <see cref="RouteHandlerBuilder"/> instance.</returns>
     public static RouteHandlerBuilder CreateAdminEvent(this WebApplication app)
     {
+        //TODO: 테이블 이름을 어딘가에서 상수처럼 관리하기
+        const string TableName = "AdminEvents";
+
         var builder = app.MapPost(AdminEndpointUrls.AdminEvents, async (
+            [FromServices] TableServiceClient tableStorageService,
             [FromBody] AdminEventDetails payload,
             HttpRequest request) =>
         {
-            return await Task.FromResult(Results.Ok());
+            try{
+                //TODO: 테이블 서비스/클라이언트는 의존성 주입 받아서 사용하도록 리팩토링
+                await tableStorageService.CreateTableIfNotExistsAsync(TableName);
+                var tableClient = tableStorageService.GetTableClient(TableName);
+
+                //TODO: PartitonKey: OrganizerName+OrganizerEmail 조합, RowKey: EventId 으로 제안드립니다!
+                //TODO: ITableEntity 상속 정리, EventDetails 제네릭 사용하기
+                var entity = new TableEntity($"{payload.OrganizerName}_{payload.OrganizerEmail}", payload.EventId)
+                {
+                    ["EventName"] = payload.Title,
+                    ["EventDescription"] = payload.Description,
+                    ["EventStartDate"] = payload.DateStart,
+                    ["EventEndDate"] = payload.DateEnd,
+                    ["TimeZone"] = payload.TimeZone,
+                    ["IsActive"] = payload.IsActive,
+                    ["OrganizerEmail"] = payload.OrganizerEmail,
+                    ["CoorganizerName"] = payload.CoorganizerName,
+                    ["CoorganizerEmail"] = payload.CoorganizerEmail,
+                    ["MaxTokenCap"] = payload.MaxTokenCap,
+                    ["DailyRequestCap"] = payload.DailyRequestCap
+                };
+
+                await tableClient.AddEntityAsync(entity);
+                return Results.Ok();
+            } catch (RequestFailedException ex)
+            {
+                return Results.BadRequest(ex.Message);
+            }
         })
         // TODO: Check both request/response payloads
         .Accepts<AdminEventDetails>(contentType: "application/json")
