@@ -1,15 +1,13 @@
 @page "/tests"
-@using AzureOpenAIProxy.PlaygroundApp.Components.UI
-
 @rendermode InteractiveServer
 
-<TargetComponent OnChangeCallback="OnValueChanged" />
+<DebugTargetComponent OnChange="OnValueChanged" />
 <DebugButtonComponent Input="@currentValue" />
 
 @code {
     private object? currentValue;
 
-    private void OnValueChanged(object newValue)
+    private void OnValueChanged(int newValue)
     {
         currentValue = newValue;
     }

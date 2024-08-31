@@ -1,0 +1,15 @@
+<FluentRadioGroup TValue="int" Label="UI Test #171" ValueChanged="OnValueChanged" Orientation="Orientation.Vertical">
+    <FluentRadio Value="123">123</FluentRadio>
+    <FluentRadio Value="456">456</FluentRadio>
+    <FluentRadio Value="789">789</FluentRadio>
+</FluentRadioGroup>
+
+@code {
+    [Parameter]
+    public EventCallback<int> OnChange { get; set; }
+
+    private async Task OnValueChanged(int value)
+    {
+        await OnChange.InvokeAsync(value);
+    }
+}

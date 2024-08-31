@@ -1,22 +1,21 @@
+@inject IToastService ToastService
+
 <!-- This component displays the given input when the button is clicked. -->
-<FluentButton Appearance="Appearance.Accent" OnClick="@DisplayInput">Debug</FluentButton>
-<p id="displayText">@displayText</p>
+<FluentButton @onclick="@ShowToast" Appearance="Appearance.Accent">Debug</FluentButton>
 
 @code {
     [Parameter]
     public object? Input { get; set; }
-
-    private string displayText = "No input provided.";
-
-    private void DisplayInput()
+    
+    void ShowToast()
     {
         if (Input == null)
         {
-            displayText = "Input is null.";
+            ToastService.ShowToast(ToastIntent.Warning, "Input is null.");
         }
         else
         {
-            displayText = $"{Input} (Type: {Input.GetType()})";
+            ToastService.ShowToast(ToastIntent.Success, $"{Input} (Type: {Input.GetType()})");
         }
     }
 }

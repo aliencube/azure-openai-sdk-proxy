@@ -6,7 +6,7 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests.UI;
 [Parallelizable(ParallelScope.Self)]
 [TestFixture]
 [Property("Category", "Integration")]
-public class DebugButtonTests : PageTest
+public class DebugButtonComponentTests : PageTest
 {
     public override BrowserNewContextOptions ContextOptions() => new()
     {
@@ -22,26 +22,26 @@ public class DebugButtonTests : PageTest
     }
 
     [Test]
-    public async Task Given_Null_Input_When_DebugButton_Clicked_Then_Display_Should_Show_Null_Message()
+    public async Task Given_No_Input_When_DebugButton_Clicked_Then_Toast_Should_Show_NullMessage()
     {
         // Act
         await Page.GetByRole(AriaRole.Button, new() { Name = "Debug" }).ClickAsync();
 
         // Assert
-        await Expect(Page.Locator("#displayText")).ToHaveTextAsync("Input is null.");
+        await Expect(Page.Locator(".fluent-toast-title")).ToHaveTextAsync("Input is null.");
     }
 
     [Test]
-    [TestCase("123")]
-    [TestCase("3.14159")]
-    [TestCase("Hello, World!")]
-    public async Task Given_InputValue_When_DebugButton_Clicked_Then_Display_Should_Show_InputValue(string inputValue)
+    [TestCase(123)]
+    [TestCase(456)]
+    [TestCase(789)]
+    public async Task Given_Input_When_DebugButton_Clicked_Then_Toast_Should_Show_Input(int inputValue)
     {
         // Act
-        await Page.GetByLabel($"{inputValue}").CheckAsync();
+        await Page.GetByRole(AriaRole.Radio, new() { Name = $"{inputValue}" }).ClickAsync();
         await Page.GetByRole(AriaRole.Button, new() { Name = "Debug" }).ClickAsync();
 
         // Assert
-        await Expect(Page.Locator("#displayText")).ToContainTextAsync(inputValue);
+        await Expect(Page.Locator(".fluent-toast-title")).ToHaveTextAsync($"{inputValue} (Type: System.Int32)");
     }
 }
