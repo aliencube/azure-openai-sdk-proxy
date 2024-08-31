@@ -1,0 +1,18 @@
+@using AzureOpenAIProxy.PlaygroundApp.Clients
+
+<FluentTextField @bind-Value=ApiKeyValue TextFieldType="TextFieldType.Password" @oninput="OnApiKeyChanged">Api key input</FluentTextField>
+
+@code {
+    private string ApiKeyValue { get; set; } = string.Empty;
+
+    // 외부로 값을 전달하기 위한 이벤트 콜백
+    [Parameter]
+    public EventCallback<string> ApiKeyChanged { get; set; }
+    
+    private async Task OnApiKeyChanged(ChangeEventArgs e)
+    {
+        ApiKeyValue = e?.Value?.ToString();
+        await ApiKeyChanged.InvokeAsync(ApiKeyValue);
+    }
+}
+
