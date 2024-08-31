@@ -1,6 +1,7 @@
+using FluentAssertions;
+
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
-using FluentAssertions;
 
 namespace AzureOpenAIProxy.PlaygroundApp.Tests.Pages;
 
