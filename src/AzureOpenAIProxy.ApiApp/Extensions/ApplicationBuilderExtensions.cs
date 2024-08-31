@@ -1,6 +1,4 @@
-﻿using AzureOpenAIProxy.ApiApp.Configurations;
-
-namespace AzureOpenAIProxy.ApiApp.Extensions;
+﻿namespace AzureOpenAIProxy.ApiApp.Extensions;
 
 /// <summary>
 /// This represents the extensions entity for the application builder.
