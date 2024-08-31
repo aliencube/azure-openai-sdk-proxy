@@ -75,7 +75,7 @@ public class PlaygroundPageTests : PageTest
     public async Task Given_ApiKeyInputField_When_Endpoint_Invoked_Should_Be_Displayed()
     {
         // Arrange
-        var apiKeyInput = Page.Locator("#apiKeyInputField");
+        var apiKeyInput = Page.Locator("fluent-text-field#apiKeyInputField").Locator("input");
 
         // Act
         var inputType = await apiKeyInput.GetAttributeAsync("type");
@@ -91,7 +91,7 @@ public class PlaygroundPageTests : PageTest
     public async Task Given_ApiKeyInputField_When_Changed_Should_Be_Updated(string apiKey)
     {
         // Arrange
-        var apiKeyInput = Page.Locator("#apiKeyInputField");
+        var apiKeyInput = Page.Locator("fluent-text-field#apiKeyInputField").Locator("input");
 
         // Act
         await apiKeyInput.FillAsync(apiKey);
