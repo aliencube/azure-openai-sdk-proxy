@@ -54,6 +54,31 @@ module keyVault './core/security/keyvault.bicep' = {
   }
 }
 
+// Provision Storage Account
+resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
+  name: 'storage${resourceToken}'
+  location: location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+  properties: {
+    supportsHttpsTrafficOnly: true
+  }
+}
+
+// Provision Table Service
+resource tableService 'Microsoft.Storage/storageAccounts/tableServices@2021-04-01' = {
+  parent: storageAccount
+  name: 'default'
+}
+
+// Provision Table Storage
+resource table 'Microsoft.Storage/storageAccounts/tableServices/tables@2021-04-01' = {
+  parent: tableService
+  name: 'mytable'
+}
+
 // Add outputs from the deployment here, if needed.
 //
 // This allows the outputs to be referenced by other bicep deployments in the deployment pipeline,
@@ -67,3 +92,7 @@ output AZURE_TENANT_ID string = tenant().tenantId
 
 output AZURE_KEYVAULT_NAME string = keyVault.outputs.name
 output AZURE_KEYVAULT_ENDPOINT string = keyVault.outputs.endpoint
+
+output AZURE_STORAGE_ACCOUNT_NAME string = storageAccount.name
+output AZURE_STORAGE_ACCOUNT_TABLE_NAME string = table.name
+//TODO: connection string을 깃헙 액션으로 안전하게 전달하기
