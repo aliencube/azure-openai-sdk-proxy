@@ -42,13 +42,13 @@ public class ConfigTabComponentTest : PageTest
     [Test]
     [TestCase(
         "fluent-tab#parameters-tab",
-        "fluent-tab-panel#system-message-tab-panel",
-        "fluent-tab-panel#parameters-tab-panel"
+        "fluent-tab-panel#parameters-tab-panel",
+        "fluent-tab-panel#system-message-tab-panel"
     )]
     [TestCase(
         "fluent-tab#system-message-tab",
-        "fluent-tab-panel#parameters-tab-panel",
-        "fluent-tab-panel#system-message-tab-panel"
+        "fluent-tab-panel#system-message-tab-panel",
+        "fluent-tab-panel#parameters-tab-panel"
     )]
     public async Task Given_ConfigTab_When_Changed_Then_Tab_Should_Be_Updated(
         string selectedTabSelector,
@@ -65,7 +65,7 @@ public class ConfigTabComponentTest : PageTest
         await selectedTab.ClickAsync();
 
         // Assert
-        await Expect(selectedPanel).ToBeHiddenAsync();
-        await Expect(hiddenPanel).ToBeVisibleAsync();
+        await Expect(selectedPanel).ToBeVisibleAsync();
+        await Expect(hiddenPanel).ToBeHiddenAsync();
     }
 }
