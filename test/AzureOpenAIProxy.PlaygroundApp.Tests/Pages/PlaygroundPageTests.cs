@@ -1,5 +1,6 @@
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
+using FluentAssertions;
 
 namespace AzureOpenAIProxy.PlaygroundApp.Tests.Pages;
 
@@ -69,7 +70,7 @@ public class PlaygroundPageTests : PageTest
         await Expect(hiddenPanel).ToBeHiddenAsync();
     }
 
-    [Test]
+   [Test]
     public async Task Given_ApiKeyInputField_When_FieldIsLoaded_Then_FieldIsMaskedByDefault()
     {
         // Arrange
@@ -79,7 +80,8 @@ public class PlaygroundPageTests : PageTest
         var inputType = await apiKeyInput.GetAttributeAsync("type");
 
         // Assert
-        Assert.AreEqual("password", inputType, "API 키 입력 필드는 기본적으로 마스킹되어 있어야 합니다.");
+        inputType.Should().NotBeNull("API 키 입력 필드의 타입을 가져오는 데 실패했습니다.");
+        inputType.Should().Be("password", "API 키 입력 필드는 기본적으로 마스킹되어 있어야 합니다.");
     }
 
     [Test]
@@ -109,7 +111,7 @@ public class PlaygroundPageTests : PageTest
         var currentValue = await apiKeyInput.InputValueAsync();
 
         // Assert
-        Assert.AreEqual(apiKey, currentValue, "API 키 입력 필드에 값이 제대로 설정되지 않았습니다.");
+        currentValue.Should().Be(apiKey, "API 키 입력 필드에 값이 제대로 설정되지 않았습니다.");
     }
 
 }
