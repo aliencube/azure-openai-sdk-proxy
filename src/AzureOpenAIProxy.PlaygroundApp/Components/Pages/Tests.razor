@@ -1,0 +1,14 @@
+@page "/tests"
+@rendermode InteractiveServer
+
+<DebugTargetComponent OnValueChanged="SetInput" />
+<DebugButtonComponent Input="@currentValue" />
+
+@code {
+    private object? currentValue;
+
+    private void SetInput(int newValue)
+    {
+        currentValue = newValue;
+    }
+}
