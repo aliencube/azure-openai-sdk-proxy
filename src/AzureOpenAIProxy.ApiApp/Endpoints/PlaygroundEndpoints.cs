@@ -1,22 +1,18 @@
-using System.Text.Json;
-
-using AzureOpenAIProxy.ApiApp.Models;
-
 namespace AzureOpenAIProxy.ApiApp.Endpoints;
 
 /// <summary>
 /// This represents the endpoint entity for events that the logged user joined.
 /// </summary>
-public static class EventEndpoint
+public static class PlaygroundEndpoints
 {
     /// <summary>
     /// Adds the event endpoint.
     /// </summary>
     /// <param name="app"><see cref="WebApplication"/> instance.</param>
     /// <returns>Returns <see cref="RouteHandlerBuilder"/> instance.</returns>
-    public static RouteHandlerBuilder AddEventList(this WebApplication app)
+    public static RouteHandlerBuilder AddListEvents(this WebApplication app)
     {
-        var builder = app.MapGet(EndpointUrls.Events, () =>
+        var builder = app.MapGet(PlaygroundEndpointUrls.Events, () =>
         {
             // TODO: Issue #179 https://github.com/aliencube/azure-openai-sdk-proxy/issues/179
             return Results.Ok();

@@ -37,15 +37,17 @@ app.Use(async (context, next) =>
 app.UseHttpsRedirection();
 
 app.AddWeatherForecast();
+
+// Proxy endpoints
 app.AddChatCompletions();
 
-// Event Endpoints
-app.AddEventList();
+// Playground endpoints
+app.AddListEvents();
 
-// Admin Endpoints
-app.AddAdminEvents();
-app.AddAdminEventList();
-app.AddUpdateAdminEvents();
-app.CreateAdminEvent();
+// Admin endpoints
+app.AddNewAdminEvent();
+app.AddListAdminEvents();
+app.AddGetAdminEvent();
+app.AddUpdateAdminEvent();
 
 await app.RunAsync();
