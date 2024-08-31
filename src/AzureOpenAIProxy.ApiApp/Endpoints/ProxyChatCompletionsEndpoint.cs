@@ -13,7 +13,7 @@ namespace AzureOpenAIProxy.ApiApp.Endpoints;
 /// <summary>
 /// This represents the endpoint entity for chat completions.
 /// </summary>
-public static class ChatCompletionsEndpoint
+public static class ProxyChatCompletionsEndpoint
 {
     /// <summary>
     /// Adds the chat completion endpoint.
@@ -22,7 +22,7 @@ public static class ChatCompletionsEndpoint
     /// <returns>Returns <see cref="RouteHandlerBuilder"/> instance.</returns>
     public static RouteHandlerBuilder AddChatCompletions(this WebApplication app)
     {
-        var builder = app.MapPost(EndpointUrls.ChatCompletions, async (
+        var builder = app.MapPost(ProxyEndpointUrls.ChatCompletions, async (
             [OpenApiParameterIgnore][FromHeader(Name = "api-key")] string apiKey,
             [FromRoute] string deploymentName,
             [FromQuery(Name = "api-version")] string apiVersion,
@@ -31,7 +31,7 @@ public static class ChatCompletionsEndpoint
             IOpenAIService openai,
             ILoggerFactory loggerFactory) =>
         {
-            var logger = loggerFactory.CreateLogger(nameof(ChatCompletionsEndpoint));
+            var logger = loggerFactory.CreateLogger(nameof(ProxyChatCompletionsEndpoint));
             logger.LogInformation("Received a chat completion request");
 
             request.Body.Position = 0;
