@@ -2,14 +2,14 @@
 
 @using AzureOpenAIProxy.PlaygroundApp.Models
 
-<div id="evt-detail-comp">
+<div id="admin-events-component">
     @if (eventDetails == null)
     {
         <p><em>Loading...</em></p>
     }
     else
     {
-        <div id="evt-detail-tbl">
+        <div id="admin-events-table">
             <FluentDataGrid  Items="@eventDetails" Pagination="@pagination" >
                 <PropertyColumn Class="fluent-datagrid-cell" Property="@(p => p.Title)" Align="@Align.Center" Sortable="true" />
                 <PropertyColumn Class="fluent-datagrid-cell" Property="@(p => p.DateStart)" Format="yyyy-MM-dd" Align="@Align.Center" Sortable="true" />
@@ -46,26 +46,6 @@
         </div>
     }
 </div>
-
-<style>
-    .fluent-datagrid-cell {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-    }
-
-    .page-button-box {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 20px;
-    }
-
-    .page-button {
-        margin-left: 10px;
-    }
-</style>
 
 @code {
     IQueryable<AdminEventDetails>? eventDetails;

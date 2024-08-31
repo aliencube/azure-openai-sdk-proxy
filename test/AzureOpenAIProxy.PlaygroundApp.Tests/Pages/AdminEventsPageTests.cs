@@ -1,4 +1,6 @@
-﻿using Microsoft.Playwright;
+﻿using FluentAssertions;
+
+using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
 
 namespace AzureOpenAIProxy.PlaygroundApp.Tests.Pages;
@@ -20,10 +22,10 @@ public class AdminEventsPageTests : PageTest
         await this.Page.GotoAsync("https://localhost:5001/admin/events");
 
         // Act
-        var listEvtDetailsComp = await Page.QuerySelectorAsync("#evt-detail-comp");
+        var adminEventsComponent = await Page.QuerySelectorAsync("#admin-events-component");
 
         // Assert
-        Assert.That(listEvtDetailsComp, Is.Not.Null);
+        adminEventsComponent.Should().NotBeNull();
     }
 
     [Test]
@@ -36,9 +38,9 @@ public class AdminEventsPageTests : PageTest
         await Task.Delay(2000);
 
         // Act
-        var evtDetailTbl = await Page.QuerySelectorAsync("#evt-detail-tbl");
+        var adminEventsTable = await Page.QuerySelectorAsync("#admin-events-table");
 
         // Assert
-        Assert.That(evtDetailTbl, Is.Not.Null);
+        adminEventsTable.Should().NotBeNull();
     }
 }
