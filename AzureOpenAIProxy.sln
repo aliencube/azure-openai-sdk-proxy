@@ -17,9 +17,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{A69C5782-F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureOpenAIProxy.AppHost.Tests", "test\AzureOpenAIProxy.AppHost.Tests\AzureOpenAIProxy.AppHost.Tests.csproj", "{E8994388-24FA-4221-8E46-4CD1DA96C585}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureOpenAIProxy.PlaygroundApp.Tests", "test\AzureOpenAIProxy.PlaygroundApp.Tests\AzureOpenAIProxy.PlaygroundApp.Tests.csproj", "{0AE9860A-0F8D-49EF-B375-BF95374A1EDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureOpenAIProxy.PlaygroundApp.Tests", "test\AzureOpenAIProxy.PlaygroundApp.Tests\AzureOpenAIProxy.PlaygroundApp.Tests.csproj", "{0AE9860A-0F8D-49EF-B375-BF95374A1EDA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureOpenAIProxy.ApiApp.Tests", "test\AzureOpenAIProxy.ApiApp.Tests\AzureOpenAIProxy.ApiApp.Tests.csproj", "{0E772300-9263-49CA-8E26-D0B9CC584202}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureOpenAIProxy.ApiApp.Tests", "test\AzureOpenAIProxy.ApiApp.Tests\AzureOpenAIProxy.ApiApp.Tests.csproj", "{0E772300-9263-49CA-8E26-D0B9CC584202}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
