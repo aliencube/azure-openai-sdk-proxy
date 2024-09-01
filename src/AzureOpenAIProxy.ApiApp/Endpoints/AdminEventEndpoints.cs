@@ -19,7 +19,7 @@ public static class AdminEventEndpoints
     public static RouteHandlerBuilder AddNewAdminEvent(this WebApplication app)
     {
         //TODO: 테이블 이름을 어딘가에서 상수처럼 관리하기
-        const string TableName = "AdminEvents";
+        const string TableName = "events";
 
         var builder = app.MapPost(AdminEndpointUrls.AdminEvents, async (
             [FromServices] TableServiceClient tableStorageService,
