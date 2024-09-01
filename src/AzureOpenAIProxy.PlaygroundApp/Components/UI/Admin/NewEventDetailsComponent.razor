@@ -4,12 +4,23 @@
     section {
         margin-bottom: 100px
     }
-    .create-input-label{
+    .create-input-label {
         width: 200px;
         --type-ramp-base-font-size: 22px;
     }
-    .create-fluent-stack{
+    .create-fluent-stack {
         height: 100px;
+    }
+    .button-section {
+        display: flex;
+        justify-content: center;
+        gap: 50px;
+    }
+    .button {
+        width: 150px;
+        height: 50px;
+        font-size: 16px;
+        margin: 0 10px;
     }
 </style>
 
@@ -57,29 +68,31 @@
 
         <section>
             <h2>Event Organizer</h2>
-            <div>
-                <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
-                    <FluentLabel For="organizerName" class="create-input-label">Organizer Name</FluentLabel>
-                    <FluentTextField Id="organizerName" Required />
-                </FluentStack>
+
+            <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                <FluentLabel For="organizerName" class="create-input-label">Organizer Name</FluentLabel>
+                <FluentTextField Id="organizerName" Required />
+            </FluentStack>
 
 
-                <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
-                    <FluentLabel For="organizerEmail" class="create-input-label">Organizer Email</FluentLabel>
-                    <FluentTextField Id="organizerEmail" Required />@@<FluentTextField Required />
-                </FluentStack>
-            </div>
+            <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                <FluentLabel For="organizerEmail" class="create-input-label">Organizer Email</FluentLabel>
+                <FluentTextField Id="organizerEmail" Required />@@<FluentTextField Required />
+            </FluentStack>
         </section>
         
         <section>
             <h2>Event Coorganizers</h2>
-            <div>
 
-            </div>
+            <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                <FluentLabel For="organizerName" class="create-input-label">Coorgnizer Name</FluentLabel>
+                <FluentTextField Id="coorgnizerName" Required />
+            </FluentStack>
 
-            <div>
-                <FluentDivider>test</FluentDivider>
-            </div>
+            <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                <FluentLabel For="organizerEmail" class="create-input-label">Coorgnizer Email</FluentLabel>
+                <FluentTextField Id="coorgnizerEmail" Required />@@<FluentTextField Required />
+            </FluentStack>
         </section>
 
         <section>
@@ -94,6 +107,11 @@
                 <FluentLabel For="dailyRequestCap" class="create-input-label">Daily Request Cap</FluentLabel>
                 <FluentTextField Id="dailyRequestCap" Required />
             </FluentStack>
+        </section>
+
+        <section class="button-section">
+            <FluentButton class="button">Add Event</FluentButton>
+            <FluentButton class="button">Cancel</FluentButton>
         </section>
     </FluentBodyContent>
 </FluentLayout>
