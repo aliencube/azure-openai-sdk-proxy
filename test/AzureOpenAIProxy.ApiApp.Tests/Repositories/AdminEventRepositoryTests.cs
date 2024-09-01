@@ -1,28 +1,25 @@
 ﻿using AzureOpenAIProxy.ApiApp.Models;
 using AzureOpenAIProxy.ApiApp.Repositories;
-using AzureOpenAIProxy.ApiApp.Services;
 
 using FluentAssertions;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using NSubstitute;
+namespace AzureOpenAIProxy.ApiApp.Tests.Repositories;
 
-namespace AzureOpenAIProxy.ApiApp.Tests.Services;
-
-public class AdminEventServiceTests
+public class AdminEventRepositoryTests
 {
     [Fact]
-    public void Given_ServiceCollection_When_AddAdminEventService_Invoked_Then_It_Should_Contain_AdminEventService()
+    public void Given_ServiceCollection_When_AddAdminEventRepository_Invoked_Then_It_Should_Contain_AdminEventRepository()
     {
         // Arrange
         var services = new ServiceCollection();
 
         // Act
-        services.AddAdminEventService();
+        services.AddAdminEventRepository();
 
         // Assert
-        services.SingleOrDefault(p => p.ServiceType == typeof(IAdminEventService)).Should().NotBeNull();
+        services.SingleOrDefault(p => p.ServiceType == typeof(IAdminEventRepository)).Should().NotBeNull();
     }
 
     [Fact]
@@ -30,11 +27,10 @@ public class AdminEventServiceTests
     {
         // Arrange
         var eventDetails = new AdminEventDetails();
-        var repository = Substitute.For<IAdminEventRepository>();
-        var service = new AdminEventService(repository);
+        var repository = new AdminEventRepository();
 
         // Act
-        Func<Task> func = async () => await service.CreateEvent(eventDetails);
+        Func<Task> func = async () => await repository.CreateEvent(eventDetails);
 
         // Assert
         func.Should().ThrowAsync<NotImplementedException>();
@@ -44,11 +40,10 @@ public class AdminEventServiceTests
     public void Given_Instance_When_GetEvents_Invoked_Then_It_Should_Throw_Exception()
     {
         // Arrange
-        var repository = Substitute.For<IAdminEventRepository>();
-        var service = new AdminEventService(repository);
+        var repository = new AdminEventRepository();
 
         // Act
-        Func<Task> func = async () => await service.GetEvents();
+        Func<Task> func = async () => await repository.GetEvents();
 
         // Assert
         func.Should().ThrowAsync<NotImplementedException>();
@@ -59,11 +54,10 @@ public class AdminEventServiceTests
     {
         // Arrange
         var eventId = Guid.NewGuid();
-        var repository = Substitute.For<IAdminEventRepository>();
-        var service = new AdminEventService(repository);
+        var repository = new AdminEventRepository();
 
         // Act
-        Func<Task> func = async () => await service.GetEvent(eventId);
+        Func<Task> func = async () => await repository.GetEvent(eventId);
 
         // Assert
         func.Should().ThrowAsync<NotImplementedException>();
@@ -75,11 +69,10 @@ public class AdminEventServiceTests
         // Arrange
         var eventId = Guid.NewGuid();
         var eventDetails = new AdminEventDetails();
-        var repository = Substitute.For<IAdminEventRepository>();
-        var service = new AdminEventService(repository);
+        var repository = new AdminEventRepository();
 
         // Act
-        Func<Task> func = async () => await service.UpdateEvent(eventId, eventDetails);
+        Func<Task> func = async () => await repository.UpdateEvent(eventId, eventDetails);
 
         // Assert
         func.Should().ThrowAsync<NotImplementedException>();
