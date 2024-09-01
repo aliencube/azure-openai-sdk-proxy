@@ -75,13 +75,15 @@ public class PlaygroundPageTests : PageTest
     public async Task Given_ApiKeyInputField_When_Endpoint_Invoked_Should_Be_Displayed()
     {
         // Arrange
-        var apiKeyInput = Page.Locator("fluent-text-field#apiKeyInputField").Locator("input");
+        var apiKeyInput = Page.Locator("fluent-text-field#api-key").Locator("input");
+        await Expect(apiKeyInput).ToBeVisibleAsync();
 
         // Act
         var inputType = await apiKeyInput.GetAttributeAsync("type");
 
         // Assert
-        inputType.Should().NotBeNull("Should be password type");
+        inputType.Should().Be("password", "Not password type");
+
 
     }
 
@@ -91,7 +93,8 @@ public class PlaygroundPageTests : PageTest
     public async Task Given_ApiKeyInputField_When_Changed_Should_Be_Updated(string apiKey)
     {
         // Arrange
-        var apiKeyInput = Page.Locator("fluent-text-field#apiKeyInputField").Locator("input");
+        var apiKeyInput = Page.Locator("fluent-text-field#api-key").Locator("input");
+        await Expect(apiKeyInput).ToBeVisibleAsync();
 
         // Act
         await apiKeyInput.FillAsync(apiKey);
