@@ -133,5 +133,6 @@
     "webSitesAppService": "app-",
     "webSitesAppServiceEnvironment": "ase-",
     "webSitesFunctions": "func-",
-    "webStaticSites": "stapp-"
+    "webStaticSites": "stapp-",
+    "storageAccounts": "st"
 }

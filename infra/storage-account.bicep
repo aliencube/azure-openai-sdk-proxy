@@ -1,5 +1,5 @@
 metadata description = 'Creates an Azure storage account.'
-param name string
+param storageName string = ''
 param location string = resourceGroup().location
 param tags object = {}
 
@@ -39,8 +39,11 @@ param networkAcls object = {
 param publicNetworkAccess string = 'Enabled'
 param sku object = { name: 'Standard_LRS' }
 
+var abbrs = loadJsonContent('./abbreviations.json')
+var resourceToken = uniqueString(resourceGroup().id)
+
 resource storage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
-  name: name
+  name : !empty(storageName) ? storageName : '${abbrs.storageAccounts}${resourceToken}'
   location: location
   tags: tags
   kind: kind
