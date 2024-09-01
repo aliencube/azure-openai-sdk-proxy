@@ -1,4 +1,5 @@
 using AzureOpenAIProxy.ApiApp.Models;
+using AzureOpenAIProxy.ApiApp.Services;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,14 +19,38 @@ public static class AdminEventEndpoints
     {
         var builder = app.MapPost(AdminEndpointUrls.AdminEvents, async (
             [FromBody] AdminEventDetails payload,
-            HttpRequest request) =>
+            IAdminEventService service,
+            ILoggerFactory loggerFactory) =>
         {
+            var logger = loggerFactory.CreateLogger(nameof(AdminEventEndpoints));
+            logger.LogInformation("Received a new event request");
+
+            if (payload is null)
+            {
+                logger.LogError("No payload found");
+
+                return Results.BadRequest("Payload is null");
+            }
+
+            //try
+            //{
+            //    var result = await service.CreateEvent(payload);
+
+            //    logger.LogInformation("Created a new event");
+
+            //    return Results.Ok(result);
+            //}
+            //catch (Exception ex)
+            //{
+            //    logger.LogError(ex, "Failed to create a new event");
+
+            //    return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
+            //}
+
             return await Task.FromResult(Results.Ok());
         })
-        // TODO: Check both request/response payloads
         .Accepts<AdminEventDetails>(contentType: "application/json")
         .Produces<AdminEventDetails>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
-        // TODO: Check both request/response payloads
         .Produces(statusCode: StatusCodes.Status400BadRequest)
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
         .Produces<string>(statusCode: StatusCodes.Status500InternalServerError, contentType: "text/plain")
