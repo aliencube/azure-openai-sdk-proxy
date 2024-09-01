@@ -20,6 +20,34 @@ public class PlaygroundPageTests : PageTest
     }
 
     [Test]
+    public async Task Given_Page_When_Endpoint_Invoked_Then_It_Should_Show_Header()
+    {
+        // Arrange
+        var header = Page.Locator("div.layout")
+                         .Locator("header.header")
+                         .Locator("div.header-gutters")
+                         .Locator("h1");
+
+        // Act
+        var headerText = await header.TextContentAsync();
+
+        // Assert
+        headerText.Should().Be("Azure OpenAI Proxy Playground");
+    }
+
+    [Test]
+    [TestCase("config-grid")]
+    [TestCase("chat-grid")]
+    public async Task Given_Page_When_Endpoint_Invoked_Then_It_Should_Show_Panels(string id)
+    {
+        // Act
+        var panel = Page.Locator($"div.{id}");
+
+        // Assert
+        await Expect(panel).ToBeVisibleAsync();
+    }
+
+    [Test]
     public async Task Given_ConfigTab_When_Endpoint_Invoked_Then_ConfigTab_Should_Be_Displayed()
     {
         // Act
