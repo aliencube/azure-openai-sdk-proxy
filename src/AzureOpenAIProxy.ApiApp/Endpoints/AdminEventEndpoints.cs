@@ -60,7 +60,8 @@ public static class AdminEventEndpoints
 
                 //TODO: PartitonKey: OrganizerName+OrganizerEmail 조합, RowKey: EventId 으로 제안드립니다!
                 //TODO: ITableEntity 상속 정리, EventDetails 제네릭 사용하기
-                TableEntity? entity = new TableEntity($"{payload.OrganizerName}_{payload.OrganizerEmail}", payload.EventId)
+                //TODO: payload.EventId.ToString()는 빌드 오류를 막기 위해 임시로 추가한 코드입니다.
+                TableEntity? entity = new TableEntity($"{payload.OrganizerName}_{payload.OrganizerEmail}", payload.EventId.ToString())
                 {
                     ["EventName"] = payload.Title,
                     ["EventDescription"] = payload.Description,
