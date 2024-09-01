@@ -1,4 +1,5 @@
 ﻿using AzureOpenAIProxy.ApiApp.Models;
+using AzureOpenAIProxy.ApiApp.Repositories;
 
 namespace AzureOpenAIProxy.ApiApp.Services;
 
@@ -39,30 +40,40 @@ public interface IAdminEventService
 /// <summary>
 /// This represents the service entity for admin event.
 /// </summary>
-public class AdminEventService : IAdminEventService
+public class AdminEventService(IAdminEventRepository repository) : IAdminEventService
 {
+    private readonly IAdminEventRepository _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+
     /// <inheritdoc />
     public async Task<AdminEventDetails> CreateEvent(AdminEventDetails eventDetails)
     {
-        throw new NotImplementedException();
+        var result = await this._repository.CreateEvent(eventDetails).ConfigureAwait(false);
+
+        return result;
     }
 
     /// <inheritdoc />
     public async Task<List<AdminEventDetails>> GetEvents()
     {
-        throw new NotImplementedException();
+        var result = await this._repository.GetEvents().ConfigureAwait(false);
+
+        return result;
     }
 
     /// <inheritdoc />
     public async Task<AdminEventDetails> GetEvent(Guid eventId)
     {
-        throw new NotImplementedException();
+        var result = await this._repository.GetEvent(eventId).ConfigureAwait(false);
+
+        return result;
     }
 
     /// <inheritdoc />
     public async Task<AdminEventDetails> UpdateEvent(Guid eventId, AdminEventDetails eventDetails)
     {
-        throw new NotImplementedException();
+        var result = await this._repository.UpdateEvent(eventId, eventDetails).ConfigureAwait(false);
+
+        return result;
     }
 }
 
