@@ -26,21 +26,7 @@ public class AdminEventServiceTests
     public void Given_Instance_When_CreateEvent_Invoked_Then_It_Should_Throw_Exception()
     {
         // Arrange
-        var eventDetails = new AdminEventDetails()
-        {
-            EventId = Guid.NewGuid(),
-            Title = "Event",
-            Summary = "Event summary",
-            Description = "Event description",
-            DateStart = DateTimeOffset.UtcNow,
-            DateEnd = DateTimeOffset.UtcNow,
-            TimeZone = "UTC",
-            IsActive = true,
-            OrganizerName = "Organiser",
-            OrganizerEmail = "organiser@email.com",
-            MaxTokenCap = 100,
-            DailyRequestCap = 1000,
-        };
+        var eventDetails = new AdminEventDetails();
         var service = new AdminEventService();
 
         // Act
@@ -82,21 +68,7 @@ public class AdminEventServiceTests
     {
         // Arrange
         var eventId = Guid.NewGuid();
-        var eventDetails = new AdminEventDetails()
-        {
-            EventId = Guid.NewGuid(),
-            Title = "Event",
-            Summary = "Event summary",
-            Description = "Event description",
-            DateStart = DateTimeOffset.UtcNow,
-            DateEnd = DateTimeOffset.UtcNow,
-            TimeZone = "UTC",
-            IsActive = true,
-            OrganizerName = "Organiser",
-            OrganizerEmail = "organiser@email.com",
-            MaxTokenCap = 100,
-            DailyRequestCap = 1000,
-        };
+        var eventDetails = new AdminEventDetails();
         var service = new AdminEventService();
 
         // Act
