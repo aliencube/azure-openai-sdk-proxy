@@ -36,12 +36,12 @@ public class PlaygroundPageTests : PageTest
     }
 
     [Test]
-    [TestCase("config-panel")]
-    [TestCase("chat-panel")]
+    [TestCase("config-grid")]
+    [TestCase("chat-grid")]
     public async Task Given_Page_When_Endpoint_Invoked_Then_It_Should_Show_Panels(string id)
     {
         // Act
-        var panel = Page.Locator($"div#{id}");
+        var panel = Page.Locator($"div.{id}");
 
         // Assert
         await Expect(panel).ToBeVisibleAsync();
