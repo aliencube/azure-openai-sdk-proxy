@@ -1,11 +1,20 @@
 @page "/tests"
 @rendermode InteractiveServer
 
+<ApiKeyInputComponent OnKeyInput="HandleApiKeyInput" />
+
 <DebugTargetComponent OnValueChanged="SetInput" />
 <DebugButtonComponent Input="@currentValue" />
 
 @code {
     private object? currentValue;
+
+    
+    private async Task HandleApiKeyInput(string apiKey)
+    {
+        currentValue = apiKey;
+        Console.WriteLine($"API Key received: {apiKey}");
+    }
 
     private void SetInput(int newValue)
     {
