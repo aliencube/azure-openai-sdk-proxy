@@ -51,6 +51,7 @@ app.AddChatCompletions();
 
 // Playground endpoints
 app.AddListEvents();
+app.AddListDeploymentModels();
 
 // Admin endpoints
 app.AddNewAdminEvent();
