@@ -3,10 +3,25 @@ using AzureOpenAIProxy.ApiApp.Services;
 
 using FluentAssertions;
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace AzureOpenAIProxy.ApiApp.Tests.Services;
 
 public class AdminEventServiceTests
 {
+    [Fact]
+    public void Given_ServiceCollection_When_AddAdminEventService_Invoked_Then_It_Should_Contain_AdminEventService()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddAdminEventService();
+
+        // Assert
+        services.SingleOrDefault(p => p.ServiceType == typeof(IAdminEventService)).Should().NotBeNull();
+    }
+
     [Fact]
     public void Given_Instance_When_CreateEvent_Invoked_Then_It_Should_Throw_Exception()
     {
