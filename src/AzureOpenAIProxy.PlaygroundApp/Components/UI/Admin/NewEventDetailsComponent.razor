@@ -1,0 +1,107 @@
+﻿@using AzureOpenAIProxy.PlaygroundApp.Models;
+
+<style>
+    section {
+        margin-bottom: 100px
+    }
+    .create-input-label{
+        width: 200px;
+        --type-ramp-base-font-size: 22px;
+    }
+    .create-fluent-stack{
+        height: 100px;
+    }
+</style>
+
+<FluentLayout>
+    <FluentHeader>Create Event</FluentHeader>
+    <FluentBodyContent>
+        <section>
+            <h2>Event Infomation</h2>
+            
+            <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                <FluentLabel For="title" class="create-input-label">Title</FluentLabel>
+                <FluentTextField Id="title" Name="title" Required />
+            </FluentStack>
+
+            <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                <FluentLabel For="summary" class="create-input-label">Summary</FluentLabel>
+                <FluentTextField id="summary" Required />
+            </FluentStack>
+
+            <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                <FluentLabel For="description" class="create-input-label" Style="">Description</FluentLabel>
+                <FluentTextArea Id="description" Style="width:300px" />
+            </FluentStack>
+
+            <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                <FluentLabel For="eventStartDate" class="create-input-label">Event Start Date</FluentLabel>
+                <FluentDatePicker Id="eventStartDate" />
+                <FluentTimePicker Id="eventStartTime" DefaultValue="00:00" />
+            </FluentStack>
+
+            <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                <FluentLabel For="eventEndDate" class="create-input-label">Event End Date</FluentLabel>
+                <FluentDatePicker Id="eventEndDate" />
+                <FluentTimePicker Id="eventEndTime" DefaultValue="00:00" />
+            </FluentStack>
+
+            <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                <FluentLabel For="timezone" class="create-input-label">Time Zone</FluentLabel>
+                <FluentSelect Id="timezone" TOption="string" Required>
+                    <FluentOption Value="kr">Korea</FluentOption>
+                    <FluentOption Value="us">US</FluentOption>
+                </FluentSelect>
+            </FluentStack>
+        </section>
+
+        <section>
+            <h2>Event Organizer</h2>
+            <div>
+                <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                    <FluentLabel For="organizerName" class="create-input-label">Organizer Name</FluentLabel>
+                    <FluentTextField Id="organizerName" Required />
+                </FluentStack>
+
+
+                <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                    <FluentLabel For="organizerEmail" class="create-input-label">Organizer Email</FluentLabel>
+                    <FluentTextField Id="organizerEmail" Required />@@<FluentTextField Required />
+                </FluentStack>
+            </div>
+        </section>
+        
+        <section>
+            <h2>Event Coorganizers</h2>
+            <div>
+
+            </div>
+
+            <div>
+                <FluentDivider>test</FluentDivider>
+            </div>
+        </section>
+
+        <section>
+            <h2>Event Configuration</h2>
+
+            <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                <FluentLabel For="maxTokenCap" class="create-input-label">Max Token Cap</FluentLabel>
+                <FluentTextField Id="maxTokenCap" Required />
+            </FluentStack>
+
+            <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                <FluentLabel For="dailyRequestCap" class="create-input-label">Daily Request Cap</FluentLabel>
+                <FluentTextField Id="dailyRequestCap" Required />
+            </FluentStack>
+        </section>
+    </FluentBodyContent>
+</FluentLayout>
+
+
+@code {
+    private AdminEventDetails? adminEventDetails;
+
+
+}
+
