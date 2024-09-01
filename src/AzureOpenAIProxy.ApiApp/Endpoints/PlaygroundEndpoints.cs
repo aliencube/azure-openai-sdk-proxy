@@ -35,7 +35,7 @@ public static class PlaygroundEndpoints
 
 
     /// <summary>
-    /// Adds the get deployment models by event endpoint
+    /// Adds the get deployment models
     /// </summary>
     /// <param name="app"><see cref="WebApplication"/> instance.</param>
     /// <returns>Returns <see cref="RouteHandlerBuilder"/> instance.</returns>
@@ -50,7 +50,7 @@ public static class PlaygroundEndpoints
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
         .Produces<string>(statusCode: StatusCodes.Status500InternalServerError, contentType: "text/plain")
         .WithTags("events")
-        .WithName("GetDeploymentModel")
+        .WithName("GetDeploymentModels")
         .WithOpenApi(operation =>
         {
             operation.Summary = "Gets all deployment models";
