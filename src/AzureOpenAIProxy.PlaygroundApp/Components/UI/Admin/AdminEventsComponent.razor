@@ -1,5 +1,3 @@
-@using AzureOpenAIProxy.PlaygroundApp.Components.UI.Admin
-
 @using AzureOpenAIProxy.PlaygroundApp.Models
 
 <div id="admin-events-component">
@@ -48,8 +46,8 @@
 </div>
 
 @code {
-    IQueryable<AdminEventDetails>? eventDetails;
-    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+    private IQueryable<AdminEventDetails>? eventDetails;
+    private PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
 
     protected override async Task OnInitializedAsync()
     {
