@@ -1,14 +1,16 @@
 @page "/tests"
 @rendermode InteractiveServer
 
-<DebugTargetComponent OnValueChanged="SetInput" />
-<DebugButtonComponent Input="@currentValue" />
+<h1>Debug Button</h1>
+<DebugTargetComponent Id="debug-target" OnValueChanged="SetInput" />
+<DebugButtonComponent Id="debug-button" Input="@currentValue" />
 
 @code {
     private object? currentValue;
 
-    private void SetInput(int newValue)
+    private async Task SetInput(int newValue)
     {
         currentValue = newValue;
+        await Task.CompletedTask;
     }
 }
