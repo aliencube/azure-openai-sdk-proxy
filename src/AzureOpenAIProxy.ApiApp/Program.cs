@@ -1,5 +1,6 @@
 using AzureOpenAIProxy.ApiApp.Endpoints;
 using AzureOpenAIProxy.ApiApp.Extensions;
+using AzureOpenAIProxy.ApiApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,9 @@ builder.Services.AddOpenAIService();
 
 // Add OpenAPI service
 builder.Services.AddOpenApiService();
+
+// Add admin services
+builder.Services.AddAdminEventService();
 
 var app = builder.Build();
 

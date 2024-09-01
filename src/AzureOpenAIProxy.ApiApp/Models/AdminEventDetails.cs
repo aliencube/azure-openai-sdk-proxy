@@ -13,32 +13,32 @@ public class AdminEventDetails : EventDetails
     /// <summary>
     /// Gets or sets the event start date.
     /// </summary>
-    public required DateTimeOffset? DateStart { get; set; }
+    public DateTimeOffset DateStart { get; set; }
 
     /// <summary>
     /// Gets or sets the event end date.
     /// </summary>
-    public required DateTimeOffset? DateEnd { get; set; }
+    public DateTimeOffset DateEnd { get; set; }
 
     /// <summary>
     /// Gets or sets the event start to end date timezone.
     /// </summary>
-    public required string? TimeZone { get; set; }
+    public string TimeZone { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the event active status.
     /// </summary>
-    public required bool? IsActive { get; set; }
+    public bool IsActive { get; set; }
 
     /// <summary>
     /// Gets or sets the event organizer name.
     /// </summary>
-    public required string? OrganizerName { get; set; }
+    public string OrganizerName { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the event organizer email.
     /// </summary>
-    public required string? OrganizerEmail { get; set; }
+    public string OrganizerEmail { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the event coorganizer name.

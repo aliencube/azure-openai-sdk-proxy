@@ -65,3 +65,21 @@ public class AdminEventService : IAdminEventService
         throw new NotImplementedException();
     }
 }
+
+/// <summary>
+/// This represents the extension class for <see cref="IServiceCollection"/>
+/// </summary>
+public static class AdminEventServiceExtensions
+{
+    /// <summary>
+    /// Adds the <see cref="AdminEventService"/> instance to the service collection.
+    /// </summary>
+    /// <param name="services"><see cref="IServiceCollection"/> instance.</param>
+    /// <returns>Returns <see cref="IServiceCollection"/> instance.</returns>
+    public static IServiceCollection AddAdminEventService(this IServiceCollection services)
+    {
+        services.AddScoped<IAdminEventService, AdminEventService>();
+
+        return services;
+    }
+}

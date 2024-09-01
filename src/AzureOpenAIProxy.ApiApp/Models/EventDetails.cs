@@ -6,25 +6,25 @@ public class EventDetails
     /// <summary>
     /// Gets or sets the event id.
     /// </summary>
-    public required Guid? EventId { get; set; }
+    public Guid EventId { get; set; }
 
     /// <summary>
     /// Gets or sets the event title name.
     /// </summary>
-    public required string? Title { get; set; }
+    public string Title { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the event summary.
     /// </summary>
-    public required string? Summary { get; set; }
+    public string Summary { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the Azure OpenAI Service request max token capacity.
     /// </summary>
-    public required int? MaxTokenCap { get; set; }
+    public int MaxTokenCap { get; set; }
 
     /// <summary>
     /// Gets or sets the Azure OpenAI Service daily request capacity.
     /// </summary>
-    public required int? DailyRequestCap { get; set; }
+    public int DailyRequestCap { get; set; }
 }
