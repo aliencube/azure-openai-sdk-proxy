@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc;
+
 namespace AzureOpenAIProxy.ApiApp.Endpoints;
 
 /// <summary>
@@ -42,7 +44,9 @@ public static class PlaygroundEndpoints
     public static RouteHandlerBuilder AddListDeploymentModels(this WebApplication app)
     {
         // Todo: Issue #170 https://github.com/aliencube/azure-openai-sdk-proxy/issues/170
-        var builder = app.MapGet(PlaygroundEndpointUrls.DeploymentModels, () =>
+        var builder = app.MapGet(PlaygroundEndpointUrls.DeploymentModels, (
+            [FromRoute] string eventId
+        ) =>
         {
             return Results.Ok();
         })
