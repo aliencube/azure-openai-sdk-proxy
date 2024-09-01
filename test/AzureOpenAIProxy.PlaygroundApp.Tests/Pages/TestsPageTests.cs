@@ -22,10 +22,13 @@ public class TestsPageTests : PageTest
     }
 
     [Test]
-    public async Task Given_No_Input_When_DebugButton_Clicked_Then_Toast_Should_Show_NullMessage()
+    public async Task Given_No_Input_On_DebugTarget_When_DebugButton_Clicked_Then_Toast_Should_Show_NullMessage()
     {
+        // Arrange
+        var button = Page.Locator("fluent-button#debug-button");
+
         // Act
-        await Page.GetByRole(AriaRole.Button, new() { Name = "Debug" }).ClickAsync();
+        await button.ClickAsync();
 
         // Assert
         await Expect(Page.Locator(".fluent-toast-title")).ToHaveTextAsync("Input is null.");
@@ -35,11 +38,16 @@ public class TestsPageTests : PageTest
     [TestCase(123, typeof(int))]
     [TestCase(456, typeof(int))]
     [TestCase(789, typeof(int))]
-    public async Task Given_Input_When_DebugButton_Clicked_Then_Toast_Should_Show_Input(int inputValue, Type inputType)
+    public async Task Given_Input_On_DebugTarget_When_DebugButton_Clicked_Then_Toast_Should_Show_Input(int inputValue, Type inputType)
     {
+        // Arrange
+        var radio = Page.Locator("fluent-radio-group#debug-target")
+                        .Locator($"fluent-radio[current-value='{inputValue}']");
+        var button = Page.Locator("fluent-button#debug-button");
+
         // Act
-        await Page.GetByRole(AriaRole.Radio, new() { Name = $"{inputValue}" }).ClickAsync();
-        await Page.GetByRole(AriaRole.Button, new() { Name = "Debug" }).ClickAsync();
+        await radio.ClickAsync();
+        await button.ClickAsync();
 
         // Assert
         await Expect(Page.Locator(".fluent-toast-title")).ToHaveTextAsync($"{inputValue} (Type: {inputType})");
