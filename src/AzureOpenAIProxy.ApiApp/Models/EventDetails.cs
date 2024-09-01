@@ -1,8 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-
-using AzureOpenAIProxy.ApiApp.Models;
-
 /// <summary>
 /// This represents the event's detailed data for response by EventEndpoint.
 /// </summary>
