@@ -71,20 +71,27 @@ public class PlaygroundPageTests : PageTest
         await Expect(hiddenPanel).ToBeHiddenAsync();
     }
 
-   [Test]
-    public async Task Given_ApiKeyInputField_When_Endpoint_Invoked_Should_Be_Displayed()
+    [Test]
+    public async Task Given_ApiKeyInputField_When_Page_Loaded_Should_Be_Visible()
     {
         // Arrange
         var apiKeyInput = Page.Locator("fluent-text-field#api-key").Locator("input");
+        
+        // Act & Assert
         await Expect(apiKeyInput).ToBeVisibleAsync();
+    }
 
+   [Test]
+   public async Task Given_ApiKeyInputField_When_Endpoint_Invoked_Should_Have_Password_Type()
+    {
+        // Arrange
+        var apiKeyInput = Page.Locator("fluent-text-field#api-key").Locator("input");
+        
         // Act
         var inputType = await apiKeyInput.GetAttributeAsync("type");
 
         // Assert
-        inputType.Should().Be("password", "Not password type");
-
-
+        inputType.Should().Be("password");
     }
 
     [Test]
