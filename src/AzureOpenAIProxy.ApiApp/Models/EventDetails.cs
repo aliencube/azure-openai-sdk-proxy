@@ -6,7 +6,7 @@ public class EventDetails
     /// <summary>
     /// Gets or sets the event id.
     /// </summary>
-    public required string? EventId { get; set; }
+    public required Guid? EventId { get; set; }
 
     /// <summary>
     /// Gets or sets the event title name.

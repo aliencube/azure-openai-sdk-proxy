@@ -13,12 +13,18 @@ public class AdminEventServiceTests
         // Arrange
         var eventDetails = new AdminEventDetails()
         {
+            EventId = Guid.NewGuid(),
+            Title = "Event",
+            Summary = "Event summary",
+            Description = "Event description",
             DateStart = DateTimeOffset.UtcNow,
             DateEnd = DateTimeOffset.UtcNow,
             TimeZone = "UTC",
             IsActive = true,
             OrganizerName = "Organiser",
             OrganizerEmail = "organiser@email.com",
+            MaxTokenCap = 100,
+            DailyRequestCap = 1000,
         };
         var service = new AdminEventService();
 
@@ -63,12 +69,18 @@ public class AdminEventServiceTests
         var eventId = Guid.NewGuid();
         var eventDetails = new AdminEventDetails()
         {
+            EventId = Guid.NewGuid(),
+            Title = "Event",
+            Summary = "Event summary",
+            Description = "Event description",
             DateStart = DateTimeOffset.UtcNow,
             DateEnd = DateTimeOffset.UtcNow,
             TimeZone = "UTC",
             IsActive = true,
             OrganizerName = "Organiser",
             OrganizerEmail = "organiser@email.com",
+            MaxTokenCap = 100,
+            DailyRequestCap = 1000,
         };
         var service = new AdminEventService();
 
