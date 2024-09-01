@@ -42,25 +42,25 @@ public interface IAdminEventRepository
 public class AdminEventRepository : IAdminEventRepository
 {
     /// <inheritdoc />
-    public Task<AdminEventDetails> CreateEvent(AdminEventDetails eventDetails)
+    public async Task<AdminEventDetails> CreateEvent(AdminEventDetails eventDetails)
     {
         throw new NotImplementedException();
     }
 
     /// <inheritdoc />
-    public Task<List<AdminEventDetails>> GetEvents()
+    public async Task<List<AdminEventDetails>> GetEvents()
     {
         throw new NotImplementedException();
     }
 
     /// <inheritdoc />
-    public Task<AdminEventDetails> GetEvent(Guid eventId)
+    public async Task<AdminEventDetails> GetEvent(Guid eventId)
     {
         throw new NotImplementedException();
     }
 
     /// <inheritdoc />
-    public Task<AdminEventDetails> UpdateEvent(Guid eventId, AdminEventDetails eventDetails)
+    public async Task<AdminEventDetails> UpdateEvent(Guid eventId, AdminEventDetails eventDetails)
     {
         throw new NotImplementedException();
     }
