@@ -1,10 +1,10 @@
-<FluentLayout Style="margin: 10px;">
+<FluentLayout Id="@Id" Style="margin: 10px;">
     <div style="display: flex; align-items: center; margin-bottom: 5px;">
-        <label id="deployment-model-label" for="deployment-model-list" style="margin-right: 5px;">Deployment</label>
+        <label id="deployment-model-label" for="deployment-model-list-options" style="margin-right: 5px;">Deployment</label>
         <span style="color: red;">*</span>
     </div>
 
-    <FluentSelect Items=@deploymentModelOptions Id="deployment-model-list" name="deployment-models"
+    <FluentSelect Items=@deploymentModelOptions Id="deployment-model-list-options" name="deployment-models"
         TOption="Option<string>" Height="300px"
         OptionText="@(e => e.Text?.ToString())"
         OptionValue="@(e => e.Value?.ToString())" 
@@ -16,6 +16,8 @@
 </FluentLayout>
 
 @code {
+    [Parameter]
+    public string? Id { get; set; }
     private Option<string>? selectedOption { get; set; } = new();
 
     [Parameter]

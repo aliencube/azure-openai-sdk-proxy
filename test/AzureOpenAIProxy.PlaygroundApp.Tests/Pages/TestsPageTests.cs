@@ -22,6 +22,23 @@ public class TestsPageTests : PageTest
     }
 
     [Test]
+    [TestCase("debug-target")]
+    [TestCase("debug-button")]
+    [TestCase("deployment-model-list")]
+    [TestCase("debug-button-selected-model")]
+    public async Task Given_ComponentID_When_Page_Loaded_Then_Component_Should_Be_Visible(string id)
+    {
+        // Arrange
+        var expectedId = id;
+
+        // Act
+        var component = Page.Locator($"#{expectedId}");
+
+        // Assert
+        await Expect(component).ToBeVisibleAsync();
+    }
+    
+    [Test]
     public async Task Given_No_Input_On_DebugTarget_When_DebugButton_Clicked_Then_Toast_Should_Show_NullMessage()
     {
         // Arrange

@@ -22,6 +22,19 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests.UI
         }
 
         [Test]
+        public async Task Given_DropdownComponentID_When_Page_Loaded_Then_DropdownComponent_Should_Be_Visible()
+        {
+            // Arrange
+            var expectedId = "deployment-model-list";
+
+            // Act
+            var component = Page.Locator($"#{expectedId}");
+
+            // Assert
+            await Expect(component).ToBeVisibleAsync();
+        }
+
+        [Test]
         // 페이지에서 컴포넌트 레이블이 올바르게 표시되는지 확인
         public async Task Given_Label_When_Page_Loaded_Then_Label_Should_Be_Visible()
         {
@@ -34,10 +47,10 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests.UI
 
         [Test]
         // 페이지에서 드롭다운 컴포넌트가 올바르게 표시되는지 확인
-        public async Task Given_Dropdown_When_Page_Loaded_Then_Dropdown_Should_Be_Visible()
+        public async Task Given_DropdownList_When_Page_Loaded_Then_DropdownList_Should_Be_Visible()
         {
             // Act
-            var fluentSelect = Page.Locator("fluent-select#deployment-model-list");
+            var fluentSelect = Page.Locator("fluent-select#deployment-model-list-options");
 
             // Assert
             await Expect(fluentSelect).ToBeVisibleAsync();
@@ -45,10 +58,10 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests.UI
 
         [Test]
         // 드롭다운의 옵션 값이 존재하는지 확인
-        public async Task Given_Dropdown_When_Dropdown_Clicked_And_DropdownOptions_Appeared_Then_All_DropdownOptions_Should_Be_Visible()
+        public async Task Given_DropdownList_When_DropdownList_Clicked_And_DropdownOptions_Appeared_Then_All_DropdownOptions_Should_Be_Visible()
         {
             // Arrange
-            var fluentSelect = Page.Locator("fluent-select#deployment-model-list");
+            var fluentSelect = Page.Locator("fluent-select#deployment-model-list-options");
 
             // Act
             await fluentSelect.ClickAsync();
@@ -61,16 +74,16 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests.UI
             }
         }
 
+        [Test]
         [TestCase("AZ", 2)]
         [TestCase("CA", 4)]
         [TestCase("CT", 6)]
         [TestCase("FL", 8)]
-        [Test]
         // 드롭다운의 옵션 값을 선택하면 부모 컴포넌트(페이지 컴포넌트)에 올바르게 업데이트 되는지 확인
         public async Task Given_DropdownOptions_And_ExpectedValue_When_Third_DropdownOption_Selected_And_DropdownValue_Updated_Then_DropdownValue_Should_Match_ExpectedValue(string exp, int n)
         {
             // Arrange
-            var fluentSelect = Page.Locator("fluent-select#deployment-model-list");
+            var fluentSelect = Page.Locator("fluent-select#deployment-model-list-options");
             await fluentSelect.ClickAsync();
             var fluentOptions = fluentSelect.Locator("fluent-option");
             var expectedValue = exp; // 실제 컴포넌트 옵션 값
@@ -78,7 +91,7 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests.UI
             // Act
             await fluentOptions.Nth(n).ScrollIntoViewIfNeededAsync(); // 선택할 컴포넌트 옵션 보이도록 스크롤
             await fluentOptions.Nth(n).ClickAsync(); // 옵션 클릭
-            var actualValue = await Page.EvaluateAsync<string>("() => document.querySelector('fluent-select#deployment-model-list').value"); // 페이지 내 컴포넌트 값 가져오기
+            var actualValue = await Page.EvaluateAsync<string>("() => document.querySelector('fluent-select#deployment-model-list-options').value"); // 페이지 내 컴포넌트 값 가져오기
 
             // Assert
             actualValue.Should().Be(expectedValue);
