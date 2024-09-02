@@ -1,8 +1,9 @@
 @page "/tests"
 @rendermode InteractiveServer
 
-<DebugTargetComponent OnValueChanged="SetInput" />
-<DebugButtonComponent Input="@currentValue" />
+<h1>Debug Button</h1>
+<DebugTargetComponent Id="debug-target" OnValueChanged="SetInput" />
+<DebugButtonComponent Id="debug-button" Input="@currentValue" />
 
 <DeploymentModelListComponent OnUserOptionSelected="HandleSelectedModelValue" @rendermode="InteractiveServer" />
 
