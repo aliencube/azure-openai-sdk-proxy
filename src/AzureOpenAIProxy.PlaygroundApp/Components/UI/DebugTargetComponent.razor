@@ -1,10 +1,13 @@
-<FluentRadioGroup Label="UI Test #171" TValue="int" ValueChanged="SetValue" Orientation="Orientation.Vertical">
+<FluentRadioGroup Id="@Id" Label="UI Test #171" TValue="int" ValueChanged="SetValue" Orientation="Orientation.Vertical">
     <FluentRadio Value="123">123</FluentRadio>
     <FluentRadio Value="456">456</FluentRadio>
     <FluentRadio Value="789">789</FluentRadio>
 </FluentRadioGroup>
 
 @code {
+    [Parameter]
+    public string? Id { get; set; }
+
     [Parameter]
     public EventCallback<int> OnValueChanged { get; set; }
 
