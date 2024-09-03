@@ -39,6 +39,14 @@ var resourceToken = uniqueString(resourceGroup().id)
 #disable-next-line no-unused-vars
 // var apiServiceName = 'python-api'
 
+
+// Define tables for the storage account
+param tables array = [
+    {
+        name: 'events'
+    }
+]
+
 // Add resources to be provisioned below.
 
 // Provision Key Vault
@@ -52,6 +60,17 @@ module keyVault './core/security/keyvault.bicep' = {
     enabledForTemplateDeployment: enabledForTemplateDeployment
     enableRbacAuthorization: enableRbacAuthorization
   }
+}
+
+// Provision Storage Account
+module storageAccount 'core/storage/storage-account.bicep' = {
+    name: 'storageAccount'
+    params: {
+        name: 'st${resourceToken}'
+        location: location
+        tags: tags
+        tables: tables
+    }
 }
 
 // Add outputs from the deployment here, if needed.
