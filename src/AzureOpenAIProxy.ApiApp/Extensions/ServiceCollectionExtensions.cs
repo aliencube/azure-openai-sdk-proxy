@@ -1,4 +1,5 @@
-﻿using Azure.Identity;
+﻿using Azure.Data.Tables;
+using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 
 using AzureOpenAIProxy.ApiApp.Builders;
@@ -130,6 +131,38 @@ public static class ServiceCollectionExtensions
 
             options.DocumentFilter<OpenApiTagFilter>();
             options.OperationFilter<OpenApiParameterIgnoreFilter>();
+        });
+
+        return services;
+    }
+
+    /// <summary>
+    /// Adds the TableServiceClient to the services collection.
+    /// </summary>
+    /// <param name="services"><see cref="IServiceCollection"/> instance.</param>
+    /// <returns>Returns <see cref="IServiceCollection"/> instance.</returns>
+    public static IServiceCollection AddTableStorageService(this IServiceCollection services)
+    {
+        services.AddSingleton<TableServiceClient>(sp => {
+            var configuration = sp.GetService<IConfiguration>()
+                ?? throw new InvalidOperationException($"{nameof(IConfiguration)} service is not registered.");
+
+            var settings = configuration.GetSection(AzureSettings.Name).GetSection(StorageAccountSettings.Name).Get<StorageAccountSettings>()
+                ?? throw new InvalidOperationException($"{nameof(StorageAccountSettings)} could not be retrieved from the configuration.");
+
+            if (string.IsNullOrWhiteSpace(settings.ConnectionString) == true)
+            {
+                throw new InvalidOperationException($"{nameof(StorageAccountSettings.ConnectionString)} is not defined.");
+            }
+
+            if (string.IsNullOrWhiteSpace(settings.ContainerName) == true)
+            {
+                throw new InvalidOperationException($"{nameof(StorageAccountSettings.ContainerName)} is not defined.");
+            }
+
+            var client = new TableServiceClient(settings.ConnectionString);
+
+            return client;
         });
 
         return services;
