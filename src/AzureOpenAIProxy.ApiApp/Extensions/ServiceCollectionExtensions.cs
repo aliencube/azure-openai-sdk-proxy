@@ -155,11 +155,6 @@ public static class ServiceCollectionExtensions
                 throw new InvalidOperationException($"{nameof(StorageAccountSettings.ConnectionString)} is not defined.");
             }
 
-            if (string.IsNullOrWhiteSpace(settings.ContainerName) == true)
-            {
-                throw new InvalidOperationException($"{nameof(StorageAccountSettings.ContainerName)} is not defined.");
-            }
-
             var client = new TableServiceClient(settings.ConnectionString);
 
             return client;
