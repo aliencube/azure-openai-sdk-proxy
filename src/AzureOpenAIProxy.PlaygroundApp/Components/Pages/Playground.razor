@@ -7,9 +7,7 @@
     <FluentHeader Style="padding-top: 5px;"><h1>Azure OpenAI Proxy Playground</h1></FluentHeader>
 
     <FluentGrid Spacing="3" AdaptiveRendering="true" Justify="JustifyContent.FlexStart">
-        <FluentGridItem Class="config-grid" xs="12" sm="12" md="4" lg="4" xl="4" xxl="4">
-            <ApiKeyInputComponent @rendermode="InteractiveServer" />
-        </FluentGridItem>
+        <ApiKeyInputComponent @rendermode="InteractiveServer" />
         <FluentGridItem Class="config-grid" xs="12" sm="12" md="4" lg="4" xl="4" xxl="4">
             <ConfigTabComponent @rendermode="InteractiveServer"/>
         </FluentGridItem>
