@@ -94,6 +94,11 @@ resource storage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   resource tableServices 'tableServices' = if (!empty(tables)) {
     name: 'default'
     properties: {}
+    // create tables pre-defined in aspire.bicep
+    resource table 'tables' = [for table in tables: {
+      name: table.name
+      properties: {}
+    }]
   }
 }
 
