@@ -1,9 +1,12 @@
 @inject IToastService ToastService
 
 <!-- This component displays the given input when the button is clicked. -->
-<FluentButton @onclick="ShowToast" Appearance="Appearance.Accent">Debug</FluentButton>
+<FluentButton Id="@Id" @onclick="ShowToast" Appearance="Appearance.Accent">Debug</FluentButton>
 
 @code {
+    [Parameter]
+    public string? Id { get; set; }
+
     [Parameter]
     public object? Input { get; set; }
     
