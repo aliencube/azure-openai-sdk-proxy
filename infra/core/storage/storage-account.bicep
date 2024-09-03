@@ -62,6 +62,7 @@ resource storage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
     resource container 'containers' = [for container in containers: {
       name: container.name
       properties: {
+        // todo: Warning use-safe-access: Use the safe access (.?) operator instead of checking object contents with the 'contains' function. [https://aka.ms/bicep/linter/use-safe-access]
         publicAccess: contains(container, 'publicAccess') ? container.publicAccess : 'None'
       }
     }]
