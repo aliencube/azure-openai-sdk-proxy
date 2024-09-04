@@ -15,12 +15,16 @@ public class AdminEventsPageTests : PageTest
         IgnoreHTTPSErrors = true,
     };
 
+    [SetUp]
+    public async Task Setup()
+    {
+        await Page.GotoAsync("https://localhost:5001/admin/events");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+    }
+
     [Test]
     public async Task Given_Events_Page_When_Navigated_Then_It_Should_Have_ListEventDetailsComponent()
     {
-        // Arrange
-        await this.Page.GotoAsync("https://localhost:5001/admin/events");
-
         // Act
         var adminEventsComponent = await Page.QuerySelectorAsync("#admin-events-component");
 
@@ -31,9 +35,6 @@ public class AdminEventsPageTests : PageTest
     [Test]
     public async Task Given_Events_Page_When_Navigated_Then_It_Should_Have_EventDetailsTable()
     {
-        // Arrange
-        await this.Page.GotoAsync("https://localhost:5001/admin/events");
-
         // wait for construct table
         await Task.Delay(2000);
 

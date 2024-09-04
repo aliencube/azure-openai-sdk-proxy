@@ -18,9 +18,7 @@
                 <PropertyColumn Class="fluent-datagrid-cell" Property="@(p => p.MaxTokenCap)" Align="@Align.Center" Sortable="true" />
                 <PropertyColumn Class="fluent-datagrid-cell" Property="@(p => p.DailyRequestCap)" Align="@Align.Center" Sortable="true" />
                 <TemplateColumn Class="fluent-datagrid-cell" Title="Active" Align="@Align.Center">
-                    <AdminEventIsActiveComponent 
-                        IsActive="@(((AdminEventDetails)@context).IsActive.HasValue && 
-                                    ((AdminEventDetails)@context).IsActive.Value)" />
+                    <AdminEventIsActiveComponent IsActive="@(((AdminEventDetails)@context).IsActive)" />
                 </TemplateColumn>
                 <TemplateColumn Class="fluent-datagrid-cell" Title="Actions" Align="@Align.Center">
                     <FluentButton aria-label="Edit item" IconEnd="@(new Icons.Regular.Size16.Edit())" />
@@ -59,7 +57,7 @@
         // make dummy data
         eventDetails = Enumerable.Range(1, 150).Select(index => new AdminEventDetails
             {
-                EventId = Guid.NewGuid().ToString(),
+                EventId = Guid.NewGuid(),
                 Title = $"event title #{index}",
                 Summary = "dummy summary",
                 Description = "dummy description",
