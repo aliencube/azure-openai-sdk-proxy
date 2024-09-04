@@ -3,9 +3,13 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace AzureOpenAIProxy.ApiApp.Converters;
-
+/// <summary>
+/// This represents the converter entity for <see cref="EnumMemberAttribute"/>.
+/// </summary>
+/// <typeparam name="T">The type of the enum to be converted.</typeparam>
 public class EnumMemberConverter<T> : JsonConverter<T> where T : Enum
 {
+    /// <inheritdoc />
     public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var enumText = reader.GetString();
@@ -40,6 +44,7 @@ public class EnumMemberConverter<T> : JsonConverter<T> where T : Enum
         throw new JsonException($"Unable to convert \"{enumText}\" to Enum \"{typeToConvert}\".");
     }
 
+    /// <inheritdoc />
     public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
     {
         var field = value.GetType().GetField(value.ToString());
