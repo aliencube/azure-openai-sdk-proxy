@@ -52,4 +52,38 @@ public class TestsPageTests : PageTest
         // Assert
         await Expect(Page.Locator(".fluent-toast-title")).ToHaveTextAsync($"{inputValue} (Type: {inputType})");
     }
+
+    [Test]
+    public async Task Given_Null_ApiKeyInput_When_DebugButton_Clicked_Then_Should_Show_NullMessage()
+    {
+        // Arrange
+        var apiKeyInput = Page.Locator("fluent-text-field#api-key-input").Locator("input");
+        var debugButton = Page.Locator("fluent-button#debug-api-key");
+
+        // Act
+        await apiKeyInput.FillAsync("");
+        await debugButton.ClickAsync();
+
+        // Assert
+        await Expect(Page.Locator(".fluent-toast-title")).ToHaveTextAsync("Input is null.");
+    }
+
+
+    [Test]
+    [TestCase("test-api-key-321")]
+    [TestCase("example-key-123")]
+    public async Task Given_ApiKeyInput_When_Input_Entered_Then_It_Should_Show_Input(string apiKey)
+    {
+        // Arrange
+        var apiKeyInput = Page.Locator("fluent-text-field#api-key-input").Locator("input");
+        var debugButton = Page.Locator("fluent-button#debug-api-key");
+
+        // Act
+        await apiKeyInput.FillAsync(apiKey);
+        await debugButton.ClickAsync();
+
+        // Assert
+        await Expect(Page.Locator(".fluent-toast-title")).ToHaveTextAsync($"{apiKey} (Type: System.String)");
+    }
+
 }
