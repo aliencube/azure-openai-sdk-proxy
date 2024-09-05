@@ -1,0 +1,85 @@
+﻿@using AzureOpenAIProxy.PlaygroundApp.Clients
+@using AzureOpenAIProxy.PlaygroundApp.Components.UI
+@inject IOpenAIApiClient Api
+
+<FluentGrid AdaptiveRendering="true"
+            Spacing="3"
+            Justify="JustifyContent.FlexStart"
+            Style="background-color: var(--neutral-layer-3); padding: 4px; align-items: stretch; ">
+    @foreach (var e in _events)
+    {
+        // TODO: Render the event item in the separated component.
+        <EventItemComponent
+            EventId="@e.EventId"
+            Title="@e.Title"
+            Summary="@e.Summary"
+            MaxTokenCap="@(e.MaxTokenCap)"
+            DailyRequestCap="@(e.DailyRequestCap)"
+            EndDate="@e.EndDate">
+        </EventItemComponent>
+    }
+</FluentGrid>
+
+@code {
+    public class EventDetails
+    {
+        public Guid EventId { get; set; }
+        public string Title { get; set; }
+        public string Summary { get; set; }
+        public int MaxTokenCap { get; set;}
+        public int DailyRequestCap { get; set; }
+        public DateTimeOffset EndDate { get; set; }
+    }
+
+    private List<EventDetails> _events;
+
+    private Task<List<EventDetails>> CreateEventDetailsAsync()
+    {
+        return Task.FromResult(new List<EventDetails>
+        {
+            new EventDetails
+            {
+                EventId = Guid.NewGuid(),
+                Title = "Event 1",
+                Summary = "Summary 1",
+                MaxTokenCap = 1000,
+                DailyRequestCap = 100,
+                EndDate = DateTimeOffset.Now.AddDays(1)
+            },
+            new EventDetails
+            {
+                EventId = Guid.NewGuid(),
+                Title = "Event 2",
+                Summary = "Summary 2",
+                MaxTokenCap = 2000,
+                DailyRequestCap = 200,
+                EndDate = DateTimeOffset.Now.AddDays(2)
+            },
+            new EventDetails
+            {
+                EventId = Guid.NewGuid(),
+                Title = "Event 3",
+                Summary = "Summary 3",
+                MaxTokenCap = 3000,
+                DailyRequestCap = 300,
+                EndDate = DateTimeOffset.Now.AddDays(3)
+            },
+            new EventDetails
+            {
+                EventId = Guid.NewGuid(),
+                Title = "Event 4",
+                Summary = "Summary 4",
+                MaxTokenCap = 3000,
+                DailyRequestCap = 300,
+                EndDate = DateTimeOffset.Now.AddDays(4)
+            }
+        });
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // TODO: Fetch events from the API server.
+        _events = await CreateEventDetailsAsync();
+    }
+
+}
