@@ -100,20 +100,22 @@ public class PlaygroundPageTests : PageTest
     }
 
     [Test]
-    public async Task Given_ApiKeyInputField_When_Page_Loaded_Should_Be_Visible()
+    public async Task Given_ApiKeynputField_When_Endpoint_Invoked_Then_It_Should_Be_Show()
     {
         // Arrange
-        var apiKeyInput = Page.Locator("fluent-text-field#api-key").Locator("input");
+        var id = "api-key";
+        var apiKeyInput = Page.Locator($"fluent-text-field#{id}").Locator("input");
         
         // Act & Assert
         await Expect(apiKeyInput).ToBeVisibleAsync();
     }
 
    [Test]
-   public async Task Given_ApiKeyInputField_When_Endpoint_Invoked_Should_Have_Password_Type()
+   public async Task Given_ApiKeyInputField_When_Endpoint_Invoked_Then_It_Should_Be_Password_Type()
     {
         // Arrange
-        var apiKeyInput = Page.Locator("fluent-text-field#api-key").Locator("input");
+        var id = "api-key";
+        var apiKeyInput = Page.Locator($"fluent-text-field#{id}").Locator("input");
         
         // Act
         var inputType = await apiKeyInput.GetAttributeAsync("type");
@@ -125,11 +127,11 @@ public class PlaygroundPageTests : PageTest
     [Test]
     [TestCase("test-api-key-1")]
     [TestCase("example-key-123")]
-    public async Task Given_ApiKeyInputField_When_Changed_Should_Be_Updated(string apiKey)
+    public async Task Given_ApiKeyInputField_When_Changed_Then_It_Should_Be_Updated(string apiKey)
     {
         // Arrange
-        var apiKeyInput = Page.Locator("fluent-text-field#api-key").Locator("input");
-        await Expect(apiKeyInput).ToBeVisibleAsync();
+        var id = "api-key";
+        var apiKeyInput = Page.Locator($"fluent-text-field#{id}").Locator("input");
 
         // Act
         await apiKeyInput.FillAsync(apiKey);
