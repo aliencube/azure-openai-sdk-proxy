@@ -5,22 +5,22 @@
 <DebugTargetComponent Id="debug-target" OnValueChanged="SetInput" />
 <DebugButtonComponent Id="debug-button" Input="@currentValue" />
 
-<ApiKeyInputComponent OnKeyInput="HandleApiKeyInput" />
-<DebugButtonComponent Input="@apiKey" />
+<ApiKeyInputComponent Id="api-key-input" OnKeyInput="HandleApiKeyInput" />
+<DebugButtonComponent Id="debug-api-key" Input="@apiKey" />
 
 
 @code {
     private object? currentValue;
     private string? apiKey;
 
-    private void HandleApiKeyInput(string apiKeyValue)
-    {
-        apiKey = apiKeyValue;
-    }
-
     private async Task SetInput(int newValue)
     {
         currentValue = newValue;
         await Task.CompletedTask;
+    }
+
+    private void HandleApiKeyInput(string apiKeyValue)
+    {
+        apiKey = apiKeyValue;
     }
 }
