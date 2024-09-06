@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace AzureOpenAIProxy.ApiApp.Converters;
+
 /// <summary>
 /// This represents the converter entity for <see cref="EnumMemberAttribute"/>.
 /// </summary>
