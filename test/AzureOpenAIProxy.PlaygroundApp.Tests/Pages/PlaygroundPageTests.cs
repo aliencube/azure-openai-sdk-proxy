@@ -100,7 +100,7 @@ public class PlaygroundPageTests : PageTest
     }
 
     [Test]
-    public async Task Given_ApiKeynputField_When_Endpoint_Invoked_Then_It_Should_Be_Show()
+    public async Task Given_ApiKeynputField_When_Endpoint_Invoked_Then_It_Should_Be_Visible()
     {
         // Arrange
         var id = "api-key";

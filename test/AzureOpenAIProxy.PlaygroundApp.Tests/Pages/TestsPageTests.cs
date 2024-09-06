@@ -54,36 +54,34 @@ public class TestsPageTests : PageTest
     }
 
     [Test]
-    public async Task Given_Null_ApiKeyInput_When_DebugButton_Clicked_Then_Should_Show_NullMessage()
+    public async Task Given_No_Input_On_ApiKeyField_When_DebugButton_Clicked_Then_Toast_Should_Show_NullMessage()
     {
         // Arrange
-        var apiKeyInput = Page.Locator("fluent-text-field#api-key-input").Locator("input");
-        var debugButton = Page.Locator("fluent-button#debug-api-key");
+        var button = Page.Locator("fluent-button#debug-api-key");
 
         // Act
-        await apiKeyInput.FillAsync("");
-        await debugButton.ClickAsync();
+        await button.ClickAsync();
 
         // Assert
         await Expect(Page.Locator(".fluent-toast-title")).ToHaveTextAsync("Input is null.");
     }
 
-
     [Test]
-    [TestCase("test-api-key-321")]
-    [TestCase("example-key-123")]
-    public async Task Given_ApiKeyInput_When_Input_Entered_Then_It_Should_Show_Input(string apiKey)
+    [TestCase("api-test-ex-key123", typeof(string))]
+    [TestCase("3.141592**^$", typeof(string))]
+    public async Task Given_Input_On_DebugTarget_When_DebugButton_Clicked_Then_Toast_Should_Show_Input(string apiKeyValue, Type inputType)
     {
         // Arrange
-        var apiKeyInput = Page.Locator("fluent-text-field#api-key-input").Locator("input");
-        var debugButton = Page.Locator("fluent-button#debug-api-key");
+        var apikeyfield = Page.Locator("fluent-text-field#api-key-input").Locator("input");
+        var button = Page.Locator("fluent-button#debug-api-key");
 
         // Act
-        await apiKeyInput.FillAsync(apiKey);
-        await debugButton.ClickAsync();
+        await apikeyfield.FillAsync(apiKeyValue);
+        await button.ClickAsync();
 
         // Assert
-        await Expect(Page.Locator(".fluent-toast-title")).ToHaveTextAsync($"{apiKey} (Type: System.String)");
+        await Expect(Page.Locator(".fluent-toast-title")).ToHaveTextAsync($"{apiKeyValue} (Type: {inputType.FullName})");
     }
+
 
 }

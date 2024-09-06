@@ -1,10 +1,10 @@
-<FluentTextField Id="@Id" @bind-Value=apiKeyValue TextFieldType="TextFieldType.Password" @oninput="SetApiKey">API key input</FluentTextField>
+<FluentTextField Id="@Id" @bind-Value=apiKeyValue TextFieldType="TextFieldType.Password" data-type="System.String" @oninput="SetApiKey">API key input</FluentTextField>
 
 @code {
+    private string? apiKeyValue { get; set; }
+    
     [Parameter]
     public string? Id { get; set; }
-
-    private string? apiKeyValue { get; set; }
 
     [Parameter]
     public EventCallback<string> OnKeyInput { get; set; }
@@ -12,9 +12,11 @@
     private async Task SetApiKey(ChangeEventArgs e)
     {
         apiKeyValue = e?.Value?.ToString();
-        if (apiKeyValue != null)
+        if (string.IsNullOrWhiteSpace(apiKeyValue) == true)
         {
-            await OnKeyInput.InvokeAsync(apiKeyValue);
+            return;
         }
+
+        await OnKeyInput.InvokeAsync(apiKeyValue);
     }
 }
