@@ -6,10 +6,10 @@ using AzureOpenAIProxy.ApiApp.Converters;
 
 namespace AzureOpenAIProxy.ApiApp.Models;
 
-/// <summary>
+/// <remark>
 /// The response from creating a chat completion.
 /// For more information, see <a href="https://github.com/Azure/azure-rest-api-specs/blob/main/specification/cognitiveservices/data-plane/AzureOpenAI/inference/stable/2024-06-01/inference.json">azure-rest-api-specs(2024-06-01)</a>
-/// </summary>
+/// </remark>
 public class CreateChatCompletionResponse
 {
     /// <summary>
@@ -17,6 +17,7 @@ public class CreateChatCompletionResponse
     /// </summary>
     [JsonPropertyName("id"), Required]
     public string? Id { get; set; }
+
     /// <summary>
     /// Gets or sets the object type.
     /// </summary>
