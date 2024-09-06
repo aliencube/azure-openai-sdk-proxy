@@ -1,6 +1,6 @@
 @using AzureOpenAIProxy.PlaygroundApp.Models
 
-<div id="admin-events-component">
+<FluentLayout Id="@Id">
     @if (eventDetails == null)
     {
         <p><em>Loading...</em></p>
@@ -41,11 +41,14 @@
             }
         </div>
     }
-</div>
+</FluentLayout>
 
 @code {
     private IQueryable<AdminEventDetails>? eventDetails;
     private PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+
+    [Parameter]
+    public string? Id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
