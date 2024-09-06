@@ -16,7 +16,7 @@ public class AdminEventsPageTests : PageTest
     };
 
     [SetUp]
-    public async Task Setup()
+    public async Task Init()
     {
         await Page.GotoAsync("https://localhost:5001/admin/events");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
@@ -43,5 +43,11 @@ public class AdminEventsPageTests : PageTest
 
         // Assert
         adminEventsTable.Should().NotBeNull();
+    }
+
+    [TearDown]
+    public async Task CleanUp()
+    {
+        await Page.CloseAsync();
     }
 }

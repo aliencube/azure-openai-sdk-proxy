@@ -16,9 +16,10 @@
 </FluentLayout>
 
 @code {
+    private Option<string>? selectedOption { get; set; } = new();
+
     [Parameter]
     public string? Id { get; set; }
-    private Option<string>? selectedOption { get; set; } = new();
 
     [Parameter]
     public EventCallback<string> OnUserOptionSelected { get; set; }
