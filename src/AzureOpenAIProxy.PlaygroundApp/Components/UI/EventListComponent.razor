@@ -1,11 +1,7 @@
-﻿@using AzureOpenAIProxy.PlaygroundApp.Clients
-@using AzureOpenAIProxy.PlaygroundApp.Components.UI
-@inject IOpenAIApiClient Api
-
-<FluentGrid AdaptiveRendering="true"
+﻿<FluentGrid AdaptiveRendering="true"
             Spacing="3"
             Justify="JustifyContent.FlexStart"
-            Style="background-color: var(--neutral-layer-3); padding: 4px; align-items: stretch; ">
+            Style="background-color: var(--neutral-layer-3); padding: 4px; align-items: center; margin-top: 18px;">
     @foreach (var e in _events)
     {
         // TODO: Render the event item in the separated component.
