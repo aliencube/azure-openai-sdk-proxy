@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <IsPackable>false</IsPackable>
@@ -15,19 +15,20 @@
     </PackageReference>
     <PackageReference Include="FluentAssertions" Version="$(FluentAssertionsVersion)" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftTestSdkVersion)" />
-    <PackageReference Include="xunit" Version="$(XunitVersion)" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="$(XunitVersion)">
+    <PackageReference Include="Microsoft.Playwright.NUnit" Version="$(PlaywrightVersion)" />
+    <PackageReference Include="NUnit.Analyzers" Version="$(NUnitVersion)">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="NUnit3TestAdapter" Version="$(NUnitVersion)" />
   </ItemGroup>
 
-  <ItemGroup>
+  <!-- <ItemGroup>
     <ProjectReference Include="..\..\src\AzureOpenAIProxy.PlaygroundApp\AzureOpenAIProxy.PlaygroundApp.csproj" />
-  </ItemGroup>
+  </ItemGroup> -->
 
   <ItemGroup>
-    <Using Include="Xunit" />
+    <Using Include="NUnit.Framework" />
   </ItemGroup>
 
 </Project>

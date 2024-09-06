@@ -72,10 +72,10 @@ rules:
         function: truthy
         message: Response 500 is required
 
-  # 401을 제외한 모든 응답 코드는 content를 포함해야함
+  # 400, 401, 404를 제외한 모든 응답 코드는 content를 포함해야함
   operation-responsedetail-content-convention:
-    description: All Operation response might include content, except 401
-    given: $.paths[*][*].responses[?(@property != '401')]
+    description: All Operation response might include content, except 400, 401 and 404
+    given: $.paths[*][*].responses[?(@property != '400' && @property != '401' && @property != '404')]
     severity: error
     then:
       - field: 'content'

@@ -1,10 +1,12 @@
 using System.Net;
 
+using AzureOpenAIProxy.AppHost.Tests.Fixtures;
+
 using FluentAssertions;
 
-namespace AzureOpenAIProxy.Tests;
+namespace AzureOpenAIProxy.AppHost.Tests;
 
-public class AppHostProgramTests
+public class AppHostProgramTests(AspireAppHostFixture host) : IClassFixture<AspireAppHostFixture>
 {
     [Theory]
     [InlineData("apiapp", "/health", HttpStatusCode.OK)]
@@ -12,12 +14,10 @@ public class AppHostProgramTests
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Healthy(string resourceName, string endpoint, HttpStatusCode statusCode)
     {
         // Arrange
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.AzureOpenAIProxy_AppHost>();
-        await using var app = await appHost.BuildAsync();
-        await app.StartAsync();
+        using var httpClient = host.App!.CreateHttpClient(resourceName);
+        await host.ResourceNotificationService.WaitForResourceAsync(resourceName, KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
-        var httpClient = app.CreateHttpClient(resourceName);
         var response = await httpClient.GetAsync(endpoint);
 
         // Assert

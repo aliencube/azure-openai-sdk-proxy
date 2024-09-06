@@ -1,9 +1,9 @@
-﻿namespace AzureOpenAIProxy.ApiApp.Endpoints;
+namespace AzureOpenAIProxy.ApiApp.Endpoints;
 
 /// <summary>
-/// This represents the collection of the endpoint URLs.
+/// This represents the collection of the proxy endpoint URLs.
 /// </summary>
-public static class EndpointUrls
+public static class ProxyEndpointUrls
 {
     /// <summary>
     /// Declares the weather forecast endpoint.

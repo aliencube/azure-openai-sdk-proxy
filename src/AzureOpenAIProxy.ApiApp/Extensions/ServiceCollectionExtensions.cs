@@ -88,13 +88,15 @@ public static class ServiceCollectionExtensions
     /// <returns>Returns <see cref="IServiceCollection"/> instance.</returns>
     public static IServiceCollection AddOpenApiService(this IServiceCollection services)
     {
+        var settings = services.GetOpenApiSettings();
+
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options =>
         {
             var info = new OpenApiInfo()
             {
-                Version = Constants.Version,
+                Version = settings.DocVersion,
                 Title = Constants.Title,
                 Description = "Providing a proxy service to Azure OpenAI API",
                 Contact = new OpenApiContact()
@@ -104,7 +106,7 @@ public static class ServiceCollectionExtensions
                     Url = new Uri("https://aka.ms/aoai-proxy.net")
                 },
             };
-            options.SwaggerDoc(Constants.Version, info);
+            options.SwaggerDoc(settings.DocVersion, info);
 
             options.AddSecurityDefinition(
                 "apiKey",
