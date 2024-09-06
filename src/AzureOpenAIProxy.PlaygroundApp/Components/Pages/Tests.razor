@@ -5,12 +5,22 @@
 <DebugTargetComponent Id="debug-target" OnValueChanged="SetInput" />
 <DebugButtonComponent Id="debug-button" Input="@currentValue" />
 
+<DeploymentModelListComponent Id="deployment-model-list" OnUserOptionSelected="HandleSelectedModelValue" @rendermode="InteractiveServer" />
+<DebugButtonComponent Id="debug-button-selected-model" Input="@selectedModelValue" />
+
 @code {
     private object? currentValue;
+    private string? selectedModelValue = "";
 
     private async Task SetInput(int newValue)
     {
         currentValue = newValue;
+        await Task.CompletedTask;
+    }
+
+    private async Task HandleSelectedModelValue(string val)
+    {
+        selectedModelValue = val;
         await Task.CompletedTask;
     }
 }
