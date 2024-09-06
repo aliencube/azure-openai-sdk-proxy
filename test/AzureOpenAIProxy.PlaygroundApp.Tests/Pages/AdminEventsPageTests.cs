@@ -26,7 +26,7 @@ public class AdminEventsPageTests : PageTest
     public async Task Given_Events_Page_When_Navigated_Then_It_Should_Have_ListEventDetailsComponent()
     {
         // Act
-        var adminEventsComponent = await Page.QuerySelectorAsync("#admin-events-component");
+        var adminEventsComponent = await Page.QuerySelectorAsync("#admin-events");
 
         // Assert
         adminEventsComponent.Should().NotBeNull();
