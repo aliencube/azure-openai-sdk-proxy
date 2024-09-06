@@ -4,7 +4,7 @@ using AzureOpenAIProxy.AppHost.Tests.Fixtures;
 
 using FluentAssertions;
 
-namespace AzureOpenAIProxy.Tests;
+namespace AzureOpenAIProxy.AppHost.Tests;
 
 public class AppHostProgramTests(AspireAppHostFixture host) : IClassFixture<AspireAppHostFixture>
 {
