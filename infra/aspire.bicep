@@ -24,7 +24,7 @@ param enableRbacAuthorization bool = true
 // parameters for storage account
 param storageAccountName string = ''
 // tableNames passed as a comma separated string from command line
-param tableNames string = 'events,tests'
+param tableNames string = 'events'
 
 var abbrs = loadJsonContent('./abbreviations.json')
 
@@ -48,13 +48,6 @@ var resourceToken = uniqueString(resourceGroup().id)
 #disable-next-line no-unused-vars
 // var apiServiceName = 'python-api'
 
-
-// resolved key vault name
-var resolvedKeyVaultName = !empty(keyVaultName) ? keyVaultName : '${abbrs.keyVaultVaults}${resourceToken}'
-
-// resolved storage account name
-var resolvedStorageAccountName = !empty(storageAccountName) ? storageAccountName : '${abbrs.storageStorageAccounts}${resourceToken}'
-
 // tables for storage account seperated by comma
 var tables = split(tableNames, ',')
 
@@ -64,7 +57,7 @@ var tables = split(tableNames, ',')
 module keyVault './core/security/keyvault.bicep' = {
   name: 'keyVault'
   params: {
-    name: resolvedKeyVaultName
+    name: !empty(keyVaultName) ? keyVaultName : '${abbrs.keyVaultVaults}${resourceToken}'
     location: location
     tags: tags
     enabledForDeployment: enabledForDeployment
@@ -74,27 +67,14 @@ module keyVault './core/security/keyvault.bicep' = {
 }
 
 // Provision Storage Account
-module storageAccount 'core/storage/storage-account.bicep' = {
+module storageAccount './core/storage/storage-account.bicep' = {
     name: 'storageAccount'
     params: {
-        name: resolvedStorageAccountName
+        name: !empty(storageAccountName) ? storageAccountName : '${abbrs.storageStorageAccounts}${resourceToken}'
         location: location
         tags: tags
         tables: tables
-    }
-}
-
-// save connection string to Key Vault
-// reference to storage account
-resource storageAccountReference 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
-    name: resolvedStorageAccountName
-}
-
-// save connection string to key vault
-resource storageAccountConnectionString 'Microsoft.Keyvault/vaults/secrets@2023-07-01' = {
-    name: '${resolvedKeyVaultName}/storageAccountConnectionString'
-    properties: {
-        value: 'DefaultEndpointsProtocol=https;EndpointSuffix=${environment().suffixes.storage};AccountName=${resolvedStorageAccountName};AccountKey=${storageAccountReference.listKeys().keys[0].value};BlobEndpoint=${storageAccount.outputs.primaryEndpoints.blob};FileEndpoint=${storageAccount.outputs.primaryEndpoints.file};QueueEndpoint=${storageAccount.outputs.primaryEndpoints.queue};TableEndpoint=${storageAccount.outputs.primaryEndpoints.table}'
+        keyVaultName: keyVault.outputs.name
     }
 }
 

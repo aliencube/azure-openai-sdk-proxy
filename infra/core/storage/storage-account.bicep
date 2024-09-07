@@ -31,6 +31,7 @@ param networkAcls object = {
 @allowed([ 'Enabled', 'Disabled' ])
 param publicNetworkAccess string = 'Enabled'
 param sku object = { name: 'Standard_LRS' }
+param keyVaultName string = ''
 
 resource storage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   name: name
@@ -100,6 +101,16 @@ resource storage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
       properties: {}
     }]
   }
+}
+
+//TODO: 모듈 내부에서 다른 module을 생성, 다른 module의 output을 사용하고 있음. 이 방법이 올바른지 확인 필요
+module keyVaultSecrets '../../core/security/keyvault-secret.bicep' = {
+    name: 'keyVaultSecrets'
+    params: {
+        name: 'storage-connection-string-new'
+        secretValue:'DefaultEndpointsProtocol=https;EndpointSuffix=${environment().suffixes.storage};AccountName=${storage.name};AccountKey=${storage.listKeys().keys[0].value};BlobEndpoint=${storage.properties.primaryEndpoints.blob};FileEndpoint=${storage.properties.primaryEndpoints.file};QueueEndpoint=${storage.properties.primaryEndpoints.queue};TableEndpoint=${storage.properties.primaryEndpoints.table}'
+        keyVaultName:keyVaultName
+    }
 }
 
 output id string = storage.id
