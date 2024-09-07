@@ -80,18 +80,19 @@ module storageAccount 'core/storage/storage-account.bicep' = {
     }
 }
 
-// Save connection string to Key Vault
-resource secret 'Microsoft.Keyvault/vaults/secrets@2023-07-01' = {
-    name: '${resolvedKeyVaultName}/storageAccountConnectionString'
-    properties: {
-        //value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${listKeys(storageAccount.name, '2024-03-01').keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
-        value: 'DefaultEndpointsProtocol=https;EndpointSuffix=${storageAccount.outputs.endpoint};AccountName=${storageAccount.outputs.name};AccountKey=${listKeys(storageAccount.outputs.name,'2021-04-01').keys[0].value};BlobEndpoint=${storageAccount.outputs.primaryEndpoints.blob};FileEndpoint=${storageAccount.outputs.primaryEndpoints.file};QueueEndpoint=${storageAccount.outputs.primaryEndpoints.queue};TableEndpoint=${storageAccount.outputs.primaryEndpoints.table}'
-    }
+// save connection string to Key Vault
+// reference to storage account
+resource storageAccountReference 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
+    name: resolvedStorageAccountName
 }
 
-// Role Assignment for Key Vault secret : creator admin, apiapp user
-
-
+// save connection string to key vault
+resource storageAccountConnectionString 'Microsoft.Keyvault/vaults/secrets@2023-07-01' = {
+    name: '${resolvedKeyVaultName}/storageAccountConnectionString'
+    properties: {
+        value: 'DefaultEndpointsProtocol=https;EndpointSuffix=${environment().suffixes.storage};AccountName=${resolvedStorageAccountName};AccountKey=${storageAccountReference.listKeys().keys[0].value};BlobEndpoint=${storageAccount.outputs.primaryEndpoints.blob};FileEndpoint=${storageAccount.outputs.primaryEndpoints.file};QueueEndpoint=${storageAccount.outputs.primaryEndpoints.queue};TableEndpoint=${storageAccount.outputs.primaryEndpoints.table}'
+    }
+}
 
 // Add outputs from the deployment here, if needed.
 //
