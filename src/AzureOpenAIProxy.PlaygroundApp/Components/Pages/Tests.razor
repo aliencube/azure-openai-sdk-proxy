@@ -1,14 +1,29 @@
 @page "/tests"
 @rendermode InteractiveServer
 
-<DebugTargetComponent OnValueChanged="SetInput" />
-<DebugButtonComponent Input="@currentValue" />
+<h1>Component Tests</h1>
+
+<h2>Debug Button</h2>
+<DebugTargetComponent Id="debug-target" OnValueChanged="SetInput" />
+<DebugButtonComponent Id="debug-button" Input="@targetValue" />
+
+<h2>Deployment Models</h2>
+<DeploymentModelListComponent Id="debug-deployment-model-list" OnUserOptionSelected="SetDeploymentModel" @rendermode="InteractiveServer" />
+<DebugButtonComponent Id="debug-button-deployment-model-list" Input="@selectedModel" />
 
 @code {
-    private object? currentValue;
+    private object? targetValue;
+    private string? selectedModel;
 
-    private void SetInput(int newValue)
+    private async Task SetInput(int value)
     {
-        currentValue = newValue;
+        targetValue = value;
+        await Task.CompletedTask;
+    }
+
+    private async Task SetDeploymentModel(string value)
+    {
+        selectedModel = value;
+        await Task.CompletedTask;
     }
 }

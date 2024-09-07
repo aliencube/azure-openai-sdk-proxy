@@ -13,16 +13,26 @@ public class HomePageTests : PageTest
         IgnoreHTTPSErrors = true,
     };
 
-    [Test]
-    public async Task Given_Root_Page_When_Navigated_Then_It_Should_No_Sidebar()
+    [SetUp]
+    public async Task Init()
     {
-        // Arrange
-        await this.Page.GotoAsync("https://localhost:5001");
+        await Page.GotoAsync("https://localhost:5001");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+    }
 
+    [Test]
+    public void Given_Root_Page_When_Navigated_Then_It_Should_No_Sidebar()
+    {
         // Act
-        var sidebar = this.Page.Locator("div.sidebar");
+        var sidebar = Page.Locator("div.sidebar");
 
         // Assert
         Expect(sidebar).Equals(null);
+    }
+
+    [TearDown]
+    public async Task CleanUp()
+    {
+        await Page.CloseAsync();
     }
 }
