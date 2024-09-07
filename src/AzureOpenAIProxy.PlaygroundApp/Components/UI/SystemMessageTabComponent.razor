@@ -1,40 +1,34 @@
 <FluentLayout Id="@Id" Style="margin: 10px;">
     <FluentToolbar id="system-message-tab-toolbar" Style="display: flex; align-items: center; padding-bottom: 5%; background-color: white;">
-        <FluentButton id="apply-changes-system-message" @onclick="OnApplyChanges" Disabled="@isApplyButtonDisabled" 
+        <FluentButton id="system-message-tab-apply-button" @onclick="OnApplyChanges" Disabled="@isApplyButtonDisabled"
             IconStart="@(new Icons.Filled.Size20.ArrowSwap())" Appearance="Appearance.Stealth">
             Apply changes
         </FluentButton>
-        <FluentButton id="reset-default-system-message" @onclick="OnResetToDefault" Disabled="@isResetButtonDisabled" 
+        <FluentButton id="system-message-tab-reset-button" @onclick="OnResetToDefault" Disabled="@isResetButtonDisabled"
             IconStart="@(new Icons.Filled.Size20.ArrowReset())" Appearance="Appearance.Stealth">
             Reset to default
         </FluentButton>
     </FluentToolbar>
 
-    <div style="display: flex; align-items: center; padding-bottom: 5px;">
-        <label id="system-message-tab-label" for="system-message-tab-textarea" style="margin-right: 5px;">System message</label>
-        <FluentIcon Value="@(new Icons.Regular.Size16.Info())" Color="@Color.Info" />
-    </div>
-    <FluentLabel id="system-message-tab-label" for="system-message-tab-textarea" Style="margin-bottom: 5px;"></FluentLabel>
-    <FluentTextArea id="system-message-tab-textarea"
-        Rows="5"    
-        Style="width: 100%;"
-        @bind-Value="userSystemMessage" 
-        @oninput="OnInputChanged"
-        Resize="TextAreaResize.Vertical">
+    <FluentTextArea id="system-message-tab-textarea" Rows="5" Style="width: 100%;" @bind-Value="userSystemMessage" @oninput="OnInputChanged" Resize="TextAreaResize.Vertical">
+        <div style="display: flex; align-items: center; padding-bottom: 3px;">
+            <label id="system-message-tab-label" for="system-message-tab-textarea" style="margin-right: 5px;">System message</label>
+            <FluentIcon Value="@(new Icons.Regular.Size16.Info())" Color="@Color.Info" />
+        </div>
     </FluentTextArea>
 </FluentLayout>
 
 @code {
+    private string? userSystemMessage { get; set; }
+    private string? defaultSystemMessage = "You are an AI assistant that helps people find information.";
+    private bool isApplyButtonDisabled { get; set; } = true;
+    private bool isResetButtonDisabled { get; set; } = true;
+
     [Parameter]
     public string? Id { get; set; }
 
     [Parameter]
     public EventCallback<string> OnSystemMessageChanged { get; set; }
-
-    string? userSystemMessage { get; set; }
-    string? defaultSystemMessage = "You are an AI assistant that helps people find information.";
-    bool isApplyButtonDisabled { get; set; }
-    bool isResetButtonDisabled { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

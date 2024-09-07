@@ -57,6 +57,7 @@ public class TestsPageTests : PageTest
 
     [Test]
     [TestCase("deployment-model-label", "Deployment")]
+    [TestCase("system-message-tab-label", "System message")]
     public async Task Given_Label_When_Page_Loaded_Then_Label_Should_Be_Visible(string id, string expected)
     {
         // Arrange
