@@ -6,18 +6,9 @@ using System.Text.Json.Serialization;
 public class DeploymentModelDetails
 {
     /// <summary>
-    /// Gets or sets the deployment id of the model.
-    /// </summary>
-    [JsonRequired]
-    public int? Id { get; set; }
-
-    /// <summary>
     /// Gets or sets the deployment model name.
     /// </summary>
-    public string? Name { get; set; }
+    [JsonRequired]
+    public string Name { get; set; } = string.Empty;
 
-    /// <summary>
-    /// Gets or sets the version of deployment model.
-    /// </summary>
-    public string? Version { get; set; }
 }
