@@ -1,18 +1,23 @@
 <FluentLayout Id="@Id" Style="margin: 10px;">
-    <FluentToolbar id="system-message-tab-toolbar" Style="padding-bottom: 10px">
-        <FluentButton id="apply-changes-system-message" @onclick="OnApplyChanges" Disabled="@isApplyButtonDisabled">
+    <FluentToolbar id="system-message-tab-toolbar" Style="display: flex; align-items: center; padding-bottom: 5%; background-color: white;">
+        <FluentButton id="apply-changes-system-message" @onclick="OnApplyChanges" Disabled="@isApplyButtonDisabled" 
+            IconStart="@(new Icons.Filled.Size20.ArrowSwap())" Appearance="Appearance.Stealth">
             Apply changes
         </FluentButton>
-        <FluentButton id="reset-default-system-message" @onclick="OnResetToDefault" Disabled="@isResetButtonDisabled">
+        <FluentButton id="reset-default-system-message" @onclick="OnResetToDefault" Disabled="@isResetButtonDisabled" 
+            IconStart="@(new Icons.Filled.Size20.ArrowReset())" Appearance="Appearance.Stealth">
             Reset to default
         </FluentButton>
     </FluentToolbar>
 
     <div style="display: flex; align-items: center; padding-bottom: 5px;">
-        <label id="system-message-tab-label" for="system-message-tab-textarea" style="margin-right: 5px; font-weight: 500;">System message</label>
-        <span style="color: red;">*</span>
+        <label id="system-message-tab-label" for="system-message-tab-textarea" style="margin-right: 5px;">System message</label>
+        <FluentIcon Value="@(new Icons.Regular.Size16.Info())" Color="@Color.Info" />
     </div>
-    <FluentTextArea id="system-message-tab-textarea" 
+    <FluentLabel id="system-message-tab-label" for="system-message-tab-textarea" Style="margin-bottom: 5px;"></FluentLabel>
+    <FluentTextArea id="system-message-tab-textarea"
+        Rows="5"    
+        Style="width: 100%;"
         @bind-Value="userSystemMessage" 
         @oninput="OnInputChanged"
         Resize="TextAreaResize.Vertical">
