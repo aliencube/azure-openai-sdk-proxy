@@ -19,5 +19,5 @@ public class DeploymentModelDetails
     /// <summary>
     /// Gets or sets the version of deployment model.
     /// </summary>
-    public string? version { get; set; }
+    public string? Version { get; set; }
 }
