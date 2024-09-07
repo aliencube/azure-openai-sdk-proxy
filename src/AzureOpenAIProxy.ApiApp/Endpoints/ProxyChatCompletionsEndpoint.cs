@@ -57,7 +57,9 @@ public static class ProxyChatCompletionsEndpoint
         .Accepts<ChatCompletionOptions>(contentType: "application/json")
         .Produces<CreateChatCompletionResponse>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
         // TODO: Check both request/response payloads
+        .Produces(statusCode: StatusCodes.Status400BadRequest)
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
+        .Produces(statusCode: StatusCodes.Status404NotFound)
         .Produces<string>(statusCode: StatusCodes.Status500InternalServerError, contentType: "text/plain")
         .WithTags("openai")
         .WithName("GetChatCompletions")
