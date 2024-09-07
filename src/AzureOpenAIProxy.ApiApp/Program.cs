@@ -1,5 +1,7 @@
 using AzureOpenAIProxy.ApiApp.Endpoints;
 using AzureOpenAIProxy.ApiApp.Extensions;
+using AzureOpenAIProxy.ApiApp.Repositories;
+using AzureOpenAIProxy.ApiApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,12 @@ builder.Services.AddOpenAIService();
 
 // Add OpenAPI service
 builder.Services.AddOpenApiService();
+
+// Add admin services
+builder.Services.AddAdminEventService();
+
+// Add admin repositories
+builder.Services.AddAdminEventRepository();
 
 var app = builder.Build();
 
@@ -37,15 +45,17 @@ app.Use(async (context, next) =>
 app.UseHttpsRedirection();
 
 app.AddWeatherForecast();
+
+// Proxy endpoints
 app.AddChatCompletions();
 
-// Event Endpoints
-app.AddEventList();
+// Playground endpoints
+app.AddListEvents();
 
-// Admin Endpoints
-app.AddAdminEvents();
-app.AddAdminEventList();
-app.AddUpdateAdminEvents();
-app.CreateAdminEvent();
+// Admin endpoints
+app.AddNewAdminEvent();
+app.AddListAdminEvents();
+app.AddGetAdminEvent();
+app.AddUpdateAdminEvent();
 
 await app.RunAsync();

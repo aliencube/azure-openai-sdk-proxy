@@ -28,6 +28,7 @@ public class HomePageTests(AspireAppHostFixture host) : IClassFixture<AspireAppH
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("playgroundapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("playgroundapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var html = await httpClient.GetStringAsync("/");
@@ -42,6 +43,7 @@ public class HomePageTests(AspireAppHostFixture host) : IClassFixture<AspireAppH
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("playgroundapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("playgroundapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var html = await httpClient.GetStringAsync("/");
@@ -56,6 +58,7 @@ public class HomePageTests(AspireAppHostFixture host) : IClassFixture<AspireAppH
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("playgroundapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("playgroundapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
         var html = await httpClient.GetStringAsync("/");
