@@ -81,7 +81,7 @@ public class SystemMessageTabComponentTests : PageTest
         await Expect(Page.Locator(".fluent-toast-title")).ToHaveTextAsync($"{expectedValue} (Type: {expectedType})");
     }
 
-    // textarea 값 변경되면 apply 버튼 & reset 버튼 활성화 되는지 테스트
+    // textarea 값 변경 감지되면 apply 버튼 & reset 버튼 활성화 되는지 테스트
     /// -> 'disabled' 속성이 없으면 활성화된 상태
     [Test]
     public async Task Given_ApplyButton_And_ResetButton_When_TextArea_Value_Changed_Then_All_Buttons_Should_Be_Enabled()
@@ -108,43 +108,18 @@ public class SystemMessageTabComponentTests : PageTest
         });
     }
 
-    // textarea 값이 기본값과 같은 경우 reset 버튼 비활성화 상태여야 함
-    /// -> 값 변경했다가 다시 default 값으로 그대로 작성하면 reset 버튼 비활성화 되는지 확인
-    [Test]
-    [TestCase("You are an AI assistant that helps people find information.")]
-    public async Task Given_ResetButton_When_Changed_TextArea_Value_Matches_Default_Then_ResetButton_Should_Be_Disabled(string defaultValue)
-    {
-        // Arrange
-        var resetButton = Page.Locator($"fluent-button#system-message-tab-reset-button");
-        var newValue = "New system message";
-
-        // Act
-        await Page.EvaluateAsync(@$"
-                const textarea = document.querySelector('fluent-text-area#system-message-tab-textarea');
-                textarea.value = '{newValue}';
-                textarea.dispatchEvent(new Event('input', {{ bubbles: true }}));
-        ");
-        await Page.EvaluateAsync(@$"
-                const textarea = document.querySelector('fluent-text-area#system-message-tab-textarea');
-                textarea.value = '{defaultValue}';
-                textarea.dispatchEvent(new Event('input', {{ bubbles: true }}));
-        ");
-        var isResetButtonDisabled = await resetButton.GetAttributeAsync("disabled");
-
-        // Assert
-        isResetButtonDisabled.Should().NotBeNull();
-    }
-
-    // apply 버튼 작동 테스트(textarea 값 적용 & apply 버튼 다시 비활성화)
+    // apply 버튼 작동 테스트(변경된 textarea 값 system message에 적용 & apply 버튼 비활성화 + default 값과 다른 경우 reset 버튼 그대로 활성화)
     [Test]
     [TestCase("1 New system message 1", typeof(string))]
     [TestCase("2 New system message 2", typeof(string))]
-    [TestCase("3 New system message 3", typeof(string))]
-    public async Task Given_ApplyButton_When_Clicked_Then_Changed_TextArea_Value_Should_Be_Applied_And_ApplyButton_Should_Be_Disabled(string expectedValue, Type expectedType)
+    [TestCase("You are an AI assistant that helps people find information.", typeof(string))]
+    public async Task Given_ApplyButton_When_Clicked_Then_TextArea_Value_Should_Be_Applied_As_SystemMessage_And_ApplyButton_Should_Be_Disabled(string expectedValue, Type expectedType)
     {
         // Arrange
         var applyButton = Page.Locator("fluent-button#system-message-tab-apply-button");
+        var resetButton = Page.Locator("fluent-button#system-message-tab-reset-button");
         var debugButton = Page.Locator($"fluent-button#debug-button-system-message-tab");
+        var defaultValue = "You are an AI assistant that helps people find information.";
 
         // Act
         await Page.EvaluateAsync(@$"
@@ -155,20 +130,28 @@ public class SystemMessageTabComponentTests : PageTest
         await applyButton.ClickAsync();
         await debugButton.ClickAsync();
         var isApplyButtonDisabled = await applyButton.GetAttributeAsync("disabled");
+        var isResetButtonDisabled = await resetButton.GetAttributeAsync("disabled");
 
         // Assert
         Assert.Multiple(async () =>
         {
             await Expect(Page.Locator(".fluent-toast-title")).ToHaveTextAsync($"{expectedValue} (Type: {expectedType})");
             isApplyButtonDisabled.Should().NotBeNull();
+            if (expectedValue == defaultValue)
+            {
+                isResetButtonDisabled.Should().NotBeNull();
+            }
+            else
+            {
+                isResetButtonDisabled.Should().BeNull();
+            }
         });
     }
 
-    // reset 버튼 작동 테스트(textarea 값 초기화 & apply, reset 버튼 모두 비활성화)
+    // reset 버튼 작동 테스트(textarea 및 system message 값 초기화 & apply, reset 버튼 모두 비활성화)
     [Test]
     [TestCase("You are an AI assistant that helps people find information.", typeof(string))]
-
-    public async Task Given_ResetButton_When_Clicked_Then_TextArea_Should_Have_Default_Value_And_All_Buttons_Should_Be_Disabled(string expectedValue, Type expectedType)
+    public async Task Given_ResetButton_When_Clicked_Then_SystemMessage_And_TextArea_Should_Have_Default_Value_And_All_Buttons_Should_Be_Disabled(string expectedValue, Type expectedType)
     {
         // Arrange
         var applyButton = Page.Locator("fluent-button#system-message-tab-apply-button");
@@ -182,6 +165,7 @@ public class SystemMessageTabComponentTests : PageTest
                 textarea.value = '{newValue}';
                 textarea.dispatchEvent(new Event('input', {{ bubbles: true }}));
         ");
+        await applyButton.ClickAsync();
         await resetButton.ClickAsync();
         await debugButton.ClickAsync();
         var isApplyButtonDisabled = await applyButton.GetAttributeAsync("disabled");

@@ -40,16 +40,17 @@
     {
         userSystemMessage = e.Value?.ToString();
         isApplyButtonDisabled = false;
-        if(userSystemMessage != defaultSystemMessage)
-            isResetButtonDisabled = false;
-        else
-            isResetButtonDisabled = true;
+        isResetButtonDisabled = false;
         await Task.CompletedTask;
     }
 
     private async Task OnApplyChanges()
     {
         isApplyButtonDisabled = true;
+        if(userSystemMessage == defaultSystemMessage)
+        {
+            isResetButtonDisabled = true;
+        }
         await OnSystemMessageChanged.InvokeAsync(userSystemMessage);
     }
 
