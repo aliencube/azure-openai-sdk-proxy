@@ -1,7 +1,8 @@
 ﻿@using AzureOpenAIProxy.PlaygroundApp.Clients
 @inject IOpenAIApiClient Api
 
-<FluentGridItem xs="12" sm="6" Justify="JustifyContent.Center" Style="text-align: center; ">
+<FluentGridItem Id="@Id.ToString()" xs="12" sm="6" Justify="JustifyContent.Center" Style="text-align: center;"
+                @onclick="NavigateToEventDetails">
     <FluentCard Style="flex-grow: 1; padding: 0em; display: flex; flex-direction: column; align-items: normal;">
         <FluentHeader>
             @Title
@@ -10,14 +11,13 @@
             <div class="card-body">
                 <h5>@Summary</h5>
             </div>
-            <div class="card-footer text-body-secondary"></div>
         </div>
     </FluentCard>
 </FluentGridItem>
 
 @code {
     [Parameter]
-    public Guid EventId { get; set; }
+    public Guid Id { get; set; }
 
     [Parameter]
     public string Title { get; set; }
@@ -25,22 +25,13 @@
     [Parameter]
     public string? Summary { get; set; }
 
-    [Parameter]
-    public DateTimeOffset EndDate { get; set; }
-
-    [Parameter]
-    public int MaxTokenCap { get; set; }
-
-    [Parameter]
-    public int DailyRequestCap { get; set; }
-
-    private string _timeStampResult = string.Empty;
-    private bool _isStateChanged = false;
-
     public override Task SetParametersAsync(ParameterView parameters)
     {
         parameters.SetParameterProperties(this);
-        _timeStampResult = EndDate.ToString();
         return base.SetParametersAsync(parameters);
+    }
+
+    private void NavigateToEventDetails()
+    {
     }
 }

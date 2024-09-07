@@ -1,31 +1,26 @@
-﻿<FluentGrid AdaptiveRendering="true"
+﻿@using AzureOpenAIProxy.PlaygroundApp.Models;
+
+<FluentGrid AdaptiveRendering="true"
+            Id="events-list-grid"
             Spacing="3"
             Justify="JustifyContent.FlexStart"
-            Style="background-color: var(--neutral-layer-3); padding-block: 1.5em; padding-inline: 1.0em; align-items: center; margin-top: 18px; border-radius: 8px;">
+            Style="background-color: var(--neutral-layer-3);
+                padding-block: 1.5em;
+                padding-inline: 1.0em; align-items: center; margin-top: 18px; border-radius: 8px;">
     @foreach (var e in _events)
     {
         // TODO: Render the event item in the separated component.
         <EventItemComponent
-            EventId="@e.EventId"
+            Id="@e.EventId"
             Title="@e.Title"
-            Summary="@e.Summary"
-            MaxTokenCap="@(e.MaxTokenCap)"
-            DailyRequestCap="@(e.DailyRequestCap)"
-            EndDate="@e.EndDate">
+            Summary="@e.Summary">
         </EventItemComponent>
     }
 </FluentGrid>
 
 @code {
-    public class EventDetails
-    {
-        public Guid EventId { get; set; }
-        public string Title { get; set; }
-        public string Summary { get; set; }
-        public int MaxTokenCap { get; set;}
-        public int DailyRequestCap { get; set; }
-        public DateTimeOffset EndDate { get; set; }
-    }
+    [Parameter]
+    public string? Id { get; set; }
 
     private List<EventDetails> _events;
 
@@ -39,17 +34,15 @@
                 Title = "Event 1",
                 Summary = "Summary 1",
                 MaxTokenCap = 1000,
-                DailyRequestCap = 100,
-                EndDate = DateTimeOffset.Now.AddDays(1)
+                DailyRequestCap = 100
             },
             new EventDetails
             {
                 EventId = Guid.NewGuid(),
                 Title = "Event 2",
-                Summary = "Summary 2",
+                Summary = "Et iusto clita ipsum et. Amet lorem est lorem takimata et aliquyam. Aliquyam invidunt dolor erat eu sed ut sadipscing justo sed justo amet magna ea lorem ipsum exerci. Erat diam tempor imperdiet lorem duis. Amet est sanctus tempor kasd erat odio diam accumsan stet. Voluptua aliquyam magna at no vulputate justo labore labore eos stet. Dolore ut ad sadipscing sit elitr ipsum commodo nam invidunt wisi labore vero feugait sanctus sea ad et sadipscing. Possim tempor nonummy erat et no erat lorem in dolore consequat eos feugiat justo vero. Ut eirmod et duis accusam dolore est sea duis dolor et duis illum. Esse ut aliquyam placerat enim amet et labore sadipscing sed stet duo eos at consequat autem accusam lorem invidunt. Sea clita rebum eum et no dolore et sit. Liber aliquyam duo eu. Feugiat sadipscing sed eos sanctus gubergren dolore amet. Erat liber nam ea aliquam ut autem dolores magna aliquyam illum vero vulputate ut accusam est rebum. Et takimata est dolore ut elitr gubergren sanctus ipsum magna magna at sed amet dolores amet. Rebum dolore sit ea et gubergren. Dolore aliquam ipsum in at est justo justo ipsum. Ipsum nisl sea lorem.",
                 MaxTokenCap = 2000,
                 DailyRequestCap = 200,
-                EndDate = DateTimeOffset.Now.AddDays(2)
             },
             new EventDetails
             {
@@ -58,7 +51,6 @@
                 Summary = "Summary 3",
                 MaxTokenCap = 3000,
                 DailyRequestCap = 300,
-                EndDate = DateTimeOffset.Now.AddDays(3)
             },
             new EventDetails
             {
@@ -67,7 +59,6 @@
                 Summary = "Summary 4",
                 MaxTokenCap = 3000,
                 DailyRequestCap = 300,
-                EndDate = DateTimeOffset.Now.AddDays(4)
             }
         });
     }
