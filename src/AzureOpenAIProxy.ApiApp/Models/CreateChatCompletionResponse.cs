@@ -6,8 +6,10 @@ using AzureOpenAIProxy.ApiApp.Converters;
 
 namespace AzureOpenAIProxy.ApiApp.Models;
 
-/// <remark>
+/// <summary>
 /// The response from creating a chat completion.
+/// </summary>
+/// <remark>
 /// For more information, see <a href="https://github.com/Azure/azure-rest-api-specs/blob/main/specification/cognitiveservices/data-plane/AzureOpenAI/inference/stable/2024-06-01/inference.json">azure-rest-api-specs(2024-06-01)</a>
 /// </remark>
 public class CreateChatCompletionResponse
