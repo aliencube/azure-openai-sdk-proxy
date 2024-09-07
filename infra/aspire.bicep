@@ -84,9 +84,14 @@ module storageAccount 'core/storage/storage-account.bicep' = {
 resource secret 'Microsoft.Keyvault/vaults/secrets@2023-07-01' = {
     name: '${resolvedKeyVaultName}/storageAccountConnectionString'
     properties: {
-        value: '${storageAccount.outputs.primaryEndpoints.blob}'
+        //value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${listKeys(storageAccount.name, '2024-03-01').keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
+        value: 'DefaultEndpointsProtocol=https;EndpointSuffix=${storageAccount.outputs.endpoint};AccountName=${storageAccount.outputs.name};AccountKey=${listKeys(storageAccount.outputs.name,'2021-04-01').keys[0].value};BlobEndpoint=${storageAccount.outputs.primaryEndpoints.blob};FileEndpoint=${storageAccount.outputs.primaryEndpoints.file};QueueEndpoint=${storageAccount.outputs.primaryEndpoints.queue};TableEndpoint=${storageAccount.outputs.primaryEndpoints.table}'
     }
 }
+
+// Role Assignment for Key Vault secret : creator admin, apiapp user
+
+
 
 // Add outputs from the deployment here, if needed.
 //
