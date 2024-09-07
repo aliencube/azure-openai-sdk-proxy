@@ -17,6 +17,11 @@ param enabledForDeployment bool = true
 param enabledForTemplateDeployment bool = true
 param enableRbacAuthorization bool = true
 
+// parameters for storage account
+param storageAccountName string = ''
+// tableNames passed as a comma separated string from command line
+param tableNames string = 'events,tests'
+
 var abbrs = loadJsonContent('./abbreviations.json')
 
 // Tags that should be applied to all resources.
@@ -40,12 +45,14 @@ var resourceToken = uniqueString(resourceGroup().id)
 // var apiServiceName = 'python-api'
 
 
-// Define tables for the storage account
-param tables array = [
-    {
-        name: 'events'
-    }
-]
+// resolved key vault name
+var resolvedKeyVaultName = !empty(keyVaultName) ? keyVaultName : '${abbrs.keyVaultVaults}${resourceToken}'
+
+// resolved storage account name
+var resolvedStorageAccountName = !empty(storageAccountName) ? storageAccountName : '${abbrs.storageStorageAccounts}${resourceToken}'
+
+// tables for storage account seperated by comma
+var tables = split(tableNames, ',')
 
 // Add resources to be provisioned below.
 
@@ -53,7 +60,7 @@ param tables array = [
 module keyVault './core/security/keyvault.bicep' = {
   name: 'keyVault'
   params: {
-    name: !empty(keyVaultName) ? keyVaultName : '${abbrs.keyVaultVaults}${resourceToken}'
+    name: resolvedKeyVaultName
     location: location
     tags: tags
     enabledForDeployment: enabledForDeployment
@@ -66,10 +73,18 @@ module keyVault './core/security/keyvault.bicep' = {
 module storageAccount 'core/storage/storage-account.bicep' = {
     name: 'storageAccount'
     params: {
-        name: 'st${resourceToken}'
+        name: resolvedStorageAccountName
         location: location
         tags: tags
         tables: tables
+    }
+}
+
+// Save connection string to Key Vault
+resource secret 'Microsoft.Keyvault/vaults/secrets@2023-07-01' = {
+    name: '${resolvedKeyVaultName}/storageAccountConnectionString'
+    properties: {
+        value: '${storageAccount.outputs.primaryEndpoints.blob}'
     }
 }
 
