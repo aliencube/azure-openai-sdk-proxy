@@ -14,7 +14,7 @@ public class HomePageTests : PageTest
     };
 
     [SetUp]
-    public async Task Setup()
+    public async Task Init()
     {
         await Page.GotoAsync("https://localhost:5001");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
@@ -28,5 +28,11 @@ public class HomePageTests : PageTest
 
         // Assert
         Expect(sidebar).Equals(null);
+    }
+
+    [TearDown]
+    public async Task CleanUp()
+    {
+        await Page.CloseAsync();
     }
 }
