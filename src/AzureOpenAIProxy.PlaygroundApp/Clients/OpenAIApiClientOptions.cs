@@ -6,11 +6,6 @@
 public class OpenAIApiClientOptions
 {
     /// <summary>
-    /// Gets or sets the OpenAI API endpoint.
-    /// </summary>
-    public string? Endpoint { get; set; }
-
-    /// <summary>
     /// Gets or sets the OpenAI API key.
     /// </summary>
     public string? ApiKey { get; set; }

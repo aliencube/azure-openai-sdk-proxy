@@ -15,6 +15,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddFluentUIComponents();
 
 builder.Services.AddScoped<IOpenAIApiClient, OpenAIApiClient>();
+builder.Services.AddHttpClient<IOpenAIApiClient, OpenAIApiClient>(p => p.BaseAddress = new Uri("https+http://apiapp"));
 
 var app = builder.Build();
 
