@@ -37,9 +37,9 @@ public static class ServiceCollectionExtensions
                 throw new InvalidOperationException($"{nameof(KeyVaultSettings.VaultUri)} is not defined.");
             }
 
-            if (string.IsNullOrWhiteSpace(settings.SecretName) == true)
+            if (string.IsNullOrWhiteSpace(settings.SecretNames["OpenAI"]) == true)
             {
-                throw new InvalidOperationException($"{nameof(KeyVaultSettings.SecretName)} is not defined.");
+                throw new InvalidOperationException($"{nameof(KeyVaultSettings.SecretNames)}.OpenAI is not defined.");
             }
 
             var client = new SecretClient(new Uri(settings.VaultUri), new DefaultAzureCredential());
@@ -148,18 +148,13 @@ public static class ServiceCollectionExtensions
             var configuration = sp.GetService<IConfiguration>()
                 ?? throw new InvalidOperationException($"{nameof(IConfiguration)} service is not registerd.");
             
-            var settings = configuration.GetSection(AzureSettings.Name).GetSection(StorageAccountSettings.Name).Get<StorageAccountSettings>()
-                ?? throw new InvalidOperationException($"{nameof(StorageAccountSettings)} could not be retrieved from the configuration.");
-
-            if (string.IsNullOrWhiteSpace(settings.KeyVaultSecretName) == true)
-            {
-                throw new InvalidOperationException($"{nameof(StorageAccountSettings.KeyVaultSecretName)} is not defined.");
-            }
+            var settings = configuration.GetSection(AzureSettings.Name).GetSection(KeyVaultSettings.Name).Get<KeyVaultSettings>()
+                ?? throw new InvalidOperationException($"{nameof(KeyVaultSettings)} could not be retrieved from the configuration.");
 
             var clientSecret = sp.GetService<SecretClient>()
                 ?? throw new InvalidOperationException($"{nameof(SecretClient)} service is not registered.");
 
-            var storageKeyVault = clientSecret.GetSecret(settings.KeyVaultSecretName);
+            var storageKeyVault = clientSecret.GetSecret(settings.SecretNames["Storage"]!);
 
             var client = new TableServiceClient(storageKeyVault.Value.Value);
 
