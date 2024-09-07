@@ -92,7 +92,7 @@ public class ServiceCollectionExtensionsTests
         var dict = new Dictionary<string, string>()
         {
             { "Azure:KeyVault:VaultUri", vaultUri! },
-            { "Azure:KeyVault:SecretName", secretName },
+            { "Azure:KeyVault:SecretNames:OpenAI", secretName },
         };
 #pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
         var config = new ConfigurationBuilder().AddInMemoryCollection(dict).Build();
@@ -117,7 +117,7 @@ public class ServiceCollectionExtensionsTests
         var dict = new Dictionary<string, string>()
         {
             { "Azure:KeyVault:VaultUri", vaultUri },
-            { "Azure:KeyVault:SecretName", secretName! },
+            { "Azure:KeyVault:SecretNames:OpenAI", secretName! },
         };
 #pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
         var config = new ConfigurationBuilder().AddInMemoryCollection(dict).Build();
@@ -141,7 +141,7 @@ public class ServiceCollectionExtensionsTests
         var dict = new Dictionary<string, string>()
         {
             { "Azure:KeyVault:VaultUri", vaultUri },
-            { "Azure:KeyVault:SecretName", secretName },
+            { "Azure:KeyVault:SecretNames:OpenAI", secretName },
         };
 #pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
         var config = new ConfigurationBuilder().AddInMemoryCollection(dict).Build();
@@ -165,7 +165,7 @@ public class ServiceCollectionExtensionsTests
         var dict = new Dictionary<string, string>()
         {
             { "Azure:KeyVault:VaultUri", vaultUri },
-            { "Azure:KeyVault:SecretName", secretName },
+            { "Azure:KeyVault:SecretNames:OpenAI", secretName },
         };
 #pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
         var config = new ConfigurationBuilder().AddInMemoryCollection(dict).Build();
@@ -190,7 +190,7 @@ public class ServiceCollectionExtensionsTests
         var dict = new Dictionary<string, string>()
         {
             { "Azure:KeyVault:VaultUri", vaultUri },
-            { "Azure:KeyVault:SecretName", secretName },
+            { "Azure:KeyVault:SecretNames:OpenAI", secretName },
         };
 #pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
         var config = new ConfigurationBuilder().AddInMemoryCollection(dict).Build();
