@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 
 /// <summary>
-/// This represents the event's detailed data for response by EventEndpoint.
+/// This represent the entity for the event details for users.
 /// </summary>
 public class EventDetails
 {
