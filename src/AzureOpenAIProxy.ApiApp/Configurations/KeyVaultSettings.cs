@@ -18,5 +18,5 @@ public class KeyVaultSettings
     /// <summary>
     /// Gets or sets the secret names.
     /// </summary>
-    public Dictionary<string, string> SecretNames { get; set; } = new();
+    public Dictionary<string, string> SecretNames { get; set; } = [];
 }
