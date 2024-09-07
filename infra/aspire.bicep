@@ -18,8 +18,8 @@ param enabledForTemplateDeployment bool = true
 param enableRbacAuthorization bool = true
 
 //TODO: 배포 시점에 사용자 princpalId, apiapp principalId를 받는 방법 조사
-param creatorAdminPrincipalId string = ''
-param apiAppUserPrincipalId string = ''
+//param creatorAdminPrincipalId string = ''
+//param apiAppUserPrincipalId string = ''
 
 // parameters for storage account
 param storageAccountName string = ''
@@ -98,22 +98,22 @@ resource storageAccountConnectionString 'Microsoft.Keyvault/vaults/secrets@2023-
     }
 }
 
-// Role Assignment for Key Vault secret : creator admin, apiapp user
-resource keyVaultSecretRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-    name: guid(resourceGroup().id, resolvedKeyVaultName, 'secret-role-assignment')
-    properties: {
-        principalId: creatorAdminPrincipalId
-        roleDefinitionId: '00482A5A-887F-4FB3-B363-3B7FE8E74483' // administrator role
-    }
-}
-
-resource keyVaultSecretApiAppRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-    name: guid(resourceGroup().id, resolvedKeyVaultName, 'secret-apiapp-role-assignment')
-    properties: {
-        principalId: apiAppUserPrincipalId
-        roleDefinitionId: '4633458B-17DE-408A-B874-0445C86B69E6' // secret user role
-    }
-}
+// TODO: Role Assignment for Key Vault secret : creator admin, apiapp user
+//resource keyVaultSecretRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+//    name: guid(resourceGroup().id, resolvedKeyVaultName, 'secret-role-assignment')
+//    properties: {
+//        principalId: creatorAdminPrincipalId
+//        roleDefinitionId: '00482A5A-887F-4FB3-B363-3B7FE8E74483' // administrator role
+//    }
+//}
+//
+//resource keyVaultSecretApiAppRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+//    name: guid(resourceGroup().id, resolvedKeyVaultName, 'secret-apiapp-role-assignment')
+//    properties: {
+//        principalId: apiAppUserPrincipalId
+//        roleDefinitionId: '4633458B-17DE-408A-B874-0445C86B69E6' // secret user role
+//    }
+//}
 
 // Add outputs from the deployment here, if needed.
 //
