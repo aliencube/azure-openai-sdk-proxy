@@ -11,9 +11,14 @@
 <DeploymentModelListComponent Id="debug-deployment-model-list" OnUserOptionSelected="SetDeploymentModel" @rendermode="InteractiveServer" />
 <DebugButtonComponent Id="debug-button-deployment-model-list" Input="@selectedModel" />
 
+<h2>System Message Tab</h2>
+<SystemMessageTabComponent Id="system-message-tab" OnSystemMessageChanged="SetSystemMessage" @rendermode="InteractiveServer" />
+<DebugButtonComponent Id="debug-button-system-message-tab" Input="@systemMessage" />
+
 @code {
     private object? targetValue;
     private string? selectedModel;
+    private string? systemMessage;
 
     private async Task SetInput(int value)
     {
@@ -24,6 +29,12 @@
     private async Task SetDeploymentModel(string value)
     {
         selectedModel = value;
+        await Task.CompletedTask;
+    }
+
+    private async Task SetSystemMessage(string value)
+    {
+        systemMessage = value;
         await Task.CompletedTask;
     }
 }
