@@ -1,4 +1,5 @@
-﻿using Azure.Data.Tables;
+﻿using Azure;
+using Azure.Data.Tables;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 
@@ -145,17 +146,22 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<TableServiceClient>(sp => {
             var configuration = sp.GetService<IConfiguration>()
-                ?? throw new InvalidOperationException($"{nameof(IConfiguration)} service is not registered.");
-
-            var settings = configuration.GetSection(AzureSettings.Name).GetSection(StorageAccountSettings.Name).Get<StorageAccountSettings>()
+                ?? throw new InvalidOperationException($"{nameof(IConfiguration)} service is not registerd.");
+            
+            var settings = configuration.GetSection(StorageAccountSettings.Name).Get<StorageAccountSettings>()
                 ?? throw new InvalidOperationException($"{nameof(StorageAccountSettings)} could not be retrieved from the configuration.");
 
-            if (string.IsNullOrWhiteSpace(settings.ConnectionString) == true)
+            if (string.IsNullOrWhiteSpace(settings.KeyVaultSecretName) == true)
             {
-                throw new InvalidOperationException($"{nameof(StorageAccountSettings.ConnectionString)} is not defined.");
+                throw new InvalidOperationException($"{nameof(StorageAccountSettings.KeyVaultSecretName)} is not defined.");
             }
 
-            var client = new TableServiceClient(settings.ConnectionString);
+            var clientSecret = sp.GetService<SecretClient>()
+                ?? throw new InvalidOperationException($"{nameof(SecretClient)} service is not registered.");
+
+            var storageKeyVault = clientSecret.GetSecret(settings.KeyVaultSecretName);
+
+            var client = new TableServiceClient(storageKeyVault.Value.Value);
 
             return client;
         });
