@@ -48,7 +48,7 @@ public static class OpenAISettingsBuilderExtensions
         var client = sp.GetService<SecretClient>()
             ?? throw new InvalidOperationException($"{nameof(SecretClient)} service is not registered.");
 
-        var value = client.GetSecret(settings.SecretName!).Value.Value;
+        var value = client.GetSecret(settings.SecretNames["OpenAI"]!).Value.Value;
 
         var instances = JsonSerializer.Deserialize<List<OpenAIInstanceSettings>>(value);
 
