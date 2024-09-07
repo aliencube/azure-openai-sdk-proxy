@@ -52,6 +52,7 @@ public static class PlaygroundEndpoints
         })
         .Produces<List<DeploymentModelDetails>>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
+        .Produces(statusCode: StatusCodes.Status404NotFound)
         .Produces<string>(statusCode: StatusCodes.Status500InternalServerError, contentType: "text/plain")
         .WithTags("events")
         .WithName("GetDeploymentModels")
