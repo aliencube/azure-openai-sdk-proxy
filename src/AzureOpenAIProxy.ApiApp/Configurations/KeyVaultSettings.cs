@@ -16,7 +16,7 @@ public class KeyVaultSettings
     public string? VaultUri { get; set; }
 
     /// <summary>
-    /// Gets or sets the secret name.
+    /// Gets or sets the secret names.
     /// </summary>
-    public string? SecretName { get; set; }
+    public IDictionary<string, string> SecretNames { get; set; } = new Dictionary<string, string>();
 }

@@ -19,9 +19,4 @@ public class AzureSettings
     /// Gets or sets the <see cref="KeyVaultSettings"/> instance.
     /// </summary>
     public KeyVaultSettings KeyVault { get; set; } = new();
-
-    /// <summary>
-    /// Gets or sets the <see cref="StorageAccountSettings"/> instance.
-    /// </summary>
-    public StorageAccountSettings StorageAccount { get; set; } = new();
 }
