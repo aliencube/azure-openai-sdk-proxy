@@ -3,7 +3,7 @@
 namespace AzureOpenAIProxy.ApiApp.Models;
 
 /// <summary>
-/// This represent the event detail data for response by admin event endpoint.
+/// This represent the entity for the event details for admin.
 /// </summary>
 public class AdminEventDetails : EventDetails
 {
