@@ -12,7 +12,7 @@
         // Loading progress ring
         <FluentGridItem Id="event-loading" xs="12" sm="12" Justify="JustifyContent.Center" Style="text-align: center; flex-grow: 1;">
             <div style="flex-grow: 1; display: flex; padding: 0em; flex-direction: row; align-items: center; align-content: center; justify-content: center;">
-                    <FluentProgressRing></FluentProgressRing>
+                <FluentProgressRing></FluentProgressRing>
             </div>
         </FluentGridItem>
     }
@@ -28,14 +28,14 @@
         }
         else
         {
-    @foreach (var e in _events)
-    {
-            <EventItemComponent Id="@e.EventId"
-            Title="@e.Title"
-            Summary="@e.Summary">
-        </EventItemComponent>
-    }
-    }
+            @foreach (var e in _events)
+            {
+                <EventItemComponent Id="@e.EventId"
+                    Title="@e.Title"
+                    Summary="@e.Summary">
+                </EventItemComponent>
+            }
+        }
     }
 </FluentGrid>
 
