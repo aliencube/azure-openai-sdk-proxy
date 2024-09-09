@@ -62,7 +62,7 @@
 
             <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
                 <FluentLabel For="event-timezone" class="create-input-label">Time Zone</FluentLabel>
-                <FluentSelect Id="event-timezone" TOption="string" Required>
+                <FluentSelect Id="event-timezone" Height="500px" TOption="string" Required>
                     @foreach (var timeZone in timeZoneList)
                     {
                         <FluentOption Value="@timeZone.Id">@timeZone.Id</FluentOption>
