@@ -1,4 +1,7 @@
 ﻿@using AzureOpenAIProxy.PlaygroundApp.Models;
+@using NodaTime
+@using NodaTime.Extensions
+@using NodaTime.TimeZones
 
 <style>
     section {
@@ -24,7 +27,7 @@
     }
 </style>
 
-<FluentLayout Id="admin-event-detail">
+<FluentLayout Id="@Id">
     <FluentHeader>New Event</FluentHeader>
     <FluentBodyContent>
         <section>
@@ -60,8 +63,10 @@
             <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
                 <FluentLabel For="event-timezone" class="create-input-label">Time Zone</FluentLabel>
                 <FluentSelect Id="event-timezone" TOption="string" Required>
-                    <FluentOption Value="kr">Korea</FluentOption>
-                    <FluentOption Value="us">US</FluentOption>
+                    @foreach (var timeZone in timeZoneList)
+                    {
+                        <FluentOption Value="@timeZone.Id">@timeZone.Id</FluentOption>
+                    }
                 </FluentSelect>
             </FluentStack>
         </section>
@@ -120,10 +125,16 @@
 
 
 @code {
+    private List<DateTimeZone> timeZoneList;
+    private AdminEventDetails adminEventDetails;
+
     [Parameter]
     public string? Id { get; set; }
 
-    private AdminEventDetails? adminEventDetails;
+    protected override void OnInitialized()
+    {
+        timeZoneList = DateTimeZoneProviders.Tzdb.GetAllZones().ToList();
+    }
 
     private DateTime? tempEventStartDate;
     private DateTime? tempEventEndDate;
