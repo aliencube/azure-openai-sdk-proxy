@@ -1,0 +1,72 @@
+﻿@typeparam TValue where TValue : System.Numerics.INumber<TValue>
+
+<FluentStack Orientation="Orientation.Horizontal">
+    <FluentSlider Min="@Min" Max="@Max" Step="@Step"
+                  @bind-Value=Value @bind-Value:after=AfterSliderChange
+                  Style="width:85%;padding-left:5px;padding-top:15px" />
+    <FluentTextField @bind-Value=textFieldValue @bind-Value:after=AfterTextFieldChange
+                     Style="width:15%;padding-right:10px" />
+</FluentStack>
+
+@if (!hasNoError)
+{
+    <FluentCard Style="padding:10px;width:95%;margin:0 auto;border-color:red;background-color:ghostwhite;color:red">
+        @errorText
+    </FluentCard>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public TValue? Min { get; set; } = default;
+
+    [Parameter, EditorRequired]
+    public TValue? Max { get; set; } = default;
+
+    [Parameter, EditorRequired]
+    public TValue? Step { get; set; } = default;
+
+    [Parameter]
+    public TValue? Value { get; set; }
+
+    [Parameter]
+    public EventCallback<TValue> ValueChanged { get; set; }
+
+    [Parameter]
+    public EventCallback OnChangeEvent { get; set; }
+
+    public string? textFieldValue { get; set; }
+
+    private bool hasNoError = true;
+    private string errorText = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        textFieldValue = Value!.ToString();
+        errorText = $"Only numbers between {Min} and {Max} are permitted";
+    }
+
+    private async Task AfterSliderChange()
+    {
+        hasNoError = true;
+        textFieldValue = Value!.ToString();
+
+        await ValueChanged.InvokeAsync(Value);
+        await OnChangeEvent.InvokeAsync();
+    }
+
+    private async Task AfterTextFieldChange()
+    {
+        hasNoError = TValue.TryParse(textFieldValue, null, out var parsed);
+        if (!hasNoError || parsed == null)
+            return;
+
+        hasNoError = parsed >= Min! && parsed <= Max!;
+        if (!hasNoError)
+            return;
+
+        this.Value = parsed;
+        await ValueChanged.InvokeAsync(Value);
+        await OnChangeEvent.InvokeAsync();
+    }
+}
