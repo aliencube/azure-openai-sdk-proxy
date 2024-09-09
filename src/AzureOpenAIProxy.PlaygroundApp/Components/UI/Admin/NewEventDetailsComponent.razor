@@ -51,13 +51,13 @@
             <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
                 <FluentLabel For="event-start-date" class="create-input-label">Event Start Date</FluentLabel>
                 <FluentDatePicker Id="event-start-date" @bind-Value="@tempEventStartDate" />
-                <FluentTimePicker Id="event-start-time" DefaultValue="00:00" />
+                <FluentTimePicker Id="event-start-time" @bind-Value="@tempEventStartTime" />
             </FluentStack>
 
             <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
                 <FluentLabel For="event-end-date" class="create-input-label">Event End Date</FluentLabel>
                 <FluentDatePicker Id="event-end-date" @bind-Value="@tempEventEndDate" />
-                <FluentTimePicker Id="event-end-time" DefaultValue="00:00" />
+                <FluentTimePicker Id="event-end-time" @bind-Value="@tempEventEndTime" />
             </FluentStack>
 
             <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
@@ -105,26 +105,29 @@
 
             <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
                 <FluentLabel For="event-max-token-cap" class="create-input-label">Max Token Cap</FluentLabel>
-                @* <FluentNumberField Id="event-max-token-cap" @bind-Value="adminEventDetails.MaxTokenCap" Required /> *@
-                <FluentNumberField Id="event-max-token-cap" @bind-Value="tempEventMaxTokenCap" Required />
+                <FluentNumberField Id="event-max-token-cap" @bind-Value="adminEventDetails.MaxTokenCap" Required />
             </FluentStack>
 
             <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
                 <FluentLabel For="event-daily-request-cap" class="create-input-label">Daily Request Cap</FluentLabel>
-                @* <FluentNumberField Id="event-daily-request-cap" @bind-Value="adminEventDetails.DailyRequestCap" Required /> *@
-                <FluentNumberField Id="event-daily-request-cap" @bind-Value="tempEventDailyRequestCap" Required />
+                <FluentNumberField Id="event-daily-request-cap" @bind-Value="adminEventDetails.DailyRequestCap" Required />
             </FluentStack>
         </section>
 
         <section class="button-section">
-            <FluentButton Id="admin-event-detail-add" class="button">Add Event</FluentButton>
-            <FluentButton Id="admin-event-detail-cancel" class="button">Cancel</FluentButton>
+            <FluentButton Id="admin-event-detail-add" Appearance="Appearance.Accent" class="button" OnClick="AddEvent" W>Add Event</FluentButton>
+            <FluentButton Id="admin-event-detail-cancel" Appearance="Appearance.Outline" class="button" OnClick="CancelEvent">Cancel</FluentButton>
         </section>
     </FluentBodyContent>
 </FluentLayout>
 
 
 @code {
+
+    private DateTime? tempEventStartDate;
+    private DateTime? tempEventEndDate;
+    private DateTime? tempEventStartTime;
+    private DateTime? tempEventEndTime;
     private List<DateTimeZone> timeZoneList;
     private AdminEventDetails adminEventDetails;
 
@@ -133,7 +136,25 @@
 
     protected override void OnInitialized()
     {
+        DateTime currentTime = DateTime.Now;
+
+        tempEventStartDate = currentTime;
+        tempEventEndDate = currentTime;
+        tempEventStartTime = currentTime.AddHours(1).AddMinutes(-currentTime.Minute);   
+        tempEventEndTime = currentTime.AddHours(1).AddMinutes(-currentTime.Minute);
+
         timeZoneList = DateTimeZoneProviders.Tzdb.GetAllZones().ToList();
+        adminEventDetails = adminEventDetails == null ? new() : adminEventDetails;
+    }
+
+    private void AddEvent()
+    {
+
+    }
+
+    private void CancelEvent()
+    {
+
     }
 
     private DateTime? tempEventStartDate;
