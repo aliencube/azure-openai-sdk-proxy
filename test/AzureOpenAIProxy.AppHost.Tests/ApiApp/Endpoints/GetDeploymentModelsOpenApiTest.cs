@@ -4,6 +4,9 @@ using AzureOpenAIProxy.AppHost.Tests.Fixtures;
 
 using FluentAssertions;
 
+using IdentityModel.Client;
+
+
 namespace AzureOpenAIProxy.AppHost.Tests.ApiApp.Endpoints;
 
 public class GetDeploymentModelsOpenApiTests(AspireAppHostFixture host) : IClassFixture<AspireAppHostFixture>
@@ -128,6 +131,7 @@ public class GetDeploymentModelsOpenApiTests(AspireAppHostFixture host) : IClass
     [InlineData("200")]
     [InlineData("401")]
     [InlineData("404")]
+    [InlineData("500")]
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Response(string attribute)
     {
         // Arrange
@@ -144,5 +148,42 @@ public class GetDeploymentModelsOpenApiTests(AspireAppHostFixture host) : IClass
                                              .GetProperty("responses")
                                              .TryGetProperty(attribute, out var property) ? property : default;
         result.ValueKind.Should().Be(JsonValueKind.Object);
+    }
+
+    public static IEnumerable<object[]> DeploymentModelAttributeData =>
+    [
+        ["name", true, "string"]
+    ];
+
+    [Theory]
+    [MemberData(nameof(DeploymentModelAttributeData))]
+    public async Task Given_DeploymentModel_When_Invoked_Endpoint_Then_It_Should_Return_Type(string attribute, bool isRequired, string type)
+    {
+        // Arrange
+        using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running)
+                                              .WaitAsync(TimeSpan.FromSeconds(30));
+
+        // Act
+        var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
+        var openapi = JsonSerializer.Deserialize<JsonDocument>(json);
+
+        // Assert
+        var result = openapi!.RootElement.GetProperty("components")
+                                         .GetProperty("schemas")
+                                         .GetProperty("DeploymentModelDetails")
+                                         .GetProperty("properties")
+                                         .GetProperty(attribute);
+
+        result.TryGetString("type").Should().Be(type);
+
+        if (isRequired)
+        {
+            var requiredProperties = openapi.RootElement.GetProperty("components")
+                                                        .GetProperty("schemas")
+                                                        .GetProperty("DeploymentModelDetails")
+                                                        .GetProperty("required");
+            requiredProperties.EnumerateArray().Any(p => p.GetString() == attribute).Should().BeTrue();
+        }
     }
 }
