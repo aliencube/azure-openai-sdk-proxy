@@ -115,7 +115,7 @@
         </section>
 
         <section class="button-section">
-            <FluentButton Id="admin-event-detail-add" Appearance="Appearance.Accent" class="button" OnClick="AddEvent" W>Add Event</FluentButton>
+            <FluentButton Id="admin-event-detail-add" Appearance="Appearance.Accent" class="button" OnClick="AddEvent">Add Event</FluentButton>
             <FluentButton Id="admin-event-detail-cancel" Appearance="Appearance.Outline" class="button" OnClick="CancelEvent">Cancel</FluentButton>
         </section>
     </FluentBodyContent>
@@ -156,11 +156,5 @@
     {
 
     }
-
-    private DateTime? tempEventStartDate;
-    private DateTime? tempEventEndDate;
-    private int tempEventMaxTokenCap = 0;
-    private int tempEventDailyRequestCap = 0;
-
 }
 
