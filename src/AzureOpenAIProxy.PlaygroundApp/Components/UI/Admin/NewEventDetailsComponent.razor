@@ -139,7 +139,7 @@
         DateTime currentTime = DateTime.Now;
 
         tempEventStartDate = currentTime;
-        tempEventEndDate = currentTime;
+        tempEventEndDate = currentTime.AddDays(1);
         tempEventStartTime = currentTime.AddHours(1).AddMinutes(-currentTime.Minute);   
         tempEventEndTime = currentTime.AddHours(1).AddMinutes(-currentTime.Minute);
 
