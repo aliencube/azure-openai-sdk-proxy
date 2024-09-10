@@ -3,27 +3,33 @@
 <FluentLayout Id="@Id">
     <LabelWithTooltip Id="slider-past-messages"
                       LabelText="Past messages included"
-                      TooltipText="Select the number of past messages to include in each new API request. This helps give the model context for new user queries. Setting this number to 10 will include 5 user queries and 5 system responses." />
-    <SliderWithTextfield Min="1" Max="20" Step="1" @bind-Value=@pastMessagesValue />
+                      TooltipText="Select the number of past messages to include in each new API request. This helps give the model context for new user queries. Setting this number to 10 will include 5 user queries and 5 system responses."
+                      Style="padding-left:10px;font-weight:bold" />
+
+    <SliderWithTextfield Min="1" Max="20" Step="1" @bind-Value=@pastMessagesValue Style="padding-left:5px;padding-right:10px;" />
 
     <LabelWithTooltip Id="slider-max-response"
                       LabelText="Max response"
-                      TooltipText="Set a limit on the number of tokens per model response. The API supports a maximum of MaxTokensPlaceholderDoNotTranslate tokens shared between the prompt (including system message, examples, message history, and user query) and the model's response. One token is roughly 4 characters for typical English text." />
-    <SliderWithTextfield Min="1" Max="16000" Step="1" @bind-Value=@maxResponseValue />
+                      TooltipText="Set a limit on the number of tokens per model response. The API supports a maximum of MaxTokensPlaceholderDoNotTranslate tokens shared between the prompt (including system message, examples, message history, and user query) and the model's response. One token is roughly 4 characters for typical English text."
+                      Style="padding-left:10px;font-weight:bold" />
+    <SliderWithTextfield Min="1" Max="16000" Step="1" @bind-Value=@maxResponseValue Style="padding-left:5px;padding-right:10px;" />
 
     <LabelWithTooltip Id="slider-temperature"
                       LabelText="Temperature"
-                      TooltipText="Controls randomness. Lowering the temperature means that the model will produce more repetitive and deterministic responses. Increasing the temperature will result in more unexpected or creative responses. Try adjusting temperature or Top P but not both." />
-    <SliderWithTextfield Min="0" Max="1" Step="0.01" @bind-Value=@temperatureValue />
+                      TooltipText="Controls randomness. Lowering the temperature means that the model will produce more repetitive and deterministic responses. Increasing the temperature will result in more unexpected or creative responses. Try adjusting temperature or Top P but not both."
+                      Style="padding-left:10px;font-weight:bold" />
+    <SliderWithTextfield Min="0" Max="1" Step="0.01" @bind-Value=@temperatureValue Style="padding-left:5px;padding-right:10px;" />
 
     <LabelWithTooltip Id="slider-top-p"
                       LabelText="Top P"
-                      TooltipText="Similar to temperature, this controls randomness but uses a different method. Lowering Top P will narrow the model’s token selection to likelier tokens. Increasing Top P will let the model choose from tokens with both high and low likelihood. Try adjusting temperature or Top P but not both." />
-    <SliderWithTextfield Min="0" Max="1" Step="0.01" @bind-Value=@topPValue />
+                      TooltipText="Similar to temperature, this controls randomness but uses a different method. Lowering Top P will narrow the model’s token selection to likelier tokens. Increasing Top P will let the model choose from tokens with both high and low likelihood. Try adjusting temperature or Top P but not both."
+                      Style="padding-left:10px;font-weight:bold" />
+    <SliderWithTextfield Min="0" Max="1" Step="0.01" @bind-Value=@topPValue Style="padding-left:5px;padding-right:10px;" />
 
     <LabelWithTooltip Id="complete-stop-sequence"
                       LabelText="Stop sequence"
-                      TooltipText="Make the model end its response at a desired point. The model response will end before the specified sequence, so it won't contain the stop sequence text. For ChatGPT, using <|im_end|> ensures that the model response doesn't generate a follow-up user query. You can include as many as four stop sequences." />
+                      TooltipText="Make the model end its response at a desired point. The model response will end before the specified sequence, so it won't contain the stop sequence text. For ChatGPT, using <|im_end|> ensures that the model response doesn't generate a follow-up user query. You can include as many as four stop sequences."
+                      Style="padding-left:10px;font-weight:bold" />
 
     <FluentAutocomplete TOption="string" Multiple="true" AutoComplete="false"
                         ShowOverlayOnEmptyResults="false"
@@ -39,13 +45,15 @@
 
     <LabelWithTooltip Id="slider-frequency-penalty"
                       LabelText="Frequency penalty"
-                      TooltipText="Reduce the chance of repeating a token proportionally based on how often it has appeared in the text so far. This decreases the likelihood of repeating the exact same text in a response." />
-    <SliderWithTextfield Min="0" Max="2" Step="0.01" @bind-Value=@frequencyPenaltyValue />
+                      TooltipText="Reduce the chance of repeating a token proportionally based on how often it has appeared in the text so far. This decreases the likelihood of repeating the exact same text in a response."
+                      Style="padding-left:10px;font-weight:bold" />
+    <SliderWithTextfield Min="0" Max="2" Step="0.01" @bind-Value=@frequencyPenaltyValue Style="padding-left:5px;padding-right:10px;" />
 
     <LabelWithTooltip Id="slider-presence-penalty"
                       LabelText="Presence penalty"
-                      TooltipText="Reduce the chance of repeating any token that has appeared in the text at all so far. This increases the likelihood of introducing new topics in a response." />
-    <SliderWithTextfield Min="0" Max="2" Step="0.01" @bind-Value=@presencePenaltyValue />
+                      TooltipText="Reduce the chance of repeating any token that has appeared in the text at all so far. This increases the likelihood of introducing new topics in a response."
+                      Style="padding-left:10px;font-weight:bold" />
+    <SliderWithTextfield Min="0" Max="2" Step="0.01" @bind-Value=@presencePenaltyValue Style="padding-left:5px;padding-right:10px;" />
 </FluentLayout>
 
 @code {

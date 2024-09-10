@@ -1,7 +1,10 @@
-﻿<FluentLabel Typo="Typography.Body" Style="margin-left:10px">
+﻿<FluentLabel Typo="Typography.Body" Style=@Style>
     @LabelText
     <FluentIcon Id=@anchorId Value="@(new Icons.Regular.Size12.Info())" />
-    <FluentTooltip Anchor=@anchorId Position="TooltipPosition.End" MaxWidth="250px" UseTooltipService="false">
+    <FluentTooltip Anchor=@anchorId Position="TooltipPosition.End"
+                   UseTooltipService="false"
+                   MaxWidth="250px"
+                   Style="line-break:anywhere">
         @TooltipText
     </FluentTooltip>
 </FluentLabel>
@@ -15,6 +18,9 @@
 
     [Parameter, EditorRequired]
     public string TooltipText { get; set; } = string.Empty;
+
+    [Parameter]
+    public string? Style { get; set; } = null;
 
     private string anchorId = string.Empty;
 
