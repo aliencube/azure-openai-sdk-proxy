@@ -78,6 +78,26 @@ module storageAccount './core/storage/storage-account.bicep' = {
     }
 }
 
+resource storageAccountReference 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
+    name: !empty(storageAccountName) ? storageAccountName : '${abbrs.storageStorageAccounts}${resourceToken}'
+}
+
+// Provision Key Vault Secret
+module keyVaultSecrets './core/security/keyvault-secret.bicep' = {
+    name: 'keyVaultSecrets'
+    params: {
+        keyVaultName: keyVault.outputs.name
+        tags: tags
+        name: 'storage-connection-string'
+        secretValue: 'DefaultEndpointsProtocol=https;EndpointSuffix=${environment().suffixes.storage};AccountName=${storageAccount.name};AccountKey=${storageAccountReference.listKeys().keys[0].value};BlobEndpoint=${storageAccount.outputs.primaryEndpoints.blob};FileEndpoint=${storageAccount.outputs.primaryEndpoints.file};QueueEndpoint=${storageAccount.outputs.primaryEndpoints.queue};TableEndpoint=${storageAccount.outputs.primaryEndpoints.table}'
+    }
+
+    dependsOn: [
+        storageAccount
+        keyVault
+    ]
+}
+
 // TODO: Role Assignment for Key Vault secret : creator admin, apiapp user
 //resource keyVaultSecretRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
 //    name: guid(resourceGroup().id, resolvedKeyVaultName, 'secret-role-assignment')
