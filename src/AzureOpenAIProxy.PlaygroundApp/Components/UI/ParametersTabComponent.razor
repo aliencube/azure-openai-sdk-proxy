@@ -1,8 +1,77 @@
-﻿<FluentLayout Id="@Id">
+﻿@using System.Linq
 
+<FluentLayout Id="@Id">
+    <LabelWithTooltip Id="slider-past-messages"
+                      LabelText="Past messages included"
+                      TooltipText="Select the number of past messages to include in each new API request. This helps give the model context for new user queries. Setting this number to 10 will include 5 user queries and 5 system responses." />
+    <SliderWithTextfield Min="1" Max="20" Step="1" @bind-Value=@pastMessagesValue />
+
+    <LabelWithTooltip Id="slider-max-response"
+                      LabelText="Max response"
+                      TooltipText="Set a limit on the number of tokens per model response. The API supports a maximum of MaxTokensPlaceholderDoNotTranslate tokens shared between the prompt (including system message, examples, message history, and user query) and the model's response. One token is roughly 4 characters for typical English text." />
+    <SliderWithTextfield Min="1" Max="16000" Step="1" @bind-Value=@maxResponseValue />
+
+    <LabelWithTooltip Id="slider-temperature"
+                      LabelText="Temperature"
+                      TooltipText="Controls randomness. Lowering the temperature means that the model will produce more repetitive and deterministic responses. Increasing the temperature will result in more unexpected or creative responses. Try adjusting temperature or Top P but not both." />
+    <SliderWithTextfield Min="0" Max="1" Step="0.01" @bind-Value=@temperatureValue />
+
+    <LabelWithTooltip Id="slider-top-p"
+                      LabelText="Top P"
+                      TooltipText="Similar to temperature, this controls randomness but uses a different method. Lowering Top P will narrow the model’s token selection to likelier tokens. Increasing Top P will let the model choose from tokens with both high and low likelihood. Try adjusting temperature or Top P but not both." />
+    <SliderWithTextfield Min="0" Max="1" Step="0.01" @bind-Value=@topPValue />
+
+    <LabelWithTooltip Id="complete-stop-sequence"
+                      LabelText="Stop sequence"
+                      TooltipText="Make the model end its response at a desired point. The model response will end before the specified sequence, so it won't contain the stop sequence text. For ChatGPT, using <|im_end|> ensures that the model response doesn't generate a follow-up user query. You can include as many as four stop sequences." />
+
+    <FluentAutocomplete TOption="string" Multiple="true" AutoComplete="false"
+                        ShowOverlayOnEmptyResults="false"
+                        SelectValueOnTab="true"
+                        MaximumOptionsSearch="1"
+                        @bind-SelectedOptions=stopSequenceValue
+                        OnOptionsSearch=OnSearchAsync
+                        Style="width:95%;padding:5px 0px;margin: 0 auto">
+        <OptionTemplate>
+            <FluentLabel>Create "@(context)"</FluentLabel>
+        </OptionTemplate>
+    </FluentAutocomplete>
+
+    <LabelWithTooltip Id="slider-frequency-penalty"
+                      LabelText="Frequency penalty"
+                      TooltipText="Reduce the chance of repeating a token proportionally based on how often it has appeared in the text so far. This decreases the likelihood of repeating the exact same text in a response." />
+    <SliderWithTextfield Min="0" Max="2" Step="0.01" @bind-Value=@frequencyPenaltyValue />
+
+    <LabelWithTooltip Id="slider-presence-penalty"
+                      LabelText="Presence penalty"
+                      TooltipText="Reduce the chance of repeating any token that has appeared in the text at all so far. This increases the likelihood of introducing new topics in a response." />
+    <SliderWithTextfield Min="0" Max="2" Step="0.01" @bind-Value=@presencePenaltyValue />
 </FluentLayout>
 
 @code {
     [Parameter]
     public string? Id { get; set; }
+
+    private int pastMessagesValue = 10;
+    private int maxResponseValue = 800;
+    private double temperatureValue = 0.7;
+    private double topPValue = 0.95;
+
+    private double frequencyPenaltyValue = 0;
+    private double presencePenaltyValue = 0;
+
+    private IEnumerable<string> stopSequenceValue = new List<string>();
+    private List<string> searchTextItems = new();
+
+    private Task OnSearchAsync(OptionsSearchEventArgs<string> e)
+    {
+        searchTextItems.Clear();
+        if (string.IsNullOrEmpty(e.Text) || stopSequenceValue.Contains(e.Text))
+            return Task.CompletedTask;
+
+        searchTextItems.Add(e.Text);
+        e.Items = searchTextItems;
+
+        return Task.CompletedTask;
+    }
 }
