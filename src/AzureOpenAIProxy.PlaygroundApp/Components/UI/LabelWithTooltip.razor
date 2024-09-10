@@ -1,5 +1,6 @@
 ﻿@inherits FluentComponentBase
-<FluentLabel Typo="Typography.Body" Style=@Style>
+
+<div class=@Class>
     @LabelText
 
     @* Tooltip Image *@
@@ -10,8 +11,7 @@
                    Style="line-break:anywhere">
         @TooltipText
     </FluentTooltip>
-
-</FluentLabel>
+</div>
 
 @code {
     [Parameter, EditorRequired]
@@ -22,9 +22,9 @@
 
     private string anchorId = string.Empty;
 
-    protected override void OnParametersSet()
+    protected override void OnInitialized()
     {
-        base.OnParametersSet();
+        base.OnInitialized();
         anchorId = $"{Id}-tooltip";
     }
 }

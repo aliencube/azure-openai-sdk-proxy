@@ -1,0 +1,9 @@
+﻿::deep .label-with-tooltip {
+    padding-left: 10px;
+    font-weight: bold;
+}
+
+::deep .slider-with-text {
+    padding-left: 5px;
+    padding-right: 10px;
+}
