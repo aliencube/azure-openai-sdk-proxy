@@ -58,4 +58,6 @@ app.AddListAdminEvents();
 app.AddGetAdminEvent();
 app.AddUpdateAdminEvent();
 
+app.AddNewAdminResource();
+
 await app.RunAsync();
