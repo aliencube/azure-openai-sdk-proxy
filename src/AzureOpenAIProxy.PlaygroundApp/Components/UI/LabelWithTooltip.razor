@@ -1,5 +1,7 @@
 ﻿<FluentLabel Typo="Typography.Body" Style=@Style>
     @LabelText
+
+    @* Tooltip Image *@
     <FluentIcon Id=@anchorId Value="@(new Icons.Regular.Size12.Info())" />
     <FluentTooltip Anchor=@anchorId Position="TooltipPosition.End"
                    UseTooltipService="false"
@@ -7,6 +9,7 @@
                    Style="line-break:anywhere">
         @TooltipText
     </FluentTooltip>
+
 </FluentLabel>
 
 @code {

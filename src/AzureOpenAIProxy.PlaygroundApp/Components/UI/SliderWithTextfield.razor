@@ -1,18 +1,21 @@
 ﻿@typeparam TValue where TValue : System.Numerics.INumber<TValue>
 
 <FluentStack Orientation="Orientation.Horizontal" Style=@Style>
+
     <FluentSlider Min="@Min" Max="@Max" Step="@Step"
                   @bind-Value=Value @bind-Value:after=AfterSliderChange
                   Style="width:88%;padding-top:15px;" />
+
     <FluentTextField @bind-Value=textFieldValue @bind-Value:after=AfterTextFieldChange
                      Style="width:12%;padding-left:0px" />
+
 </FluentStack>
 
 @if (!hasNoError)
 {
     <FluentCard Style="padding:10px;width:95%;margin:0 auto;border-color:crimson;background-color:lightcoral;color:black">
         @errorText
-        </FluentCard>
+    </FluentCard>
 }
 
 @code {
