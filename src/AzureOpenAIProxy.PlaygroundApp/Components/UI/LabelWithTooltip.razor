@@ -1,4 +1,5 @@
-﻿<FluentLabel Typo="Typography.Body" Style=@Style>
+﻿@inherits FluentComponentBase
+<FluentLabel Typo="Typography.Body" Style=@Style>
     @LabelText
 
     @* Tooltip Image *@
@@ -14,16 +15,10 @@
 
 @code {
     [Parameter, EditorRequired]
-    public string Id { get; set; } = string.Empty;
-
-    [Parameter, EditorRequired]
     public string LabelText { get; set; } = string.Empty;
 
     [Parameter, EditorRequired]
     public string TooltipText { get; set; } = string.Empty;
-
-    [Parameter]
-    public string? Style { get; set; } = null;
 
     private string anchorId = string.Empty;
 
