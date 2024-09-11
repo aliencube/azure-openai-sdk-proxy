@@ -43,6 +43,12 @@
     [Parameter]
     public string? Id { get; set; }
 
+    protected override async Task OnInitializedAsync()
+    {
+        // TODO: Fetch events from the API server.
+        _events = await CreateEventDetailsAsync();
+    }
+
     private List<EventDetails>? _events;
 
     private Task<List<EventDetails>> CreateEventDetailsAsync()
@@ -83,11 +89,4 @@
             }
         });
     }
-
-    protected override async Task OnInitializedAsync()
-    {
-        // TODO: Fetch events from the API server.
-        _events = await CreateEventDetailsAsync();
-    }
-
 }
