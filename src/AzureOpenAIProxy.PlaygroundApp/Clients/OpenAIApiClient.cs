@@ -21,14 +21,12 @@ public interface IOpenAIApiClient
 /// <summary>
 /// This represents the OpenAI API client entity.
 /// </summary>
-public class OpenAIApiClient(HttpClient http) : IOpenAIApiClient
+public class OpenAIApiClient : IOpenAIApiClient
 {
-    private readonly HttpClient _http = http ?? throw new ArgumentNullException(nameof(http));
-    
     /// <inheritdoc />
     public async Task<string> CompleteChatAsync(OpenAIApiClientOptions clientOptions)
     {
-        var endpoint = new Uri($"{_http.BaseAddress}/api");
+        var endpoint = new Uri("https+http://apiapp");
         var credential = new AzureKeyCredential(clientOptions.ApiKey!);
         var openai = new AzureOpenAIClient(endpoint, credential);
         var chat = openai.GetChatClient(clientOptions.DeploymentName);
