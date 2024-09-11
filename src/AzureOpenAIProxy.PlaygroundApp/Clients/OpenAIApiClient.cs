@@ -1,5 +1,4 @@
-﻿using Azure;
-using Azure.AI.OpenAI;
+﻿using Azure.AI.OpenAI;
 
 using OpenAI.Chat;
 
@@ -21,15 +20,14 @@ public interface IOpenAIApiClient
 /// <summary>
 /// This represents the OpenAI API client entity.
 /// </summary>
-public class OpenAIApiClient : IOpenAIApiClient
+public class OpenAIApiClient(AzureOpenAIClient openai) : IOpenAIApiClient
 {
+    private readonly AzureOpenAIClient _openai = openai ?? throw new ArgumentNullException(nameof(openai));
+    
     /// <inheritdoc />
     public async Task<string> CompleteChatAsync(OpenAIApiClientOptions clientOptions)
     {
-        var endpoint = new Uri("https+http://apiapp");
-        var credential = new AzureKeyCredential(clientOptions.ApiKey!);
-        var openai = new AzureOpenAIClient(endpoint, credential);
-        var chat = openai.GetChatClient(clientOptions.DeploymentName);
+        var chat = _openai.GetChatClient(clientOptions.DeploymentName);
 
         var messages = new List<ChatMessage>()
         {
