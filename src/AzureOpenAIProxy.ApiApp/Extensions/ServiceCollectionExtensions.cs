@@ -37,9 +37,9 @@ public static class ServiceCollectionExtensions
                 throw new InvalidOperationException($"{nameof(KeyVaultSettings.VaultUri)} is not defined.");
             }
 
-            if (string.IsNullOrWhiteSpace(settings.SecretNames["OpenAI"]) == true)
+            if (string.IsNullOrWhiteSpace(settings.SecretNames[KeyVaultSecretNames.OpenAI]) == true)
             {
-                throw new InvalidOperationException($"{nameof(KeyVaultSettings.SecretNames)}.OpenAI is not defined.");
+                throw new InvalidOperationException($"{nameof(KeyVaultSettings.SecretNames)}.{KeyVaultSecretNames.OpenAI} is not defined.");
             }
 
             var client = new SecretClient(new Uri(settings.VaultUri), new DefaultAzureCredential());
@@ -154,7 +154,7 @@ public static class ServiceCollectionExtensions
             var clientSecret = sp.GetService<SecretClient>()
                 ?? throw new InvalidOperationException($"{nameof(SecretClient)} service is not registered.");
 
-            var storageKeyVault = clientSecret.GetSecret(settings.SecretNames["Storage"]!);
+            var storageKeyVault = clientSecret.GetSecret(settings.SecretNames[KeyVaultSecretNames.Storage]!);
 
             var client = new TableServiceClient(storageKeyVault.Value.Value);
 
