@@ -30,7 +30,7 @@
         {
             @foreach (var e in _events)
             {
-                <EventItemComponent Id="@e.EventId"
+                <EventItemComponent Id="@e.EventId.ToString()"
                     Title="@e.Title"
                     Summary="@e.Summary">
                 </EventItemComponent>

@@ -1,8 +1,4 @@
-﻿@using AzureOpenAIProxy.PlaygroundApp.Clients
-@inject IOpenAIApiClient Api
-
-<FluentGridItem Id="@Id.ToString()" xs="12" sm="6" Justify="JustifyContent.Center" Style="text-align: center;"
-                @onclick="NavigateToEventDetails">
+﻿<FluentGridItem Id="@Id" xs="12" sm="6" Justify="JustifyContent.Center" Style="text-align: center;" @onclick="NavigateToEventDetails">
     <FluentCard Style="flex-grow: 1; padding: 0em; display: flex; flex-direction: column; align-items: normal;">
         <FluentHeader>
             @Title
@@ -17,10 +13,10 @@
 
 @code {
     [Parameter]
-    public Guid Id { get; set; }
+    public string? Id { get; set; }
 
     [Parameter]
-    public string Title { get; set; }
+    public string? Title { get; set; }
 
     [Parameter]
     public string? Summary { get; set; }
