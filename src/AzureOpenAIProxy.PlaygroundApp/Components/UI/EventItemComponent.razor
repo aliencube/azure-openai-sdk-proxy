@@ -21,12 +21,6 @@
     [Parameter]
     public string? Summary { get; set; }
 
-    public override Task SetParametersAsync(ParameterView parameters)
-    {
-        parameters.SetParameterProperties(this);
-        return base.SetParametersAsync(parameters);
-    }
-
     private void NavigateToEventDetails()
     {
     }
