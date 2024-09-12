@@ -5,7 +5,7 @@
     {
         foreach (var message in this.Messages)
         {
-            <FluentStack id="message-@(this.Messages.IndexOf(message).ToString("00"))" Style="width: 100%;" Orientation="Orientation.Horizontal" HorizontalAlignment="@(message.Role == MessageRole.Assistant ? HorizontalAlignment.Start : HorizontalAlignment.End)">
+            <FluentStack id="@($"message-{this.Messages.IndexOf(message).ToString("00")}")" Style="width: 100%;" Orientation="Orientation.Horizontal" HorizontalAlignment="@(message.Role == MessageRole.Assistant ? HorizontalAlignment.Start : HorizontalAlignment.End)">
                 <FluentCard Style="width: 70%;" MinimalStyle="true">
                     <p>@message.Message</p>
                 </FluentCard>
