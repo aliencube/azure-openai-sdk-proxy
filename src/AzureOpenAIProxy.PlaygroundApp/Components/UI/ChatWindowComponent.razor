@@ -1,39 +1,34 @@
-﻿<FluentLayout Id="@Id">
-    <FluentTextArea Style="width: 100%;" Rows="6" Placeholder="Type user query here. (Shift + Enter for new line)" @bind-Value="prompt" @onchange="UpdatePrompt"></FluentTextArea>
-    <FluentStack Style="width: 100%;" Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Start">
-        <FluentStack Style="width: 50%;" Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Start">
-            <FluentButton IconStart="@(new Icons.Regular.Size20.Broom())" OnClick="ClearChat">Clear</FluentButton>
-        </FluentStack>
-        <FluentStack Style="width: 50%;" Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.End">
-            <FluentButton IconStart="@(new Icons.Regular.Size20.Send())" OnClick="CompleteChat">Send</FluentButton>
-        </FluentStack>
-    </FluentStack>
-</FluentLayout>
+﻿@using AzureOpenAIProxy.PlaygroundApp.Models
+
+<FluentStack Id="@Id" Style="width: 100%; height: 100%;" Orientation="Orientation.Vertical" VerticalAlignment="VerticalAlignment.Bottom">
+    <ChatHistoryComponent Id="chat-history" Messages="messages" />
+    <ChatPromptComponent Id="chat-prompt" OnPromptSent="SendPrompt" OnChatCleared="ClearMessage" />
+</FluentStack>
 
 @code {
-    private string? prompt;
+    private List<ChatMessage>? messages;
 
     [Parameter]
     public string? Id { get; set; }
 
-    [Parameter]
-    public EventCallback<string?> OnPromptSent { get; set; }
-
-    private async Task UpdatePrompt(ChangeEventArgs e)
+    protected override async Task OnInitializedAsync()
     {
-        this.prompt = e.Value!.ToString();
+        this.messages = [];
 
         await Task.CompletedTask;
     }
 
-    private async Task CompleteChat()
+    private async Task SendPrompt(string prompt)
     {
-        await this.OnPromptSent.InvokeAsync(this.prompt);
+        this.messages!.Add(new ChatMessage() { Role = MessageRole.User, Message = prompt });
 
         await Task.CompletedTask;
     }
-    private async Task ClearChat()
+
+    private async Task ClearMessage()
     {
+        this.messages!.Clear();
+
         await Task.CompletedTask;
     }
 }
