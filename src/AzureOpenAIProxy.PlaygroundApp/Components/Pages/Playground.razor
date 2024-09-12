@@ -14,18 +14,20 @@
         <FluentGridItem Class="chat-grid" xs="12" sm="12" md="8" lg="8" xl="8" xxl="8" Style="height: 900px;">
             <FluentStack Style="width: 100%; height: 100%;" Orientation="Orientation.Vertical" VerticalAlignment="VerticalAlignment.Bottom">
                 <FluentStack Style="width: 100%;" Orientation="Orientation.Vertical" VerticalAlignment="VerticalAlignment.Top">
-                    Chat History
+                    @if (this.messages != null && this.messages.Any())
+                    {
+                        foreach (var message in this.messages)
+                        {
+                            <FluentStack Style="width: 70%;" Orientation="Orientation.Horizontal" HorizontalAlignment="@(message.Role == MessageRole.Assistant ? HorizontalAlignment.Start : HorizontalAlignment.End)">
+                                <FluentCard MinimalStyle="true">
+                                    <p>@message.Message</p>
+                                </FluentCard>
+                            </FluentStack>
+                        }
+                    }
                 </FluentStack>
                 <FluentStack Style="width: 100%;" Orientation="Orientation.Vertical" VerticalAlignment="VerticalAlignment.Bottom">
-                    <FluentTextArea Style="width: 100%;" Rows="6" Placeholder="Type user query here. (Shift + Enter for new line)" @bind-Value=value1></FluentTextArea>
-                    <FluentStack Style="width: 100%;" Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Start">
-                        <FluentStack Style="width: 50%;" Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Start">
-                            <FluentButton IconStart="@(new Icons.Regular.Size20.Broom())" OnClick="ClearChat">Clear</FluentButton>
-                        </FluentStack>
-                        <FluentStack Style="width: 50%;" Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.End">
-                            <FluentButton IconStart="@(new Icons.Regular.Size20.Send())" OnClick="CompleteChat">Send</FluentButton>
-                        </FluentStack>
-                    </FluentStack>
+                    <ChatWindowComponent Id="chat-window" OnPromptSent="SendPrompt" />
                 </FluentStack>
             </FluentStack>
         </FluentGridItem>
@@ -33,14 +35,31 @@
 </FluentLayout>
 
 @code {
-    private string? value1;
+    private List<ChatMessage>? messages;
 
-    private async Task CompleteChat()
+    protected override async Task OnInitializedAsync()
     {
+        this.messages = [];
+
         await Task.CompletedTask;
     }
-    private async Task ClearChat()
+
+    private async Task SendPrompt(string prompt)
     {
+        this.messages!.Add(new ChatMessage() { Role = MessageRole.User, Message = prompt });
+
         await Task.CompletedTask;
+    }
+
+    public class ChatMessage
+    {
+        public MessageRole? Role { get; set; }
+        public string? Message { get; set; }
+    }
+
+    public enum MessageRole
+    {
+        User,
+        Assistant
     }
 }
