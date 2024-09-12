@@ -153,6 +153,11 @@ public static class ServiceCollectionExtensions
             var clientSecret = sp.GetService<SecretClient>()
                 ?? throw new InvalidOperationException($"{nameof(SecretClient)} service is not registered.");
 
+            if (string.IsNullOrWhiteSpace(settings.SecretNames[KeyVaultSecretNames.Storage]) == true)
+            {
+                throw new InvalidOperationException($"{nameof(KeyVaultSettings.SecretNames)}.{KeyVaultSecretNames.Storage} is not defined.");
+            }
+
             var storageKeyVault = clientSecret.GetSecret(settings.SecretNames[KeyVaultSecretNames.Storage]!);
 
             var client = new TableServiceClient(storageKeyVault.Value.Value);
