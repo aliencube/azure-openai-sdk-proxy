@@ -1,6 +1,3 @@
-using Azure;
-using Azure.AI.OpenAI;
-
 using AzureOpenAIProxy.PlaygroundApp.Clients;
 
 using Microsoft.FluentUI.AspNetCore.Components;
@@ -8,8 +5,6 @@ using Microsoft.FluentUI.AspNetCore.Components;
 using App = AzureOpenAIProxy.PlaygroundApp.Components.App;
 
 var builder = WebApplication.CreateBuilder(args);
-
-var config = builder.Configuration;
 
 builder.AddServiceDefaults();
 
@@ -20,11 +15,9 @@ builder.Services.AddRazorComponents()
 builder.Services.AddFluentUIComponents();
 
 builder.Services.AddScoped<IOpenAIApiClient, OpenAIApiClient>();
-
-builder.Services.AddSingleton(_ => new AzureOpenAIClient(
-    new Uri("https+http://apiapp"),
-    new AzureKeyCredential("abcdef")
-));
+builder.Services.AddScoped<OpenAIApiClientOptions>(
+    _ => new OpenAIApiClientOptions { Endpoint = "http+https://apiapp" }
+);
 
 var app = builder.Build();
 

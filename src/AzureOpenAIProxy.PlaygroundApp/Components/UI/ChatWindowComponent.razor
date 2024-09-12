@@ -1,5 +1,6 @@
 ﻿@using AzureOpenAIProxy.PlaygroundApp.Clients
 @inject IOpenAIApiClient Api
+@inject OpenAIApiClientOptions Options
 
 <div class="container">
     <h3>Chat Window</h3>
@@ -39,15 +40,13 @@
 
         try
         {
-            var options = new OpenAIApiClientOptions()
-            {
-                DeploymentName = deploymentName,
-                MaxTokens = maxTokens,
-                Temperature = temperature,
-                SystemPrompt = systemPrompt,
-                UserPrompt = userInput,
-            };
-            var result = await Api.CompleteChatAsync(options);
+            Options.DeploymentName = deploymentName;
+            Options.MaxTokens = maxTokens;
+            Options.Temperature = temperature;
+            Options.SystemPrompt = systemPrompt;
+            Options.UserPrompt = userPrompt;
+            
+            var result = await Api.CompleteChatAsync();
             assistantMessage = result;
         }
         catch (Exception ex)
