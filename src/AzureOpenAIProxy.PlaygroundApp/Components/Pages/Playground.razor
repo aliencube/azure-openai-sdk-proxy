@@ -11,8 +11,36 @@
             <ConfigTabComponent @rendermode="InteractiveServer"/>
         </FluentGridItem>
 
-        <FluentGridItem Class="chat-grid" xs="12" sm="12" md="8" lg="8" xl="8" xxl="8">
-            Chat Window
+        <FluentGridItem Class="chat-grid" xs="12" sm="12" md="8" lg="8" xl="8" xxl="8" Style="height: 900px;">
+            <FluentStack Style="width: 100%; height: 100%;" Orientation="Orientation.Vertical" VerticalAlignment="VerticalAlignment.Bottom">
+                <FluentStack Style="width: 100%;" Orientation="Orientation.Vertical" VerticalAlignment="VerticalAlignment.Top">
+                    Chat History
+                </FluentStack>
+                <FluentStack Style="width: 100%;" Orientation="Orientation.Vertical" VerticalAlignment="VerticalAlignment.Bottom">
+                    <FluentTextArea Style="width: 100%;" Rows="6" Placeholder="Type user query here. (Shift + Enter for new line)" @bind-Value=value1></FluentTextArea>
+                    <FluentStack Style="width: 100%;" Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Start">
+                        <FluentStack Style="width: 50%;" Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Start">
+                            <FluentButton IconStart="@(new Icons.Regular.Size20.Broom())" OnClick="ClearChat">Clear</FluentButton>
+                        </FluentStack>
+                        <FluentStack Style="width: 50%;" Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.End">
+                            <FluentButton IconStart="@(new Icons.Regular.Size20.Send())" OnClick="CompleteChat">Send</FluentButton>
+                        </FluentStack>
+                    </FluentStack>
+                </FluentStack>
+            </FluentStack>
         </FluentGridItem>
     </FluentGrid>
 </FluentLayout>
+
+@code {
+    private string? value1;
+
+    private async Task CompleteChat()
+    {
+        await Task.CompletedTask;
+    }
+    private async Task ClearChat()
+    {
+        await Task.CompletedTask;
+    }
+}
