@@ -92,7 +92,7 @@ public class ServiceCollectionExtensionsTests
         var dict = new Dictionary<string, string>()
         {
             { "Azure:KeyVault:VaultUri", vaultUri! },
-            { "Azure:KeyVault:SecretName", secretName },
+            { "Azure:KeyVault:SecretNames:OpenAI", secretName },
         };
 #pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
         var config = new ConfigurationBuilder().AddInMemoryCollection(dict).Build();
@@ -108,16 +108,16 @@ public class ServiceCollectionExtensionsTests
     }
 
     [Theory]
-    [InlineData("http://localhost", default(string))]
-    [InlineData("http://localhost", "")]
-    public void Given_NullOrEmpty_SecretName_When_Invoked_AddKeyVaultService_Then_It_Should_Throw_Exception(string vaultUri, string? secretName)
+    [InlineData("http://localhost", default(string), typeof(KeyNotFoundException))]
+    [InlineData("http://localhost", "", typeof(InvalidOperationException))]
+    public void Given_NullOrEmpty_SecretName_When_Invoked_AddKeyVaultService_Then_It_Should_Throw_Exception(string vaultUri, string? secretName, Type exceptionType)
     {
         // Arrange
         var services = new ServiceCollection();
         var dict = new Dictionary<string, string>()
         {
             { "Azure:KeyVault:VaultUri", vaultUri },
-            { "Azure:KeyVault:SecretName", secretName! },
+            { "Azure:KeyVault:SecretNames:OpenAI", secretName! },
         };
 #pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
         var config = new ConfigurationBuilder().AddInMemoryCollection(dict).Build();
@@ -129,7 +129,7 @@ public class ServiceCollectionExtensionsTests
         Action action = () => services.BuildServiceProvider().GetService<SecretClient>();
 
         // Assert
-        action.Should().Throw<InvalidOperationException>();
+        action.Should().Throw<Exception>().Which.Should().BeOfType(exceptionType);
     }
 
     [Theory]
@@ -141,7 +141,7 @@ public class ServiceCollectionExtensionsTests
         var dict = new Dictionary<string, string>()
         {
             { "Azure:KeyVault:VaultUri", vaultUri },
-            { "Azure:KeyVault:SecretName", secretName },
+            { "Azure:KeyVault:SecretNames:OpenAI", secretName },
         };
 #pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
         var config = new ConfigurationBuilder().AddInMemoryCollection(dict).Build();
@@ -165,7 +165,7 @@ public class ServiceCollectionExtensionsTests
         var dict = new Dictionary<string, string>()
         {
             { "Azure:KeyVault:VaultUri", vaultUri },
-            { "Azure:KeyVault:SecretName", secretName },
+            { "Azure:KeyVault:SecretNames:OpenAI", secretName },
         };
 #pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
         var config = new ConfigurationBuilder().AddInMemoryCollection(dict).Build();
@@ -190,7 +190,7 @@ public class ServiceCollectionExtensionsTests
         var dict = new Dictionary<string, string>()
         {
             { "Azure:KeyVault:VaultUri", vaultUri },
-            { "Azure:KeyVault:SecretName", secretName },
+            { "Azure:KeyVault:SecretNames:OpenAI", secretName },
         };
 #pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
         var config = new ConfigurationBuilder().AddInMemoryCollection(dict).Build();
