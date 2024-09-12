@@ -23,9 +23,9 @@
     <PackageReference Include="NUnit3TestAdapter" Version="$(NUnitVersion)" />
   </ItemGroup>
 
-  <!--<ItemGroup>
+  <!-- <ItemGroup>
     <ProjectReference Include="..\..\src\AzureOpenAIProxy.PlaygroundApp\AzureOpenAIProxy.PlaygroundApp.csproj" />
-  </ItemGroup>-->
+  </ItemGroup> -->
 
   <ItemGroup>
     <Using Include="NUnit.Framework" />

@@ -13,7 +13,7 @@ public class PlaygroundPageTests : PageTest
     public override BrowserNewContextOptions ContextOptions() => new() { IgnoreHTTPSErrors = true, };
 
     [SetUp]
-    public async Task SetUp()
+    public async Task Init()
     {
         await Page.GotoAsync("https://localhost:5001/playground/");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
@@ -139,5 +139,10 @@ public class PlaygroundPageTests : PageTest
         // Assert
         await Expect(apiKeyInput).ToHaveValueAsync(apiKey);
     }
-    
+
+    [TearDown]
+    public async Task CleanUp()
+    {
+        await Page.CloseAsync();
+    }
 }

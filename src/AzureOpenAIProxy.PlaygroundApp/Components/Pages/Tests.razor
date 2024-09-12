@@ -1,26 +1,38 @@
 @page "/tests"
 @rendermode InteractiveServer
 
-<h1>Debug Button</h1>
+<h1>Component Tests</h1>
+
+<h2>Debug Button</h2>
 <DebugTargetComponent Id="debug-target" OnValueChanged="SetInput" />
-<DebugButtonComponent Id="debug-button" Input="@currentValue" />
+<DebugButtonComponent Id="debug-button" Input="@targetValue" />
 
 <ApiKeyInputComponent Id="api-key-input" OnKeyInput="HandleApiKeyInput" />
 <DebugButtonComponent Id="debug-api-key" Input="@apiKey" />
 
+<h2>Deployment Models</h2>
+<DeploymentModelListComponent Id="debug-deployment-model-list" OnUserOptionSelected="SetDeploymentModel" @rendermode="InteractiveServer" />
+<DebugButtonComponent Id="debug-button-deployment-model-list" Input="@selectedModel" />
 
 @code {
-    private object? currentValue;
+    private object? targetValue;
     private string? apiKey;
+    private string? selectedModel;
 
-    private async Task SetInput(int newValue)
+    private async Task SetInput(int value)
     {
-        currentValue = newValue;
+        targetValue = value;
         await Task.CompletedTask;
     }
 
     private void HandleApiKeyInput(string apiKeyValue)
     {
         apiKey = apiKeyValue;
+    }
+
+    private async Task SetDeploymentModel(string value)
+    {
+        selectedModel = value;
+        await Task.CompletedTask;
     }
 }
