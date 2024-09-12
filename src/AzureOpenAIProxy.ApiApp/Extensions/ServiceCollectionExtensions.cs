@@ -1,5 +1,4 @@
-﻿using Azure;
-using Azure.Data.Tables;
+﻿using Azure.Data.Tables;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 
