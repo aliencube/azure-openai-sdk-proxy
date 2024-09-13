@@ -142,10 +142,10 @@ public class PlaygroundPageTests : PageTest
         "You are an AI assistant that helps people find information.", 
         typeof(string)
     )]
-    public async Task Given_ConfigTab_When_Endpoint_Invoked_Then_Tab_Component_Should_Have_Default_Value(
+    public async Task Given_ConfigTab_When_Selected_Then_Tab_Component_Should_Have_Default_Value(
         string selectedTabSelector,
         string debugButtonSelector, 
-        string? expectedValue, 
+        object expectedValue, 
         Type expectedType
     )
     {
@@ -189,7 +189,10 @@ public class PlaygroundPageTests : PageTest
     [Test]
     [TestCase("1 New system message 1", typeof(string))]
     [TestCase("2 New system message 2", typeof(string))]
-    public async Task Given_SystemMessageTab_ApplyButton_When_Clicked_Then_Changed_TextArea_Value_Should_Be_Applied_As_SystemMessage_And_ApplyButton_Should_Be_Disabled_And_ResetButton_Should_Be_Enabled(string expectedValue, Type expectedType)
+    public async Task Given_SystemMessageTab_ApplyButton_When_Clicked_Then_Changed_TextArea_Value_Should_Be_Applied_As_SystemMessage_And_ApplyButton_Should_Be_Disabled_And_ResetButton_Should_Be_Enabled(
+        string expectedValue, 
+        Type expectedType
+    )
     {
         // Arrange
         var systemMessageTab = Page.Locator("fluent-tab#system-message-tab");
@@ -218,7 +221,10 @@ public class PlaygroundPageTests : PageTest
 
     [Test]
     [TestCase("You are an AI assistant that helps people find information.", typeof(string))]
-    public async Task Given_SystemMessageTab_ApplyButton_When_Clicked_Then_Default_TextArea_Value_Should_Be_Applied_As_SystemMessage_And_All_Buttons_Should_Be_Disabled(string expectedValue, Type expectedType)
+    public async Task Given_SystemMessageTab_ApplyButton_When_Clicked_Then_Default_TextArea_Value_Should_Be_Applied_As_SystemMessage_And_All_Buttons_Should_Be_Disabled(
+        string expectedValue, 
+        Type expectedType
+    )
     {
         // Arrange
         var systemMessageTab = Page.Locator("fluent-tab#system-message-tab");
@@ -247,7 +253,10 @@ public class PlaygroundPageTests : PageTest
 
     [Test]
     [TestCase("You are an AI assistant that helps people find information.", typeof(string))]
-    public async Task Given_SystemMessageTab_ResetButton_When_Clicked_Then_SystemMessage_And_TextArea_Should_Have_Default_Value_And_All_Buttons_Should_Be_Disabled(string expectedValue, Type expectedType)
+    public async Task Given_SystemMessageTab_ResetButton_When_Clicked_Then_SystemMessage_And_TextArea_Should_Have_Default_Value_And_All_Buttons_Should_Be_Disabled(
+        string expectedValue, 
+        Type expectedType
+    )
     {
         // Arrange
         var systemMessageTab = Page.Locator("fluent-tab#system-message-tab");
