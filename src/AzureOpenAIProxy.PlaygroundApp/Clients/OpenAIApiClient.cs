@@ -22,11 +22,19 @@ public interface IOpenAIApiClient
 /// </summary>
 public class OpenAIApiClient(OpenAIApiClientOptions clientOptions) : IOpenAIApiClient
 {
-    private readonly OpenAIApiClientOptions _clientOptions = clientOptions ?? throw new ArgumentNullException(nameof(clientOptions));
-    
+    private readonly OpenAIApiClientOptions _clientOptions =
+        clientOptions ?? throw new ArgumentNullException(nameof(clientOptions));
+
     /// <inheritdoc />
     public async Task<string> CompleteChatAsync()
     {
+        // test
+        _clientOptions.ApiKey = "abcdef";
+        _clientOptions.DeploymentName = "model-gpt4o-20240513";
+        _clientOptions.SystemPrompt = "You are an AI assistant that helps people find information.";
+        _clientOptions.MaxTokens = 4096;
+        _clientOptions.Temperature = 0.7f;
+
         var endpoint = new Uri($"{_clientOptions.Endpoint!.TrimEnd('/')}/api");
         var credential = new AzureKeyCredential(_clientOptions.ApiKey!);
         var openai = new AzureOpenAIClient(endpoint, credential);

@@ -51,7 +51,7 @@
                 SystemPrompt = systemPrompt,
                 UserPrompt = userInput,
             };
-            var result = await Api.CompleteChatAsync(options);
+            var result = await Api.CompleteChatAsync();
             assistantMessage = result;
 
         }

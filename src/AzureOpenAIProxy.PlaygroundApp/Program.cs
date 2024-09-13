@@ -16,7 +16,7 @@ builder.Services.AddFluentUIComponents();
 
 builder.Services.AddScoped<IOpenAIApiClient, OpenAIApiClient>();
 builder.Services.AddScoped<OpenAIApiClientOptions>(
-    _ => new OpenAIApiClientOptions { Endpoint = "http+https://apiapp" }
+    _ => new OpenAIApiClientOptions { Endpoint = "https+http://apiapp" }
 );
 
 var app = builder.Build();
