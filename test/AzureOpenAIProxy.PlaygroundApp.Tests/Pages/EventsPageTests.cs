@@ -27,7 +27,7 @@ public class EventsPageTests : PageTest
     public async Task Given_Events_Page_When_Navigated_Then_It_Should_Have_EventListComponent()
     {
         // Act
-        var eventListComponent = await Page.QuerySelectorAsync("#events-list");
+        var eventListComponent = await Page.QuerySelectorAsync("#event-list");
 
         // Assert
         eventListComponent.Should().NotBeNull();
@@ -37,7 +37,7 @@ public class EventsPageTests : PageTest
     public async Task Given_Events_When_Loaded_Then_It_Should_Have_Less_Than_Or_Equal_To_Four_EventItemComponents()
     {
         // Act
-        var availableEvents = await Page.QuerySelectorAsync("#events-list");
+        var availableEvents = await Page.QuerySelectorAsync("#event-list");
 
         var childrenCount = await availableEvents.EvaluateAsync<int>("elist => elist.children.length");
 
