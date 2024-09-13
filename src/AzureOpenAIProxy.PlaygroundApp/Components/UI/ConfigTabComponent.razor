@@ -1,6 +1,7 @@
 <FluentTabs Id="config-tab" ActiveTabId="system-message" OnTabChange="ChangeTab">
     <FluentTab Label="System message" Id="system-message-tab">
         <SystemMessageTabComponent Id="system-message-tab-component" OnSystemMessageChanged="SetSystemMessage" />
+        <DebugButtonComponent Id="debug-button-system-message-tab" Input="@SystemMessage"/>
     </FluentTab>
     <FluentTab Label="Parameters" Id="parameters-tab">
         This is "Parameters" tab.
@@ -11,7 +12,7 @@
 
 @code {
     FluentTab? SelectedTab;
-    private string? systemMessage;
+    string? SystemMessage;
 
     private async Task ChangeTab(FluentTab tab)
     {
@@ -21,7 +22,7 @@
 
     private async Task SetSystemMessage(string value)
     {
-        systemMessage = value;
+        SystemMessage = value;
         await Task.CompletedTask;
     }
 }
