@@ -1,9 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace AzureOpenAIProxy.ApiApp.Models;
+namespace AzureOpenAIProxy.PlaygroundApp.Models;
 
 /// <summary>
-/// This represent the entity for the event details for admin.
+/// This represent the event detail data for response by admin event endpoint.
 /// </summary>
 public class AdminEventDetails : EventDetails
 {

@@ -1,5 +1,3 @@
-using Azure.Data.Tables;
-
 using AzureOpenAIProxy.ApiApp.Models;
 using AzureOpenAIProxy.ApiApp.Services;
 
@@ -19,11 +17,7 @@ public static class AdminEventEndpoints
     /// <returns>Returns <see cref="RouteHandlerBuilder"/> instance.</returns>
     public static RouteHandlerBuilder AddNewAdminEvent(this WebApplication app)
     {
-        //TODO: 테이블 이름을 어딘가에서 상수처럼 관리하기
-        const string TableName = "events";
-
         var builder = app.MapPost(AdminEndpointUrls.AdminEvents, async (
-            [FromServices] TableServiceClient tableStorageService,
             [FromBody] AdminEventDetails payload,
             IAdminEventService service,
             ILoggerFactory loggerFactory) =>
@@ -52,35 +46,6 @@ public static class AdminEventEndpoints
 
             //    return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
             //}
-
-            try{
-                //TODO: 테이블 서비스/클라이언트는 의존성 주입 받아서 사용하도록 리팩토링
-                await tableStorageService.CreateTableIfNotExistsAsync(TableName);
-                var tableClient = tableStorageService.GetTableClient(TableName);
-
-                //TODO: PartitonKey: OrganizerName+OrganizerEmail 조합, RowKey: EventId 으로 제안드립니다!
-                //TODO: ITableEntity 상속 정리, EventDetails 제네릭 사용하기
-                //TODO: payload.EventId.ToString()는 빌드 오류를 막기 위해 임시로 추가한 코드입니다.
-                TableEntity? entity = new TableEntity($"{payload.OrganizerName}_{payload.OrganizerEmail}", payload.EventId.ToString())
-                {
-                    ["EventName"] = payload.Title,
-                    ["EventDescription"] = payload.Description,
-                    ["EventStartDate"] = payload.DateStart,
-                    ["EventEndDate"] = payload.DateEnd,
-                    ["TimeZone"] = payload.TimeZone,
-                    ["IsActive"] = payload.IsActive,
-                    ["OrganizerEmail"] = payload.OrganizerEmail,
-                    ["CoorganizerName"] = payload.CoorganizerName,
-                    ["CoorganizerEmail"] = payload.CoorganizerEmail,
-                    ["MaxTokenCap"] = payload.MaxTokenCap,
-                    ["DailyRequestCap"] = payload.DailyRequestCap
-                };
-
-                await tableClient.AddEntityAsync(entity);
-            } catch (Azure.RequestFailedException ex)
-            {
-                return Results.BadRequest(ex.Message);
-            }
 
             return await Task.FromResult(Results.Ok());
         })
@@ -151,6 +116,7 @@ public static class AdminEventEndpoints
         })
         .Produces<AdminEventDetails>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
+        .Produces(statusCode: StatusCodes.Status404NotFound)
         .Produces<string>(statusCode: StatusCodes.Status500InternalServerError, contentType: "text/plain")
         .WithTags("admin")
         .WithName("GetAdminEvent")
@@ -183,6 +149,7 @@ public static class AdminEventEndpoints
         })
         .Accepts<AdminEventDetails>(contentType: "application/json")
         .Produces<AdminEventDetails>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
+        .Produces(statusCode: StatusCodes.Status400BadRequest)
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
         .Produces(statusCode: StatusCodes.Status404NotFound)
         .Produces<string>(statusCode: StatusCodes.Status500InternalServerError, contentType: "text/plain")

@@ -1,5 +1,3 @@
-using Azure.Data.Tables;
-
 using AzureOpenAIProxy.ApiApp.Endpoints;
 using AzureOpenAIProxy.ApiApp.Extensions;
 using AzureOpenAIProxy.ApiApp.Repositories;
@@ -18,24 +16,14 @@ builder.Services.AddOpenAIService();
 // Add OpenAPI service
 builder.Services.AddOpenApiService();
 
+// Add TableStorageClient
+builder.Services.AddTableStorageService();
+
 // Add admin services
 builder.Services.AddAdminEventService();
 
 // Add admin repositories
 builder.Services.AddAdminEventRepository();
-
-// Add Table service
-builder.Services.AddSingleton<TableServiceClient>(sp =>
-{
-    //TODO: StorageAccount를 bicep으로 배포하기 (지금은 az 명령어로 수동생성함)
-    //TODO: connection string을 apphost에서 넘겨받기
-    //TODO: connection string을 StorageAccount 배포중에 넘겨받아서 안전하게 전달/관리하기
-    // 그 전까지는 appsettings.json에서 connection string을 가져오자
-    var configuration = sp.GetRequiredService<IConfiguration>();
-    var connectionString = configuration["Azure:StorageAccount:ConnectionString"]; //TODO: 리팩토링 고민
-
-    return new TableServiceClient(connectionString);
-});
 
 var app = builder.Build();
 

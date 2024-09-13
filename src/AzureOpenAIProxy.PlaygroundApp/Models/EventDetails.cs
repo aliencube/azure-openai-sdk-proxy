@@ -1,7 +1,9 @@
 using System.Text.Json.Serialization;
 
+namespace AzureOpenAIProxy.PlaygroundApp.Models;
+
 /// <summary>
-/// This represent the entity for the event details for users.
+/// This represents the event's detailed data for response by EventEndpoint.
 /// </summary>
 public class EventDetails
 {

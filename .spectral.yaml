@@ -81,3 +81,25 @@ rules:
       - field: 'content'
         function: truthy
         message: Content is required
+
+  # Ensure endpoints with path variables define a 404 response
+  # path에 path variable이 있다면 404 응답 코드가 있어야 함
+  path-variables-require-404:
+    description: Path variables must include a 404 response
+    severity: error
+    given: $.paths[*][*].parameters[?(@.in == 'path')]^^
+    then:
+      - field: responses.404
+        function: truthy
+        message: Response 404 is required
+
+  # Ensure POST, PUT, PATCH methods define a 400 response
+  # verb가 POST, PUT, PATCH일 경우 400 응답코드가 있어야 함
+  post-put-patch-require-400:
+    description: POST, PUT, PATCH methods must include a 400 response
+    given: $.paths[*][?(@property == 'post' || @property == 'put' || @property == 'patch')]
+    severity: error
+    then:
+      - field: responses.400
+        function: truthy
+        message: Response 400 is required
