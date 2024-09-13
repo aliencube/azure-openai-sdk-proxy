@@ -40,20 +40,17 @@
 </FluentGrid>
 
 @code {
+    private List<EventDetails>? _events;
+
+    private bool _isLoading = false;
+    private bool _hasNoEvents = false;
+
     [Parameter]
     public string? Id { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    private async Task<List<EventDetails>> CreateEventDetailsAsync()
     {
-        // TODO: Fetch events from the API server.
-        _events = await CreateEventDetailsAsync();
-    }
-
-    private List<EventDetails>? _events;
-
-    private Task<List<EventDetails>> CreateEventDetailsAsync()
-    {
-        return Task.FromResult(new List<EventDetails>
+        return await Task.FromResult(new List<EventDetails>
         {
             new EventDetails
             {
@@ -88,5 +85,11 @@
                 DailyRequestCap = 300,
             }
         });
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // TODO: Fetch events from the API server.
+        _events = await CreateEventDetailsAsync();
     }
 }
