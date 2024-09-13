@@ -32,22 +32,20 @@ public static class AdminEventEndpoints
                 return Results.BadRequest("Payload is null");
             }
 
-            //try
-            //{
-            //    var result = await service.CreateEvent(payload);
+            try
+            {
+                var result = await service.CreateEvent(payload);
 
-            //    logger.LogInformation("Created a new event");
+                logger.LogInformation("Created a new event");
 
-            //    return Results.Ok(result);
-            //}
-            //catch (Exception ex)
-            //{
-            //    logger.LogError(ex, "Failed to create a new event");
+                return Results.Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to create a new event");
 
-            //    return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
-            //}
-
-            return await Task.FromResult(Results.Ok());
+                return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
+            }
         })
         .Accepts<AdminEventDetails>(contentType: "application/json")
         .Produces<AdminEventDetails>(statusCode: StatusCodes.Status200OK, contentType: "application/json")

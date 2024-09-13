@@ -44,6 +44,12 @@ public class AdminEventRepository : IAdminEventRepository
     /// <inheritdoc />
     public async Task<AdminEventDetails> CreateEvent(AdminEventDetails eventDetails)
     {
+        //TODO: [tae0y], implement this method
+        //TODO: [tae0y] partition key :  / rowkey : 
+        //TODO: [tae0y] ITableEntity 상속/구현
+        //TODO: [tae0y] table storage client 생성, 의존성 주입
+        //var tableClient = tableStorageService.GetTableClient(TableName);
+
         throw new NotImplementedException();
     }
 
