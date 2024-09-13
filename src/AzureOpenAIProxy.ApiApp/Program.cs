@@ -16,6 +16,9 @@ builder.Services.AddOpenAIService();
 // Add OpenAPI service
 builder.Services.AddOpenApiService();
 
+// Add TableStorageClient
+builder.Services.AddTableStorageService();
+
 // Add admin services
 builder.Services.AddAdminEventService();
 
