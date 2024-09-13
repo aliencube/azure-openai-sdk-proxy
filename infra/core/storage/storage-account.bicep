@@ -103,6 +103,16 @@ resource storage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   }
 }
 
+// Save Storage Account Connection String in Key Vault Secret
+module keyVaultSecrets '../../core/security/keyvault-secret.bicep' = {
+    name: 'keyVaultSecrets'
+    params: {
+        name: 'storage-connection-string'
+        secretValue:'DefaultEndpointsProtocol=https;EndpointSuffix=${environment().suffixes.storage};AccountName=${storage.name};AccountKey=${storage.listKeys().keys[0].value};BlobEndpoint=${storage.properties.primaryEndpoints.blob};FileEndpoint=${storage.properties.primaryEndpoints.file};QueueEndpoint=${storage.properties.primaryEndpoints.queue};TableEndpoint=${storage.properties.primaryEndpoints.table}'
+        keyVaultName:keyVaultName
+    }
+}
+
 output id string = storage.id
 output name string = storage.name
 output primaryEndpoints object = storage.properties.primaryEndpoints

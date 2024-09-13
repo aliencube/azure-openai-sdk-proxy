@@ -74,7 +74,8 @@ This provides a proxy server application of Azure OpenAI Service API that round-
         -g $AZURE_RESOURCE_GROUP \
         --template-file ./infra/aspire.bicep \
         --parameters environmentName=$AZURE_ENV_NAME \
-        --parameters location=$AZURE_LOCATION
+        --parameters location=$AZURE_LOCATION \
+        --parameters tableNames=events,tests
 
     # PowerShell
     $AZURE_RESOURCE_GROUP = "rg-$AZURE_ENV_NAME"
@@ -83,7 +84,8 @@ This provides a proxy server application of Azure OpenAI Service API that round-
         -g $AZURE_RESOURCE_GROUP `
         --template-file ./infra/aspire.bicep `
         --parameters environmentName=$AZURE_ENV_NAME `
-        --parameters location=$AZURE_LOCATION
+        --parameters location=$AZURE_LOCATION `
+        --parameters tableNames=events,tests
     ```
 
 ## Unit Testing & Integration Testing & Linting OpenAPI Document
