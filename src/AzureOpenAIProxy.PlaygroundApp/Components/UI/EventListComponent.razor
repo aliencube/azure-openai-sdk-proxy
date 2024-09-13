@@ -18,16 +18,6 @@
     }
     else
     {
-        @if (_events.Count == 0)
-        {
-            <FluentGridItem Id="no-events" xs="12" sm="12" Justify="JustifyContent.Center" Style="text-align: center; flex-grow: 1;">
-                <div style="flex-grow: 1; display: flex; padding: 0em; flex-direction: row; align-items: center; align-content: center; justify-content: center;">
-                    <h4>You don’t have any events you have participated in now.</h4>
-                </div>
-            </FluentGridItem>
-        }
-        else
-        {
             @foreach (var e in _events)
             {
                 <EventItemComponent Id="@e.EventId.ToString()"
@@ -35,6 +25,14 @@
                     Summary="@e.Summary">
                 </EventItemComponent>
             }
+        // Show a message there are no events
+        @if (_events.Count == 0)
+        {
+            <FluentGridItem Id="no-events" xs="12" sm="12" Justify="JustifyContent.Center" Style="text-align: center; flex-grow: 1;">
+                <FluentCard MinimalStyle="true" Style="flex-grow: 1; display: flex; padding: 0em; flex-direction: row; align-items: center; align-content: center; justify-content: center; background-color: transparent; box-shadow: none !important; border: hidden;">
+                    <FluentLabel Typo="Typography.Header">You don’t have any events you have participated in now.</FluentLabel>
+                </FluentCard>
+            </FluentGridItem>
         }
     }
 </FluentGrid>
