@@ -182,7 +182,7 @@ public class TestsPageTests : PageTest
     public async Task Given_ApplyButton_And_ResetButton_When_TextArea_Value_Changed_Then_All_Buttons_Should_Be_Enabled()
     {
         // Arrange
-        var applyButton = Page.Locator($"fluent-button#system-message-tab-apply-button");
+        var applyButton = Page.Locator("fluent-button#system-message-tab-apply-button");
         var resetButton = Page.Locator("fluent-button#system-message-tab-reset-button");
         var newValue = "New system message";
 
@@ -208,7 +208,7 @@ public class TestsPageTests : PageTest
         // Arrange
         var applyButton = Page.Locator("fluent-button#system-message-tab-apply-button");
         var resetButton = Page.Locator("fluent-button#system-message-tab-reset-button");
-        var debugButton = Page.Locator($"fluent-button#debug-button-system-message-tab");
+        var debugButton = Page.Locator("fluent-button#debug-button-system-message-tab");
 
         // Act
         await Page.EvaluateAsync(@$"
@@ -237,7 +237,7 @@ public class TestsPageTests : PageTest
         // Arrange
         var applyButton = Page.Locator("fluent-button#system-message-tab-apply-button");
         var resetButton = Page.Locator("fluent-button#system-message-tab-reset-button");
-        var debugButton = Page.Locator($"fluent-button#debug-button-system-message-tab");
+        var debugButton = Page.Locator("fluent-button#debug-button-system-message-tab");
 
         // Act
         await Page.EvaluateAsync(@$"
@@ -265,7 +265,7 @@ public class TestsPageTests : PageTest
         // Arrange
         var applyButton = Page.Locator("fluent-button#system-message-tab-apply-button");
         var resetButton = Page.Locator("fluent-button#system-message-tab-reset-button");
-        var debugButton = Page.Locator($"fluent-button#debug-button-system-message-tab");
+        var debugButton = Page.Locator("fluent-button#debug-button-system-message-tab");
         var newValue = "New system message";
 
         // Act
