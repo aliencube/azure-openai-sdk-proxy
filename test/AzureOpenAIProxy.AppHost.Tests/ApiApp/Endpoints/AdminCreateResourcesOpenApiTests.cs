@@ -168,21 +168,16 @@ public class AdminCreateResourcesOpenApiTests(AspireAppHostFixture host) : IClas
         result.ValueKind.Should().Be(JsonValueKind.Object);
     }
     
-    public static IEnumerable<object[]> AttributeData =>
-        [
-            ["resourceId", true, "string"],
-            ["friendlyName", true, "string"],
-            ["deploymentName", true, "string"],
-            ["resourceType", true, "string"],
-            ["endpoint", true, "string"],
-            ["apiKey", true, "string"],
-            ["region", true, "string"],
-            ["isActive", true, "boolean"]
-        ];
-
     [Theory]
-    [MemberData(nameof(AttributeData))]
-    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Required(string attribute, bool isRequired, string type)
+    [InlineData("resourceId", true)]
+    [InlineData("friendlyName", true)]
+    [InlineData("deploymentName", true)]
+    [InlineData("resourceType", true)]
+    [InlineData("endpoint", true)]
+    [InlineData("apiKey", true)]
+    [InlineData("region", true)]
+    [InlineData("isActive", true)]
+    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Required(string attribute, bool isRequired)
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -202,8 +197,15 @@ public class AdminCreateResourcesOpenApiTests(AspireAppHostFixture host) : IClas
     }
 
     [Theory]
-    [MemberData(nameof(AttributeData))]
-    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Property(string attribute, bool isRequired, string type)
+    [InlineData("resourceId")]
+    [InlineData("friendlyName")]
+    [InlineData("deploymentName")]
+    [InlineData("resourceType")]
+    [InlineData("endpoint")]
+    [InlineData("apiKey")]
+    [InlineData("region")]
+    [InlineData("isActive")]
+    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Property(string attribute)
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -223,8 +225,15 @@ public class AdminCreateResourcesOpenApiTests(AspireAppHostFixture host) : IClas
     }
 
     [Theory]
-    [MemberData(nameof(AttributeData))]
-    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Type(string attribute, bool isRequired, string type)
+    [InlineData("resourceId", "string")]
+    [InlineData("friendlyName", "string")]
+    [InlineData("deploymentName", "string")]
+    [InlineData("resourceType", "string")]
+    [InlineData("endpoint", "string")]
+    [InlineData("apiKey", "string")]
+    [InlineData("region", "string")]
+    [InlineData("isActive", "boolean")]
+    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Type(string attribute, string type)
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
