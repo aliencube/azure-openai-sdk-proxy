@@ -44,36 +44,41 @@ public interface IAdminEventRepository
 public class AdminEventRepository : IAdminEventRepository
 {
     private readonly string TableName = "events";
-    private readonly TableServiceClient? _tableServiceClient;
 
-    public AdminEventRepository(TableServiceClient tableServiceClient)
-    {
-        _tableServiceClient = tableServiceClient;
-    }
+    private readonly TableServiceClient _tableServiceClient;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AdminEventRepository"/> class.
+    /// </summary>
     public AdminEventRepository()
     {
-        // TODO: [tae0y] TEST를 위한 임시 코드
+        // TODO: [tae0y] 빌드 실패 방지용 임시코드
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AdminEventRepository"/> class.
+    /// </summary>
+    public AdminEventRepository(TableServiceClient tableServiceClient)
+    {
+        _tableServiceClient = tableServiceClient ?? throw new ArgumentNullException(nameof(tableServiceClient));
+    }
 
     /// <inheritdoc />
     public async Task<AdminEventDetails> CreateEvent(AdminEventDetails eventDetails)
     {
-        if (_tableServiceClient == null)
-        {
-            throw new InvalidOperationException("TableServiceClient is not initialized.");
-        }
         var tableServiceClient = _tableServiceClient.GetTableClient(TableName);
 
+        // TODO: [tae0y] PartitionKey, RowKey 정책 확인
         eventDetails.PartitionKey = string.IsNullOrEmpty(eventDetails.TimeZone) ? "KST" : eventDetails.TimeZone;
         eventDetails.RowKey = string.IsNullOrEmpty(eventDetails.EventId.ToString()) ? Guid.NewGuid().ToString() : eventDetails.EventId.ToString();
         var response = await tableServiceClient.AddEntityAsync(eventDetails);
         if (response.Status != 204)
         {
+            // TODO: [tae0y] Exception 종류 확인
             throw new Exception("Failed to create event");
         }
 
+        // TODO: [tae0y] Azure.Tables REST API는 저장한 Entity를 반환하는 옵션이 있으나, tableServiceClient는 없으므로 추가 작업 필요
         var addedEntity = await tableServiceClient.GetEntityAsync<AdminEventDetails>(eventDetails.PartitionKey, eventDetails.RowKey);
         return addedEntity;
     }
