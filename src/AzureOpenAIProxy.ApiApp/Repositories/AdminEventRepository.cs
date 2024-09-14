@@ -43,7 +43,7 @@ public interface IAdminEventRepository
 /// </summary>
 public class AdminEventRepository(IServiceCollection sc) : IAdminEventRepository
 {
-    private readonly StorageSettings _storageSettings = sc.GetStorageSettings();
+    private readonly StorageAccountSettings _storageSettings = sc.GetStorageSettings();
 
     /// <inheritdoc />
     public async Task<AdminEventDetails> CreateEvent(AdminEventDetails eventDetails)
