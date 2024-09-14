@@ -2,7 +2,6 @@ using FluentAssertions;
 
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
-using System.Text.RegularExpressions;
 
 namespace AzureOpenAIProxy.PlaygroundApp.Tests.Pages;
 
