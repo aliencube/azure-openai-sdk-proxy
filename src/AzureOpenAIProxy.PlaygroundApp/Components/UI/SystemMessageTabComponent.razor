@@ -10,12 +10,11 @@
         </FluentButton>
     </FluentToolbar>
 
-    <FluentTextArea id="system-message-tab-textarea" Rows="5" Style="width: 100%;" Value="@userSystemMessage" @oninput="OnInputChanged" Resize="TextAreaResize.Vertical">
-        <div style="display: flex; align-items: center; padding-bottom: 3px;">
-            <label id="system-message-tab-label" for="system-message-tab-textarea" style="margin-right: 5px;">System message</label>
-            <FluentIcon Value="@(new Icons.Regular.Size16.Info())" Color="@Color.Info" />
-        </div>
-    </FluentTextArea>
+    <div style="display: flex; align-items: center; margin-bottom: 5px;">
+        <label id="system-message-tab-label" for="system-message-tab-textarea" style="margin-right: 5px;">System message</label>
+        <FluentIcon Value="@(new Icons.Regular.Size16.Info())" Color="@Color.Info" />
+    </div>
+    <FluentTextArea id="system-message-tab-textarea" Rows="5" Style="width: 100%;" Value="@userSystemMessage" @oninput="OnInputChanged" Resize="TextAreaResize.Vertical"></FluentTextArea>
 </FluentLayout>
 
 @code {

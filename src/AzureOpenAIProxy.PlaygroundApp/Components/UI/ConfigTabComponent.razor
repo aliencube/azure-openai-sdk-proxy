@@ -7,21 +7,21 @@
     </FluentTab>
 </FluentTabs>
 
-<p id="active-tab">[TEST] Active tab changed to: @SelectedTab?.Id</p>
+<p id="active-tab">[TEST] Active tab changed to: @selectedTab?.Id</p>
 
 @code {
-    private FluentTab? SelectedTab;
-    private string? SystemMessage;
+    private FluentTab? selectedTab;
+    private string? systemMessage;
 
     private async Task ChangeTab(FluentTab tab)
     {
-        SelectedTab = tab;
+        selectedTab = tab;
         await Task.CompletedTask;
     }
 
     private async Task SetSystemMessage(string value)
     {
-        SystemMessage = value;
+        systemMessage = value;
         await Task.CompletedTask;
     }
 }
