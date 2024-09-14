@@ -7,41 +7,30 @@
             Style="background-color: var(--neutral-layer-3);
                 padding-block: 1.5em;
                 padding-inline: 1.0em; align-items: center; margin-top: 18px; border-radius: 8px;">
-    @if (_events == null)
+
+    @if (_events == null || _events.Any() == false)
     {
-        // Loading progress ring
-        <FluentGridItem Id="event-loading" xs="12" sm="12" Justify="JustifyContent.Center" Style="text-align: center; flex-grow: 1;">
-            <div style="flex-grow: 1; display: flex; padding: 0em; flex-direction: row; align-items: center; align-content: center; justify-content: center;">
-                <FluentProgressRing></FluentProgressRing>
-            </div>
+        <FluentGridItem Id="no-events" xs="12" sm="12" Justify="JustifyContent.Center" Style="text-align: center; flex-grow: 1;">
+            <FluentCard MinimalStyle="true" Style="flex-grow: 1; display: flex; padding: 0em; flex-direction: row; align-items: center; align-content: center; justify-content: center; background-color: transparent; box-shadow: none !important; border: hidden;">
+                <FluentLabel Typo="Typography.Header">You don’t have any events you have participated in now.</FluentLabel>
+            </FluentCard>
         </FluentGridItem>
     }
     else
     {
-            @foreach (var e in _events)
-            {
-                <EventItemComponent Id="@e.EventId.ToString()"
-                    Title="@e.Title"
-                    Summary="@e.Summary">
-                </EventItemComponent>
-            }
-        // Show a message there are no events
-        @if (_events.Count == 0)
+        // Shows up to 4 events that the user currently joined.
+        @foreach (var e in _events)
         {
-            <FluentGridItem Id="no-events" xs="12" sm="12" Justify="JustifyContent.Center" Style="text-align: center; flex-grow: 1;">
-                <FluentCard MinimalStyle="true" Style="flex-grow: 1; display: flex; padding: 0em; flex-direction: row; align-items: center; align-content: center; justify-content: center; background-color: transparent; box-shadow: none !important; border: hidden;">
-                    <FluentLabel Typo="Typography.Header">You don’t have any events you have participated in now.</FluentLabel>
-                </FluentCard>
-            </FluentGridItem>
+            <EventItemComponent Id="@e.EventId.ToString()"
+                                Title="@e.Title"
+                                Summary="@e.Summary">
+            </EventItemComponent>
         }
     }
 </FluentGrid>
 
 @code {
-    private List<EventDetails>? _events;
-
-    private bool _isLoading = false;
-    private bool _hasNoEvents = false;
+    private List<EventDetails>? _events = null;
 
     [Parameter]
     public string? Id { get; set; }
@@ -76,7 +65,7 @@
             {
                 EventId = Guid.NewGuid(),
                 Title = "Event 3",
-                Summary = "Summary 3",
+                Summary = "Lorem ipsum dolor sit amet stet ipsum invidunt amet invidunt magna vero delenit tempor invidunt no rebum eirmod. Duo labore eu no nonumy consequat lobortis consequat consetetur ipsum et ipsum ea eirmod esse. Eirmod rebum voluptua duo et autem eirmod vero amet dolores tincidunt lorem ipsum stet dolore sed aliquyam nonumy consetetur. Rebum no invidunt justo consetetur gubergren sea luptatum ut et amet ut aliquyam lorem ipsum. Nonummy et dolor placerat sit hendrerit invidunt. Et est dolore magna et suscipit duo aliquyam sed dolore ipsum erat nonummy eirmod. Nonummy consequat et et et accusam hendrerit et dolor et. Sanctus gubergren elitr sit takimata accusam lobortis quod sit nonumy nonumy diam clita clita. Ea takimata dolor molestie duo tempor invidunt amet nobis lorem accumsan duo rebum diam ipsum dolores erat ea. Amet nulla eirmod takimata no vel in et sea lobortis ut ullamcorper sadipscing delenit duo takimata ipsum eos consectetuer. Et et ea no duis eu labore quod ipsum feugiat esse lorem clita et nibh iriure diam magna. Sit duis tempor dolore sed et no magna et dolor labore clita erat sed dolores accusam molestie clita. Quis amet eum sit magna kasd eu invidunt nihil. Labore diam erat dignissim labore ipsum qui clita vel eos. Nisl praesent amet consequat ipsum justo quod tempor sed est aliquyam labore lorem accusam diam.",
                 MaxTokenCap = 3000,
                 DailyRequestCap = 300,
             },
