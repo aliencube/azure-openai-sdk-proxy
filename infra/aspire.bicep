@@ -17,6 +17,15 @@ param enabledForDeployment bool = true
 param enabledForTemplateDeployment bool = true
 param enableRbacAuthorization bool = true
 
+//TODO: 배포 시점에 사용자 princpalId, apiapp principalId를 받는 방법 조사
+//param creatorAdminPrincipalId string = ''
+//param apiAppUserPrincipalId string = ''
+
+// parameters for storage account
+param storageAccountName string = ''
+// tableNames passed as a comma separated string from command line
+param tableNames string = 'events'
+
 var abbrs = loadJsonContent('./abbreviations.json')
 
 // Tags that should be applied to all resources.
@@ -39,6 +48,9 @@ var resourceToken = uniqueString(resourceGroup().id)
 #disable-next-line no-unused-vars
 // var apiServiceName = 'python-api'
 
+// tables for storage account seperated by comma
+var tables = split(tableNames, ',')
+
 // Add resources to be provisioned below.
 
 // Provision Key Vault
@@ -53,6 +65,35 @@ module keyVault './core/security/keyvault.bicep' = {
     enableRbacAuthorization: enableRbacAuthorization
   }
 }
+
+// Provision Storage Account
+module storageAccount './core/storage/storage-account.bicep' = {
+    name: 'storageAccount'
+    params: {
+        name: !empty(storageAccountName) ? storageAccountName : '${abbrs.storageStorageAccounts}${resourceToken}'
+        location: location
+        tags: tags
+        tables: tables
+        keyVaultName: keyVault.outputs.name
+    }
+}
+
+// TODO: Key vault Secret 권한부여, 생성한 사람에게 관리자 권한을, 그 외에는 secret user 권한을 부여
+//resource keyVaultSecretRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+//    name: guid(resourceGroup().id, resolvedKeyVaultName, 'secret-role-assignment')
+//    properties: {
+//        principalId: creatorAdminPrincipalId
+//        roleDefinitionId: '00482A5A-887F-4FB3-B363-3B7FE8E74483' // administrator role
+//    }
+//}
+//
+//resource keyVaultSecretApiAppRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+//    name: guid(resourceGroup().id, resolvedKeyVaultName, 'secret-apiapp-role-assignment')
+//    properties: {
+//        principalId: apiAppUserPrincipalId
+//        roleDefinitionId: '4633458B-17DE-408A-B874-0445C86B69E6' // secret user role
+//    }
+//}
 
 // Add outputs from the deployment here, if needed.
 //
