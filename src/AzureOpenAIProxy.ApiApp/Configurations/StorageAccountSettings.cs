@@ -13,5 +13,5 @@ public class StorageAccountSettings
     /// <summary>
     /// Gets or sets the <see cref="TableStorageSettings"/> instance.
     /// </summary>
-    public TableStorageSettings Table { get; set; } = new();
+    public TableStorageSettings TableStorage { get; set; } = new();
 }

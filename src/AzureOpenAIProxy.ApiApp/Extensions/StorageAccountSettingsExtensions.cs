@@ -21,7 +21,7 @@ public static class StorageAccountSettingsExtensions
             var settings = configuration.GetSection(AzureSettings.Name).GetSection(StorageAccountSettings.Name).Get<StorageAccountSettings>()
                 ?? throw new InvalidOperationException($"{nameof(StorageAccountSettings)} could not be retrieved from the configuration.");
 
-            if (string.IsNullOrWhiteSpace(settings.Table.TableName) == true)
+            if (string.IsNullOrWhiteSpace(settings.TableStorage.TableName) == true)
             {
                 throw new InvalidOperationException($"{StorageAccountSettings.Name}.{TableStorageSettings.Name} is not defined.");
             }
