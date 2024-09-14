@@ -1,15 +1,14 @@
 using AzureOpenAIProxy.ApiApp.Configurations;
 
-
 namespace AzureOpenAIProxy.ApiApp.Extensions;
 
 /// <summary>
 /// This represents the extension entity for the <see cref="StorageAccountSettings"/> class.
 /// </summary>
-public static class StorageSettingsExtensions
+public static class StorageAccountSettingsExtensions
 {  
     /// <summary>
-    /// Gets the Storage configuration settings by reading appsettings.json.
+    /// Gets the storage account configuration settings by reading appsettings.json.
     /// </summary>
     /// <param name="services"><see cref="IServiceCollection"/> instance.</param>
     /// <returns>Returns <see cref="StorageAccountSettings"/> instance.</returns>

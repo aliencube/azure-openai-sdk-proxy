@@ -1,7 +1,7 @@
 namespace AzureOpenAIProxy.ApiApp.Configurations;
 
 /// <summary>
-/// This represents the settings entity for Storage.
+/// This represents the settings entity for storage account.
 /// </summary>
 public class StorageAccountSettings
 {
