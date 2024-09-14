@@ -51,6 +51,11 @@ public class AdminEventRepository : IAdminEventRepository
         _tableServiceClient = tableServiceClient;
     }
 
+    public AdminEventRepository()
+    {
+        // TODO: [tae0y] TEST를 위한 임시 코드
+    }
+
 
     /// <inheritdoc />
     public async Task<AdminEventDetails> CreateEvent(AdminEventDetails eventDetails)
@@ -64,13 +69,13 @@ public class AdminEventRepository : IAdminEventRepository
         eventDetails.PartitionKey = eventDetails.TimeZone;
         eventDetails.RowKey = eventDetails.EventId.ToString();
         var response = await tableServiceClient.AddEntityAsync(eventDetails);
-
         if (response.Status != 200)
         {
             throw new Exception("Failed to create event");
         }
 
-        return eventDetails;
+        var addedEntity = await tableServiceClient.GetEntityAsync<AdminEventDetails>(eventDetails.PartitionKey, eventDetails.RowKey);
+        return addedEntity;
     }
 
     /// <inheritdoc />
