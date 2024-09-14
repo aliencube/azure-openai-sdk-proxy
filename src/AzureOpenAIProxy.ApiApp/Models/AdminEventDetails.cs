@@ -1,11 +1,14 @@
 ﻿using System.Text.Json.Serialization;
 
+using Azure;
+using Azure.Data.Tables;
+
 namespace AzureOpenAIProxy.ApiApp.Models;
 
 /// <summary>
 /// This represent the entity for the event details for admin.
 /// </summary>
-public class AdminEventDetails : EventDetails
+public class AdminEventDetails : EventDetails, ITableEntity
 {
     /// <summary>
     /// Gets or sets the event description.
@@ -57,4 +60,25 @@ public class AdminEventDetails : EventDetails
     /// Gets or sets the event coorganizer email.
     /// </summary>
     public string? CoorganizerEmail { get; set; }
+
+    // ITableEntity implementation
+    /// <summary>
+    /// Gets or sets the event Partition Key.
+    /// </summary>
+    public string? PartitionKey { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the event Row Key.
+    /// </summary>
+    public string? RowKey { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the event Timestamp.
+    /// </summary>
+    public DateTimeOffset? Timestamp { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the event ETag.
+    /// </summary>
+    public ETag ETag { get; set; }
 }

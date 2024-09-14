@@ -1,4 +1,6 @@
 ﻿using AzureOpenAIProxy.ApiApp.Models;
+using Azure.Data.Tables;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AzureOpenAIProxy.ApiApp.Repositories;
 
@@ -41,16 +43,34 @@ public interface IAdminEventRepository
 /// </summary>
 public class AdminEventRepository : IAdminEventRepository
 {
+    private readonly string TableName = "events";
+    private readonly TableServiceClient _tableServiceClient;
+
+    public AdminEventRepository(TableServiceClient tableServiceClient)
+    {
+        _tableServiceClient = tableServiceClient;
+    }
+
+
     /// <inheritdoc />
     public async Task<AdminEventDetails> CreateEvent(AdminEventDetails eventDetails)
     {
-        //TODO: [tae0y], implement this method
-        //TODO: [tae0y] partition key :  / rowkey : 
-        //TODO: [tae0y] ITableEntity 상속/구현
-        //TODO: [tae0y] table storage client 생성, 의존성 주입
-        //var tableClient = tableStorageService.GetTableClient(TableName);
+        //DONE: [tae0y] partition key : TimeZone / rowkey : Guid.NewGuid().ToString()
+        //DONE: [tae0y] ITableEntity 상속/구현
+        //TODO: [tae0y] table storage client 생성, 의존성 주입받는 방식이 이게 맞는가
+        
+        var tableServiceClient = _tableServiceClient.GetTableClient(TableName);
 
-        throw new NotImplementedException();
+        eventDetails.PartitionKey = eventDetails.TimeZone;
+        eventDetails.RowKey = eventDetails.EventId.ToString();
+        var response = await tableServiceClient.AddEntityAsync(eventDetails);
+
+        if (response.Status != 200)
+        {
+            throw new Exception("Failed to create event");
+        }
+
+        return eventDetails;
     }
 
     /// <inheritdoc />
