@@ -25,7 +25,8 @@ jobs:
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
       AZURE_OPENAI_KEYS: ${{ secrets.AZURE_OPENAI_KEYS }}
       AZURE_KEYVAULT_URI: ${{ secrets.AZURE_KEYVAULT_URI }}
-      AZURE_KEYVAULT_SECRET_NAME: ${{ vars.AZURE_KEYVAULT_SECRET_NAME }}
+      AZURE_KEYVAULT_SECRET_NAME_OPENAI: ${{ vars.AZURE_KEYVAULT_SECRET_NAME_OPENAI }}
+      AZURE_KEYVAULT_SECRET_NAME_STORAGE: ${{ vars.AZURE_KEYVAULT_SECRET_NAME_STORAGE }}
 
     steps:
     - name: Checkout
@@ -54,7 +55,8 @@ jobs:
         $appsettings = Get-Content -Path "./src/AzureOpenAIProxy.ApiApp/appsettings.json" -Raw | ConvertFrom-Json
         $appsettings.Azure.OpenAI.Instances = @()
         $appsettings.Azure.KeyVault.VaultUri = "${{ env.AZURE_KEYVAULT_URI }}"
-        $appsettings.Azure.KeyVault.SecretName = "${{ env.AZURE_KEYVAULT_SECRET_NAME }}"
+        $appsettings.Azure.KeyVault.SecretNames.OpenAI = "${{ env.AZURE_KEYVAULT_SECRET_NAME_OPENAI }}"
+        $appsettings.Azure.KeyVault.SecretNames.Storage = "${{ env.AZURE_KEYVAULT_SECRET_NAME_STORAGE }}"
         $appsettings | ConvertTo-Json -Depth 100 | Set-Content -Path "./src/AzureOpenAIProxy.ApiApp/appsettings.json" -Encoding UTF8 -Force
         
     - name: Install Spectral Cli

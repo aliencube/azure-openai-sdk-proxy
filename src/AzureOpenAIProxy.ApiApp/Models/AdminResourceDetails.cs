@@ -60,7 +60,8 @@ public class AdminResourceDetails
 }
 
 /// <summary>
-/// /// This defines the type of the resource.
+/// This defines the type of the resource.
+/// </summary>
 [JsonConverter(typeof(EnumMemberConverter<ResourceType>))]
 public enum ResourceType
 {
