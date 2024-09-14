@@ -1,4 +1,5 @@
-﻿using Azure.Identity;
+﻿using Azure.Data.Tables;
+using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 
 using AzureOpenAIProxy.ApiApp.Builders;
@@ -35,9 +36,9 @@ public static class ServiceCollectionExtensions
                 throw new InvalidOperationException($"{nameof(KeyVaultSettings.VaultUri)} is not defined.");
             }
 
-            if (string.IsNullOrWhiteSpace(settings.SecretName) == true)
+            if (string.IsNullOrWhiteSpace(settings.SecretNames[KeyVaultSecretNames.OpenAI]) == true)
             {
-                throw new InvalidOperationException($"{nameof(KeyVaultSettings.SecretName)} is not defined.");
+                throw new InvalidOperationException($"{nameof(KeyVaultSettings.SecretNames)}.{KeyVaultSecretNames.OpenAI} is not defined.");
             }
 
             var client = new SecretClient(new Uri(settings.VaultUri), new DefaultAzureCredential());
@@ -130,6 +131,38 @@ public static class ServiceCollectionExtensions
 
             options.DocumentFilter<OpenApiTagFilter>();
             options.OperationFilter<OpenApiParameterIgnoreFilter>();
+        });
+
+        return services;
+    }
+
+    /// <summary>
+    /// Adds the TableServiceClient to the services collection.
+    /// </summary>
+    /// <param name="services"><see cref="IServiceCollection"/> instance.</param>
+    /// <returns>Returns <see cref="IServiceCollection"/> instance.</returns>
+    public static IServiceCollection AddTableStorageService(this IServiceCollection services)
+    {
+        services.AddSingleton<TableServiceClient>(sp => {
+            var configuration = sp.GetService<IConfiguration>()
+                ?? throw new InvalidOperationException($"{nameof(IConfiguration)} service is not registerd.");
+            
+            var settings = configuration.GetSection(AzureSettings.Name).GetSection(KeyVaultSettings.Name).Get<KeyVaultSettings>()
+                ?? throw new InvalidOperationException($"{nameof(KeyVaultSettings)} could not be retrieved from the configuration.");
+
+            var clientSecret = sp.GetService<SecretClient>()
+                ?? throw new InvalidOperationException($"{nameof(SecretClient)} service is not registered.");
+
+            if (string.IsNullOrWhiteSpace(settings.SecretNames[KeyVaultSecretNames.Storage]) == true)
+            {
+                throw new InvalidOperationException($"{nameof(KeyVaultSettings.SecretNames)}.{KeyVaultSecretNames.Storage} is not defined.");
+            }
+
+            var storageKeyVault = clientSecret.GetSecret(settings.SecretNames[KeyVaultSecretNames.Storage]!);
+
+            var client = new TableServiceClient(storageKeyVault.Value.Value);
+
+            return client;
         });
 
         return services;
