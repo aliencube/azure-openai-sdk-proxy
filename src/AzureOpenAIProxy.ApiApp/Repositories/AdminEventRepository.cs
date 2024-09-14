@@ -44,7 +44,7 @@ public interface IAdminEventRepository
 public class AdminEventRepository : IAdminEventRepository
 {
     private readonly string TableName = "events";
-    private readonly TableServiceClient _tableServiceClient;
+    private readonly TableServiceClient? _tableServiceClient;
 
     public AdminEventRepository(TableServiceClient tableServiceClient)
     {
@@ -60,16 +60,16 @@ public class AdminEventRepository : IAdminEventRepository
     /// <inheritdoc />
     public async Task<AdminEventDetails> CreateEvent(AdminEventDetails eventDetails)
     {
-        //DONE: [tae0y] partition key : TimeZone / rowkey : Guid.NewGuid().ToString()
-        //DONE: [tae0y] ITableEntity 상속/구현
-        //TODO: [tae0y] table storage client 생성, 의존성 주입받는 방식이 이게 맞는가
-        
+        if (_tableServiceClient == null)
+        {
+            throw new InvalidOperationException("TableServiceClient is not initialized.");
+        }
         var tableServiceClient = _tableServiceClient.GetTableClient(TableName);
 
-        eventDetails.PartitionKey = eventDetails.TimeZone;
-        eventDetails.RowKey = eventDetails.EventId.ToString();
+        eventDetails.PartitionKey = string.IsNullOrEmpty(eventDetails.TimeZone) ? "KST" : eventDetails.TimeZone;
+        eventDetails.RowKey = string.IsNullOrEmpty(eventDetails.EventId.ToString()) ? Guid.NewGuid().ToString() : eventDetails.EventId.ToString();
         var response = await tableServiceClient.AddEntityAsync(eventDetails);
-        if (response.Status != 200)
+        if (response.Status != 204)
         {
             throw new Exception("Failed to create event");
         }
