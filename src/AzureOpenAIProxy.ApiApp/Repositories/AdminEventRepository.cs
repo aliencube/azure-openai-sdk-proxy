@@ -1,4 +1,6 @@
-﻿using AzureOpenAIProxy.ApiApp.Models;
+﻿using Azure.Data.Tables;
+
+using AzureOpenAIProxy.ApiApp.Models;
 
 namespace AzureOpenAIProxy.ApiApp.Repositories;
 
@@ -39,8 +41,10 @@ public interface IAdminEventRepository
 /// <summary>
 /// This represents the repository entity for the admin event.
 /// </summary>
-public class AdminEventRepository : IAdminEventRepository
+public class AdminEventRepository(TableServiceClient tableServiceClient) : IAdminEventRepository
 {
+    private readonly TableServiceClient _tableServiceClient = tableServiceClient ?? throw new ArgumentNullException(nameof(tableServiceClient));
+
     /// <inheritdoc />
     public async Task<AdminEventDetails> CreateEvent(AdminEventDetails eventDetails)
     {
