@@ -107,7 +107,7 @@ resource storage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
 module keyVaultSecrets '../../core/security/keyvault-secret.bicep' = {
     name: 'keyVaultSecrets'
     params: {
-        name: 'Storage'
+        name: 'storage-connection-string'
         secretValue:'DefaultEndpointsProtocol=https;EndpointSuffix=${environment().suffixes.storage};AccountName=${storage.name};AccountKey=${storage.listKeys().keys[0].value};BlobEndpoint=${storage.properties.primaryEndpoints.blob};FileEndpoint=${storage.properties.primaryEndpoints.file};QueueEndpoint=${storage.properties.primaryEndpoints.queue};TableEndpoint=${storage.properties.primaryEndpoints.table}'
         keyVaultName:keyVaultName
     }
