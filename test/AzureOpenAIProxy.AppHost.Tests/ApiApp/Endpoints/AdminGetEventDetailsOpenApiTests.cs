@@ -174,24 +174,6 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
         result.ValueKind.Should().Be(JsonValueKind.Object);
     }
 
-    public static IEnumerable<object[]> AttributeData =>
-        [
-            ["eventId", true, "string"],
-            ["title", true, "string"],
-            ["summary", true, "string"],
-            ["description", false, "string"],
-            ["dateStart", true, "string"],
-            ["dateEnd", true, "string"],
-            ["timeZone", true, "string"],
-            ["isActive", true, "boolean"],
-            ["organizerName", true, "string"],
-            ["organizerEmail", true, "string"],
-            ["coorganizerName", false, "string"],
-            ["coorganizerEmail", false, "string"],
-            ["maxTokenCap", true, "integer"],
-            ["dailyRequestCap", true, "integer"]
-        ];
-
     [Fact]
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Schemas()
     {
@@ -228,15 +210,25 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
     }
 
     [Theory]
-    [MemberData(nameof(AttributeData))]
-    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Required(string attribute, bool isRequired, string type)
+    [InlineData("eventId", true)]
+    [InlineData("title", true)]
+    [InlineData("summary", true)]
+    [InlineData("description", false)]
+    [InlineData("dateStart", true)]
+    [InlineData("dateEnd", true)]
+    [InlineData("timeZone", true)]
+    [InlineData("isActive", true)]
+    [InlineData("organizerName", true)]
+    [InlineData("organizerEmail", true)]
+    [InlineData("coorganizerName", false)]
+    [InlineData("coorganizerEmail", false)]
+    [InlineData("maxTokenCap", true)]
+    [InlineData("dailyRequestCap", true)]
+    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Required(string attribute, bool isRequired)
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
         await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
-
-        var isReq = isRequired;
-        var typeStr = type;
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -252,15 +244,25 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
     }
 
     [Theory]
-    [MemberData(nameof(AttributeData))]
-    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Property(string attribute, bool isRequired, string type)
+    [InlineData("eventId")]
+    [InlineData("title")]
+    [InlineData("summary")]
+    [InlineData("description")]
+    [InlineData("dateStart")]
+    [InlineData("dateEnd")]
+    [InlineData("timeZone")]
+    [InlineData("isActive")]
+    [InlineData("organizerName")]
+    [InlineData("organizerEmail")]
+    [InlineData("coorganizerName")]
+    [InlineData("coorganizerEmail")]
+    [InlineData("maxTokenCap")]
+    [InlineData("dailyRequestCap")]
+    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Property(string attribute)
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
         await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
-
-        var isReq = isRequired;
-        var typeStr = type;
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -276,15 +278,25 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
     }
 
     [Theory]
-    [MemberData(nameof(AttributeData))]
-    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Type(string attribute, bool isRequired, string type)
+    [InlineData("eventId", "string")]
+    [InlineData("title", "string")]
+    [InlineData("summary", "string")]
+    [InlineData("description", "string")]
+    [InlineData("dateStart", "string")]
+    [InlineData("dateEnd", "string")]
+    [InlineData("timeZone", "string")]
+    [InlineData("isActive", "boolean")]
+    [InlineData("organizerName", "string")]
+    [InlineData("organizerEmail", "string")]
+    [InlineData("coorganizerName", "string")]
+    [InlineData("coorganizerEmail", "string")]
+    [InlineData("maxTokenCap", "integer")]
+    [InlineData("dailyRequestCap", "integer")]
+    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Type(string attribute, string type)
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
         await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
-
-        var isReq = isRequired;
-        var typeStr = type;
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
