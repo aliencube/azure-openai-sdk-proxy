@@ -18,8 +18,13 @@ public static class StorageAccountSettingsExtensions
             var configuration = sp.GetService<IConfiguration>()
                 ?? throw new InvalidOperationException($"{nameof(IConfiguration)} service is not registered.");
 
-            var settings = configuration.GetSection(StorageAccountSettings.Name).Get<StorageAccountSettings>()
+            var settings = configuration.GetSection(AzureSettings.Name).GetSection(StorageAccountSettings.Name).Get<StorageAccountSettings>()
                 ?? throw new InvalidOperationException($"{nameof(StorageAccountSettings)} could not be retrieved from the configuration.");
+
+            if (string.IsNullOrWhiteSpace(settings.Table.TableName) == true)
+            {
+                throw new InvalidOperationException($"{StorageAccountSettings.Name}.{TableStorageSettings.Name} is not defined.");
+            }
 
             return settings;
         });
