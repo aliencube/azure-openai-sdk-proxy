@@ -1,4 +1,4 @@
-<FluentTextField Id="@Id" @bind-Value=apiKeyValue TextFieldType="TextFieldType.Password" data-type="System.String" @oninput="SetApiKey">API key input</FluentTextField>
+<FluentTextField Id="@Id" @bind-Value=apiKeyValue TextFieldType="TextFieldType.Password" data-type="GUID" @oninput="SetApiKey" Required="true">API key input</FluentTextField>
 
 @code {
     private string? apiKeyValue { get; set; }
@@ -11,7 +11,7 @@
 
     private async Task SetApiKey(ChangeEventArgs e)
     {
-        apiKeyValue = e?.Value?.ToString();
+        apiKeyValue = e.Value!.ToString();
         if (string.IsNullOrWhiteSpace(apiKeyValue) == true)
         {
             return;

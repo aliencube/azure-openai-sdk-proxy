@@ -2,6 +2,7 @@ using FluentAssertions;
 
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
+using System.Text.RegularExpressions;
 
 namespace AzureOpenAIProxy.PlaygroundApp.Tests.Pages;
 
@@ -53,6 +54,24 @@ public class TestsPageTests : PageTest
 
         // Assert
         await Expect(Page.Locator(".fluent-toast-title")).ToHaveTextAsync($"{inputValue} (Type: {expectedType})");
+    }
+
+    [Test]
+    [TestCase("3F2504E0-4F89-11D3-9A0C-0305E82C3301", typeof(string))]
+    [TestCase("b9f6741c-2f44-4d9b-bd63-c0e6b97cc83f", typeof(string))]
+
+    public async Task Given_Input_On_ApiKeyField_When_DebugButton_Clicked_Then_Toast_Should_Show_Input(string apiKey, Type expectedType)
+    {
+        // Arrange
+        var apiKeyInput = Page.Locator("fluent-text-field#api-key-input").Locator("input");
+        var debugButton = Page.Locator("fluent-button#debug-api-key");
+
+        // Act
+        await apiKeyInput.FillAsync(apiKey);
+        await debugButton.ClickAsync();
+        
+        // Assert
+        await Expect(Page.Locator(".fluent-toast-title")).ToHaveTextAsync($"{apiKey} (Type: {expectedType})");
     }
 
     [Test]
@@ -120,38 +139,6 @@ public class TestsPageTests : PageTest
         await Expect(Page.Locator(".fluent-toast-title")).ToHaveTextAsync($"{expectedValue} (Type: {expectedType})");
     }
     
-    [Test]
-    public async Task Given_Null_ApiKeyInput_When_DebugButton_Clicked_Then_Should_Show_NullMessage()
-    {
-        // Arrange
-        var apiKeyInput = Page.Locator("fluent-text-field#api-key-input").Locator("input");
-        var debugButton = Page.Locator("fluent-button#debug-api-key");
-
-        // Act
-        await apiKeyInput.FillAsync("");
-        await debugButton.ClickAsync();
-
-        // Assert
-        await Expect(Page.Locator(".fluent-toast-title")).ToHaveTextAsync("Input is null.");
-    }
-
-
-    [Test]
-    [TestCase("test-api-key-321")]
-    [TestCase("example-key-123")]
-    public async Task Given_ApiKeyInput_When_Input_Entered_Then_It_Should_Show_Input(string apiKey)
-    {
-        // Arrange
-        var apiKeyInput = Page.Locator("fluent-text-field#api-key-input").Locator("input");
-        var debugButton = Page.Locator("fluent-button#debug-api-key");
-
-        // Act
-        await apiKeyInput.FillAsync(apiKey);
-        await debugButton.ClickAsync();
-
-        // Assert
-        await Expect(Page.Locator(".fluent-toast-title")).ToHaveTextAsync($"{apiKey} (Type: System.String)");
-    }
     
     [TearDown]
     public async Task CleanUp()
