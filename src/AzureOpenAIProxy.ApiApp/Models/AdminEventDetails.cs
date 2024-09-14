@@ -80,5 +80,7 @@ public class AdminEventDetails : EventDetails, ITableEntity
     /// <summary>
     /// Gets or sets the event ETag.
     /// </summary>
+    //TODO: [tae0y] request payload, table entity를 분리해야하는가? 혹은 Json 역직렬화시 제외만 해도 되는가?
+    [JsonIgnore]
     public ETag ETag { get; set; }
 }
