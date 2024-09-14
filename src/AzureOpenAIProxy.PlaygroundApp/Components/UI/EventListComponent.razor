@@ -4,14 +4,14 @@
             Id="@Id"
             Spacing="3"
             Justify="JustifyContent.FlexStart"
-            Style="background-color: var(--neutral-layer-3);
+            Style="background-color: var(--neutral-layer-4);
                 padding-block: 1.5em;
                 padding-inline: 1.0em; align-items: center; margin-top: 18px; border-radius: 8px;">
 
     @if (_events == null || _events.Any() == false)
     {
         <FluentGridItem Id="no-events" xs="12" sm="12" Justify="JustifyContent.Center" Style="text-align: center; flex-grow: 1;">
-            <FluentCard MinimalStyle="true" Style="flex-grow: 1; display: flex; padding: 0em; flex-direction: row; align-items: center; align-content: center; justify-content: center; background-color: transparent; box-shadow: none !important; border: hidden;">
+            <FluentCard MinimalStyle="true" Style="flex-grow: 1; background-color: var(--neutral-layer-2); display: flex; padding: 0em; flex-direction: row; align-items: center; align-content: center; justify-content: center; background-color: transparent; box-shadow: none !important; border: hidden;">
                 <FluentLabel Typo="Typography.Header">You don’t have any events you have participated in now.</FluentLabel>
             </FluentCard>
         </FluentGridItem>
