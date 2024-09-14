@@ -152,10 +152,10 @@ public class PlaygroundPageTests : PageTest
 
         // Act
         await selectedTab.ClickAsync();
-        var actualValue = await Page.EvaluateAsync<string>($"document.querySelector('{componentSelector}').value");
+        var actualValue = await Page.Locator(componentSelector).GetAttributeAsync("value");
 
         // Assert
-        actualValue.Should().Be($"{expectedValue}");
+        actualValue.Should().Be((string)expectedValue);
     }
 
     [Test]
@@ -163,24 +163,19 @@ public class PlaygroundPageTests : PageTest
     {
         // Arrange
         var systemMessageTab = Page.Locator("fluent-tab#system-message-tab");
-        var systemMessageTextAreaSelector = "fluent-text-area#system-message-tab-textarea";
+        var systemMessageTextAreaControl = Page.Locator("fluent-text-area#system-message-tab-textarea textarea");
         var applyButton = Page.Locator("fluent-button#system-message-tab-apply-button");
         var resetButton = Page.Locator("fluent-button#system-message-tab-reset-button");
-        var newValue = "New system message";
 
         // Act
         await systemMessageTab.ClickAsync();
-        await Page.EvaluateAsync(@$"
-                const textarea = document.querySelector('{systemMessageTextAreaSelector}');
-                textarea.value = '{newValue}';
-                textarea.dispatchEvent(new Event('input', {{ bubbles: true }}));
-        ");
-        var isApplyButtonDisabled = await applyButton.GetAttributeAsync("disabled");
-        var isResetButtonDisabled = await resetButton.GetAttributeAsync("disabled");
+        await systemMessageTextAreaControl.FillAsync("New system message");
+        var isApplyButtonEnabled = await applyButton.GetAttributeAsync("disabled") == null;
+        var isResetButtonEnabled = await resetButton.GetAttributeAsync("disabled") == null;
 
         // Assert
-        isApplyButtonDisabled.Should().BeNull();
-        isResetButtonDisabled.Should().BeNull();
+        isApplyButtonEnabled.Should().BeTrue();
+        isResetButtonEnabled.Should().BeTrue();
     }
 
     [Test]
@@ -192,26 +187,23 @@ public class PlaygroundPageTests : PageTest
     {
         // Arrange
         var systemMessageTab = Page.Locator("fluent-tab#system-message-tab");
-        var systemMessageTextAreaSelector = "fluent-text-area#system-message-tab-textarea";
+        var systemMessageTextArea = Page.Locator("fluent-text-area#system-message-tab-textarea");
+        var systemMessageTextAreaControl = Page.Locator("fluent-text-area#system-message-tab-textarea textarea");
         var applyButton = Page.Locator("fluent-button#system-message-tab-apply-button");
         var resetButton = Page.Locator("fluent-button#system-message-tab-reset-button");
 
         // Act
         await systemMessageTab.ClickAsync();
-        await Page.EvaluateAsync(@$"
-                const textarea = document.querySelector('{systemMessageTextAreaSelector}');
-                textarea.value = '{expectedValue}';
-                textarea.dispatchEvent(new Event('input', {{ bubbles: true }}));
-        ");
+        await systemMessageTextAreaControl.FillAsync(expectedValue);
         await applyButton.ClickAsync();
-        var isApplyButtonDisabled = await applyButton.GetAttributeAsync("disabled");
-        var isResetButtonDisabled = await resetButton.GetAttributeAsync("disabled");
-        var actualValue = await Page.EvaluateAsync<string>($"document.querySelector('{systemMessageTextAreaSelector}').value");
+        var actualValue = await systemMessageTextArea.GetAttributeAsync("value");
+        var isApplyButtonEnabled = await applyButton.GetAttributeAsync("disabled") == null;
+        var isResetButtonEnabled = await resetButton.GetAttributeAsync("disabled") == null;
 
         // Assert
-        actualValue.Should().Be($"{expectedValue}");
-        isApplyButtonDisabled.Should().NotBeNull();
-        isResetButtonDisabled.Should().BeNull();
+        actualValue.Should().Be(expectedValue);
+        isApplyButtonEnabled.Should().BeFalse();
+        isResetButtonEnabled.Should().BeTrue();
     }
 
     [Test]
@@ -222,26 +214,23 @@ public class PlaygroundPageTests : PageTest
     {
         // Arrange
         var systemMessageTab = Page.Locator("fluent-tab#system-message-tab");
-        var systemMessageTextAreaSelector = "fluent-text-area#system-message-tab-textarea";
+        var systemMessageTextArea = Page.Locator("fluent-text-area#system-message-tab-textarea");
+        var systemMessageTextAreaControl = Page.Locator("fluent-text-area#system-message-tab-textarea textarea");
         var applyButton = Page.Locator("fluent-button#system-message-tab-apply-button");
         var resetButton = Page.Locator("fluent-button#system-message-tab-reset-button");
 
         // Act
         await systemMessageTab.ClickAsync();
-        await Page.EvaluateAsync(@$"
-                const textarea = document.querySelector('{systemMessageTextAreaSelector}');
-                textarea.value = '{expectedValue}';
-                textarea.dispatchEvent(new Event('input', {{ bubbles: true }}));
-        ");
+        await systemMessageTextAreaControl.FillAsync(expectedValue);
         await applyButton.ClickAsync();
-        var isApplyButtonDisabled = await applyButton.GetAttributeAsync("disabled");
-        var isResetButtonDisabled = await resetButton.GetAttributeAsync("disabled");
-        var actualValue = await Page.EvaluateAsync<string>($"document.querySelector('{systemMessageTextAreaSelector}').value");
-
+        var actualValue = await systemMessageTextArea.GetAttributeAsync("value");
+        var isApplyButtonEnabled = await applyButton.GetAttributeAsync("disabled") == null;
+        var isResetButtonEnabled = await resetButton.GetAttributeAsync("disabled") == null;
+        
         // Assert
-        actualValue.Should().Be($"{expectedValue}");
-        isApplyButtonDisabled.Should().NotBeNull();
-        isResetButtonDisabled.Should().NotBeNull();
+        actualValue.Should().Be(expectedValue);
+        isApplyButtonEnabled.Should().BeFalse();
+        isResetButtonEnabled.Should().BeFalse();
     }
 
     [Test]
@@ -252,28 +241,24 @@ public class PlaygroundPageTests : PageTest
     {
         // Arrange
         var systemMessageTab = Page.Locator("fluent-tab#system-message-tab");
-        var systemMessageTextAreaSelector = "fluent-text-area#system-message-tab-textarea";
+        var systemMessageTextArea = Page.Locator("fluent-text-area#system-message-tab-textarea");
+        var systemMessageTextAreaControl = Page.Locator("fluent-text-area#system-message-tab-textarea textarea");
         var applyButton = Page.Locator("fluent-button#system-message-tab-apply-button");
         var resetButton = Page.Locator("fluent-button#system-message-tab-reset-button");
-        var newValue = "New system message";
 
         // Act
         await systemMessageTab.ClickAsync();
-        await Page.EvaluateAsync(@$"
-                const textarea = document.querySelector('{systemMessageTextAreaSelector}');
-                textarea.value = '{newValue}';
-                textarea.dispatchEvent(new Event('input', {{ bubbles: true }}));
-        ");
+        await systemMessageTextAreaControl.FillAsync("New system message");
         await applyButton.ClickAsync();
         await resetButton.ClickAsync();
-        var isApplyButtonDisabled = await applyButton.GetAttributeAsync("disabled");
-        var isResetButtonDisabled = await resetButton.GetAttributeAsync("disabled");
-        var actualValue = await Page.EvaluateAsync<string>($"document.querySelector('{systemMessageTextAreaSelector}').value");
-
+        var actualValue = await systemMessageTextArea.GetAttributeAsync("value");
+        var isApplyButtonEnabled = await applyButton.GetAttributeAsync("disabled") == null;
+        var isResetButtonEnabled = await resetButton.GetAttributeAsync("disabled") == null;
+        
         // Assert
-        actualValue.Should().Be($"{expectedValue}");
-        isApplyButtonDisabled.Should().NotBeNull();
-        isResetButtonDisabled.Should().NotBeNull();
+        actualValue.Should().Be(expectedValue);
+        isApplyButtonEnabled.Should().BeFalse();
+        isResetButtonEnabled.Should().BeFalse();
     }
     
     [Test]
