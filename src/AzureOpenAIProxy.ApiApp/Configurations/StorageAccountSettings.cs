@@ -11,7 +11,7 @@ public class StorageAccountSettings
     public const string Name = "StorageAccount";
 
     /// <summary>
-    /// Gets or sets the <see cref="TableSettings"/> instance.
+    /// Gets or sets the <see cref="TableStorageSettings"/> instance.
     /// </summary>
-    public TableSettings Table { get; set; } = new();
+    public TableStorageSettings Table { get; set; } = new();
 }
