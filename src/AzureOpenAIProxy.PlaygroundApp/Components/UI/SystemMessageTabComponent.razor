@@ -1,16 +1,16 @@
 <FluentLayout Id="@Id" Style="margin: 10px;">
     <FluentToolbar id="system-message-tab-toolbar" Style="display: flex; align-items: center; padding-bottom: 10px; background-color: white;">
-        <FluentButton id="system-message-tab-apply-button" @onclick="OnApplyChanges" Disabled="@isApplyButtonDisabled"
+        <FluentButton id="system-message-tab-apply-button" @onclick="OnApplyChanges" Disabled="@(!isApplyButtonEnabled)"
             IconStart="@(new Icons.Filled.Size20.ArrowSwap())" Appearance="Appearance.Stealth">
             Apply changes
         </FluentButton>
-        <FluentButton id="system-message-tab-reset-button" @onclick="OnResetToDefault" Disabled="@isResetButtonDisabled"
+        <FluentButton id="system-message-tab-reset-button" @onclick="OnResetToDefault" Disabled="@(!isResetButtonEnabled)"
             IconStart="@(new Icons.Filled.Size20.ArrowReset())" Appearance="Appearance.Stealth">
             Reset to default
         </FluentButton>
     </FluentToolbar>
 
-    <FluentTextArea id="system-message-tab-textarea" Rows="5" Style="width: 100%;" @bind-Value="userSystemMessage" @oninput="OnInputChanged" Resize="TextAreaResize.Vertical">
+    <FluentTextArea id="system-message-tab-textarea" Rows="5" Style="width: 100%;" Value="@userSystemMessage" @oninput="OnInputChanged" Resize="TextAreaResize.Vertical">
         <div style="display: flex; align-items: center; padding-bottom: 3px;">
             <label id="system-message-tab-label" for="system-message-tab-textarea" style="margin-right: 5px;">System message</label>
             <FluentIcon Value="@(new Icons.Regular.Size16.Info())" Color="@Color.Info" />
@@ -19,10 +19,11 @@
 </FluentLayout>
 
 @code {
-    private string? userSystemMessage { get; set; }
+    private string? userSystemMessage;
+    private string? changedSystemMessage;
     private string? defaultSystemMessage = "You are an AI assistant that helps people find information.";
-    private bool isApplyButtonDisabled { get; set; } = true;
-    private bool isResetButtonDisabled { get; set; } = true;
+    private bool isApplyButtonEnabled;
+    private bool isResetButtonEnabled;
 
     [Parameter]
     public string? Id { get; set; }
@@ -38,18 +39,19 @@
 
     private async Task OnInputChanged(ChangeEventArgs e)
     {
-        userSystemMessage = e.Value?.ToString();
-        isApplyButtonDisabled = false;
-        isResetButtonDisabled = false;
+        changedSystemMessage = e.Value!.ToString();
+        isApplyButtonEnabled = true;
+        isResetButtonEnabled = true;
         await Task.CompletedTask;
     }
 
     private async Task OnApplyChanges()
     {
-        isApplyButtonDisabled = true;
+        userSystemMessage = changedSystemMessage;
+        isApplyButtonEnabled = false;
         if(userSystemMessage == defaultSystemMessage)
         {
-            isResetButtonDisabled = true;
+            isResetButtonEnabled = false;
         }
         await OnSystemMessageChanged.InvokeAsync(userSystemMessage);
     }
@@ -57,8 +59,8 @@
     private async Task OnResetToDefault()
     {
         userSystemMessage = defaultSystemMessage;
-        isApplyButtonDisabled = true;
-        isResetButtonDisabled = true;
+        isApplyButtonEnabled = false;
+        isResetButtonEnabled = false;
         await OnSystemMessageChanged.InvokeAsync(userSystemMessage);
     }
 }
