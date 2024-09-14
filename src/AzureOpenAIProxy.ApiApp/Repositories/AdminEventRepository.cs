@@ -1,4 +1,6 @@
-﻿using AzureOpenAIProxy.ApiApp.Configurations;
+﻿using Azure.Data.Tables;
+
+using AzureOpenAIProxy.ApiApp.Configurations;
 using AzureOpenAIProxy.ApiApp.Extensions;
 using AzureOpenAIProxy.ApiApp.Models;
 
@@ -41,9 +43,10 @@ public interface IAdminEventRepository
 /// <summary>
 /// This represents the repository entity for the admin event.
 /// </summary>
-public class AdminEventRepository(IServiceCollection sc) : IAdminEventRepository
+public class AdminEventRepository(TableServiceClient tableServiceClient, StorageAccountSettings storageAccountSettings) : IAdminEventRepository
 {
-    private readonly StorageAccountSettings _storageSettings = sc.GetStorageSettings();
+    private readonly TableServiceClient _tableServiceClient = tableServiceClient;
+    private readonly StorageAccountSettings _storageAccountSettings = storageAccountSettings;
 
     /// <inheritdoc />
     public async Task<AdminEventDetails> CreateEvent(AdminEventDetails eventDetails)
@@ -82,7 +85,7 @@ public static class AdminEventRepositoryExtensions
     /// <returns>Returns <see cref="IServiceCollection"/> instance.</returns>
     public static IServiceCollection AddAdminEventRepository(this IServiceCollection services)
     {
-        services.AddScoped<IAdminEventRepository>(p => new AdminEventRepository(services));
+        services.AddScoped<IAdminEventRepository, AdminEventRepository>();
 
         return services;
     }

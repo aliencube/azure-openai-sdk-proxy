@@ -13,14 +13,18 @@ public static class StorageSettingsExtensions
     /// </summary>
     /// <param name="services"><see cref="IServiceCollection"/> instance.</param>
     /// <returns>Returns <see cref="StorageAccountSettings"/> instance.</returns>
-    public static StorageAccountSettings GetStorageSettings(this IServiceCollection services)
+    public static IServiceCollection AddStorageAccountSettings(this IServiceCollection services)
     {
-        var configuration = services.BuildServiceProvider().GetService<IConfiguration>()
-            ?? throw new InvalidOperationException($"{nameof(IConfiguration)} service is not registered.");
+        services.AddSingleton<StorageAccountSettings>(sp => {
+            var configuration = sp.GetService<IConfiguration>()
+                ?? throw new InvalidOperationException($"{nameof(IConfiguration)} service is not registered.");
 
-        var settings = configuration.GetSection(StorageAccountSettings.Name).Get<StorageAccountSettings>()
-            ?? throw new InvalidOperationException($"{nameof(StorageAccountSettings)} could not be retrieved from the configuration.");
+            var settings = configuration.GetSection(StorageAccountSettings.Name).Get<StorageAccountSettings>()
+                ?? throw new InvalidOperationException($"{nameof(StorageAccountSettings)} could not be retrieved from the configuration.");
 
-        return settings;
+            return settings;
+        });
+
+        return services;
     }
 }
