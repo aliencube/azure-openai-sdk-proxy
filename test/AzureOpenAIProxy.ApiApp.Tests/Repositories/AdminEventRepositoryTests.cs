@@ -85,25 +85,8 @@ public class AdminEventRepositoryTests
     }
 
     // TODO: [tae0y] Add tests for other methods
-    /*--------------------------------------------------------------------------------
-        TEST 설계
-
-    TableServiceClient가 초기화되지 않았을 때 _tableServiceClient == null일 때 InvalidOperationException이 발생하는지 검증.
-
-    eventDetails.TimeZone이 비어 있을 때 PartitionKey가 "KST"로 설정되는지 검증.
-    eventDetails.TimeZone이 있을 때 해당 값이 PartitionKey로 설정되는지 검증.
-
-    eventDetails.EventId가 null일 때 RowKey가 새로운 GUID로 설정되는지 검증.
-    eventDetails.EventId가 있을 때 해당 값이 RowKey로 설정되는지 검증.
-
-    AddEntityAsync가 성공적으로 호출되었을 때(즉, 204 상태코드) 정상적으로 동작하는지 검증.
-    AddEntityAsync가 204가 아닌 상태코드를 반환했을 때 Exception이 발생하는지 검증.
-    GetEntityAsync가 호출되고 반환된 값이 올바른지 검증.
-    --------------------------------------------------------------------------------*/
-
-
     [Fact]
-    public async Task Given_TableServiceClientIsNull_When_CreateEvent_Invoked_Then_ItShould_Throw_InvalidOperationException()
+    public async Task Given_TableServiceClientIsNull_When_CreateEvent_Invoked_Then_ItShould_Throw_NullReferenceException()
     {
         // Arrange
         var eventDetails = new AdminEventDetails();
@@ -117,78 +100,6 @@ public class AdminEventRepositoryTests
     }
 
     [Fact]
-    public async Task Given_TimeZoneIsEmpty_When_CreateEvent_Invoked_Then_PartitionKeyShould_Be_KST()
-    {
-        // Arrange
-        var eventDetails = createRandomEventDetails(
-                new AdminEventDetails(), 
-                new HashSet<string> { nameof(AdminEventDetails.TimeZone) }
-            );
-        var tableServiceClient = Substitute.For<TableServiceClient>();
-        var repository = new AdminEventRepository(tableServiceClient);
-
-        // Act
-        var result = await repository.CreateEvent(eventDetails);
-
-        // Assert
-        result.PartitionKey.Should().Be("KST");
-    }
-
-    [Fact]
-    public async Task Given_TimeZoneIsNotEmpty_When_CreateEvent_Invoked_Then_PartitionKeyShould_Be_TimeZone()
-    {
-        // Arrange
-        var eventDetails = createRandomEventDetails(
-                new AdminEventDetails(), 
-                new HashSet<string> { }
-            );
-        var tableServiceClient = Substitute.For<TableServiceClient>();
-        var repository = new AdminEventRepository(tableServiceClient);
-
-        // Act
-        var result = await repository.CreateEvent(eventDetails);
-
-        // Assert
-        result.PartitionKey.Should().Be(eventDetails.TimeZone);
-    }
-
-    [Fact]
-    public async Task Given_EventIdIsNull_When_CreateEvent_Invoked_Then_RowKeyShould_Be_NewGuid()
-    {
-        // Arrange
-        var eventDetails = createRandomEventDetails(
-                new AdminEventDetails(), 
-                new HashSet<string> { nameof(AdminEventDetails.EventId) }
-            );
-        var tableServiceClient = Substitute.For<TableServiceClient>();
-        var repository = new AdminEventRepository(tableServiceClient);
-
-        // Act
-        var result = await repository.CreateEvent(eventDetails);
-
-        // Assert
-        result.RowKey.Should().NotBeNullOrEmpty();
-    }
-
-    [Fact]
-    public async Task Given_EventIdIsNotEmpty_When_CreateEvent_Invoked_Then_RowKeyShould_Be_EventId()
-    {
-        // Arrange
-        var eventDetails = createRandomEventDetails(
-                new AdminEventDetails(), 
-                new HashSet<string> { }
-            );
-        var tableServiceClient = Substitute.For<TableServiceClient>();
-        var repository = new AdminEventRepository(tableServiceClient);
-
-        // Act
-        var result = await repository.CreateEvent(eventDetails);
-
-        // Assert
-        result.RowKey.Should().Be(eventDetails.EventId.ToString());
-    }
-
-    [Fact]
     public async Task Given_AddEntityAsyncIsSuccessful_When_CreateEvent_Invoked_Then_ItShould_WorkProperly()
     {
         // Arrange
@@ -196,6 +107,7 @@ public class AdminEventRepositoryTests
                 new AdminEventDetails(), 
                 new HashSet<string> { }
             );
+        // TODO: [tae0y] TableServiceClient를 Mocking하지 않고 실제 의존성을 주입
         var tableServiceClient = Substitute.For<TableServiceClient>();
         var repository = new AdminEventRepository(tableServiceClient);
 
@@ -243,8 +155,6 @@ public class AdminEventRepositoryTests
         // Assert
         // result Should  BeEquivalentTo eventDetails except for PartitionKey, RowKey, Timestamp, ETag
         result.Should().BeEquivalentTo(eventDetails, options => options
-            .Excluding(e => e.PartitionKey)
-            .Excluding(e => e.RowKey)
             .Excluding(e => e.Timestamp)
             .Excluding(e => e.ETag)
         );
@@ -307,6 +217,11 @@ public class AdminEventRepositoryTests
             details.TimeZone = "KST"; // Default timezone
         }
 
+        if (!ShouldSkip(nameof(details.IsActive)))
+        {
+            details.IsActive = true; // Default is active
+        }
+
         if (!ShouldSkip(nameof(details.OrganizerName)) && string.IsNullOrEmpty(details.OrganizerName))
         {
             details.OrganizerName = "Organizer " + random.Next(1000, 9999);
@@ -325,6 +240,16 @@ public class AdminEventRepositoryTests
         if (!ShouldSkip(nameof(details.CoorganizerEmail)) && string.IsNullOrEmpty(details.CoorganizerEmail))
         {
             details.CoorganizerEmail = $"coorganizer{random.Next(1000, 9999)}@example.com";
+        }
+
+        if (!ShouldSkip(nameof(details.PartitionKey)) && string.IsNullOrEmpty(details.PartitionKey))
+        {
+            details.PartitionKey = details.TimeZone;
+        }
+
+        if (!ShouldSkip(nameof(details.RowKey)) && string.IsNullOrEmpty(details.RowKey))
+        {
+            details.RowKey = details.EventId.ToString();
         }
 
         return details;

@@ -68,19 +68,18 @@ public class AdminEventRepository : IAdminEventRepository
     {
         var tableServiceClient = _tableServiceClient.GetTableClient(TableName);
 
-        // TODO: [tae0y] PartitionKey, RowKey 정책 확인
-        eventDetails.PartitionKey = string.IsNullOrEmpty(eventDetails.TimeZone) ? "KST" : eventDetails.TimeZone;
-        eventDetails.RowKey = string.IsNullOrEmpty(eventDetails.EventId.ToString()) ? Guid.NewGuid().ToString() : eventDetails.EventId.ToString();
-        var response = await tableServiceClient.AddEntityAsync(eventDetails);
-        if (response.Status != 204)
-        {
-            // TODO: [tae0y] Exception 종류 확인
-            throw new Exception("Failed to create event");
-        }
+        // 데이터 저장
+        var createResponse = await tableServiceClient.AddEntityAsync(eventDetails).ConfigureAwait(false);
 
+        // 저장한 데이터 재조회
         // TODO: [tae0y] Azure.Tables REST API는 저장한 Entity를 반환하는 옵션이 있으나, tableServiceClient는 없으므로 추가 작업 필요
-        var addedEntity = await tableServiceClient.GetEntityAsync<AdminEventDetails>(eventDetails.PartitionKey, eventDetails.RowKey);
-        return addedEntity;
+        var getResponse = await tableServiceClient.GetEntityAsync<AdminEventDetails>(
+            eventDetails.PartitionKey,
+            eventDetails.RowKey
+        ).ConfigureAwait(false);
+
+        // 조회한 엔티티 반환
+        return getResponse.Value;
     }
 
     /// <inheritdoc />
