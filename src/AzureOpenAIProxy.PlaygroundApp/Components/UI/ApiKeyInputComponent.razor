@@ -1,4 +1,10 @@
-<FluentTextField Id="@Id" @bind-Value=apiKeyValue TextFieldType="TextFieldType.Password" data-type="GUID" @oninput="SetApiKey" Required="true">API key input</FluentTextField>
+<FluentStack Id="@Id" Style="width: 100%;" Orientation="Orientation.Vertical" VerticalAlignment="VerticalAlignment.Top">
+    <FluentTextField Id="api-key-field" Label="API key" Required="true"
+                     TextFieldType="TextFieldType.Password"
+                     Placeholder="Enter API key"
+                     @bind-Value="apiKeyValue"
+                     @oninput="SetApiKey" />
+</FluentStack>
 
 @code {
     private string? apiKeyValue { get; set; }
