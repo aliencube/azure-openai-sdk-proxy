@@ -162,13 +162,11 @@ public partial class PlaygroundPageTests
                                      .Locator("div#config-window")
                                      .Locator($"div#{id}")
                                      .Locator("fluent-tabs#config-tabs")
-                                     .Locator("fluent-tab#system-message-tab")
                                      .Locator("fluent-tab-panel#system-message-tab-panel");
         var parameterPanel = Page.Locator("div.config-grid")
                                  .Locator("div#config-window")
                                  .Locator($"div#{id}")
                                  .Locator("fluent-tabs#config-tabs")
-                                 .Locator("fluent-tab#parameters-message-tab")
                                  .Locator("fluent-tab-panel#parameters-tab-panel");
 
         // Assert
