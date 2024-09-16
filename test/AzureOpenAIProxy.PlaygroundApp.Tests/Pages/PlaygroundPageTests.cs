@@ -285,9 +285,48 @@ public class PlaygroundPageTests : PageTest
         result.Should().BeNullOrEmpty();
     }
 
+    [Test]
+    public async Task Given_ApiKeynputField_When_Endpoint_Invoked_Then_It_Should_Be_Visible()
+    {
+        // Arrange
+        var apiKeyInput = Page.Locator("fluent-text-field#api-key").Locator("input");
+        
+        // Act & Assert
+        await Expect(apiKeyInput).ToBeVisibleAsync();
+    }
+
+   [Test]
+   public async Task Given_ApiKeyInputField_When_Endpoint_Invoked_Then_It_Should_Be_Password_Type()
+    {
+        // Arrange
+        var apiKeyInput = Page.Locator("fluent-text-field#api-key").Locator("input");
+        
+        // Act
+        var inputType = await apiKeyInput.GetAttributeAsync("type");
+
+        // Assert
+        inputType.Should().Be("password");
+    }
+
+    [Test]
+    [TestCase("test-api-key-1")]
+    [TestCase("example-key-123")]
+    public async Task Given_ApiKeyInputField_When_Changed_Then_It_Should_Be_Updated(string apiKey)
+    {
+        // Arrange
+        var apiKeyInput = Page.Locator("fluent-text-field#api-key").Locator("input");
+
+        // Act
+        await apiKeyInput.FillAsync(apiKey);
+
+        // Assert
+        await Expect(apiKeyInput).ToHaveValueAsync(apiKey);
+    }
+
     [TearDown]
     public async Task CleanUp()
     {
         await Page.CloseAsync();
     }
 }
+

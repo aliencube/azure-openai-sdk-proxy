@@ -1,0 +1,22 @@
+<FluentTextField Id="@Id" @bind-Value=apiKeyValue TextFieldType="TextFieldType.Password" data-type="GUID" @oninput="SetApiKey" Required="true">API key input</FluentTextField>
+
+@code {
+    private string? apiKeyValue { get; set; }
+    
+    [Parameter]
+    public string? Id { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnKeyInput { get; set; }
+
+    private async Task SetApiKey(ChangeEventArgs e)
+    {
+        apiKeyValue = e.Value!.ToString();
+        if (string.IsNullOrWhiteSpace(apiKeyValue) == true)
+        {
+            return;
+        }
+
+        await OnKeyInput.InvokeAsync(apiKeyValue);
+    }
+}

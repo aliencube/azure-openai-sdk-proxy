@@ -56,6 +56,24 @@ public class TestsPageTests : PageTest
     }
 
     [Test]
+    [TestCase("3F2504E0-4F89-11D3-9A0C-0305E82C3301", typeof(string))]
+    [TestCase("b9f6741c-2f44-4d9b-bd63-c0e6b97cc83f", typeof(string))]
+
+    public async Task Given_Input_On_ApiKeyField_When_DebugButton_Clicked_Then_Toast_Should_Show_Input(string apiKey, Type expectedType)
+    {
+        // Arrange
+        var apiKeyInput = Page.Locator("fluent-text-field#api-key-input").Locator("input");
+        var debugButton = Page.Locator("fluent-button#debug-api-key");
+
+        // Act
+        await apiKeyInput.FillAsync(apiKey);
+        await debugButton.ClickAsync();
+        
+        // Assert
+        await Expect(Page.Locator(".fluent-toast-title")).ToHaveTextAsync($"{apiKey} (Type: {expectedType})");
+    }
+
+    [Test]
     [TestCase("deployment-model-label", "Deployment")]
     public async Task Given_Label_When_Page_Loaded_Then_Label_Should_Be_Visible(string id, string expected)
     {
@@ -119,10 +137,13 @@ public class TestsPageTests : PageTest
         // Assert
         await Expect(Page.Locator(".fluent-toast-title")).ToHaveTextAsync($"{expectedValue} (Type: {expectedType})");
     }
-
+    
+    
     [TearDown]
     public async Task CleanUp()
     {
         await Page.CloseAsync();
     }
+
+    
 }
