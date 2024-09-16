@@ -144,7 +144,7 @@ public partial class PlaygroundPageTests : PageTest
     public async Task Given_ConfigTab_When_Selected_Then_Tab_Component_Should_Have_Default_Value(
         string selectedTabSelector,
         string componentSelector, 
-        object expectedValue
+        string expectedValue
     )
     {
         // Arrange 
@@ -155,7 +155,7 @@ public partial class PlaygroundPageTests : PageTest
         var actualValue = await Page.Locator(componentSelector).GetAttributeAsync("value");
 
         // Assert
-        actualValue.Should().Be((string)expectedValue);
+        actualValue.Should().Be(expectedValue);
     }
 
     [Test]
@@ -170,12 +170,12 @@ public partial class PlaygroundPageTests : PageTest
         // Act
         await systemMessageTab.ClickAsync();
         await systemMessageTextAreaControl.FillAsync("New system message");
-        var isApplyButtonEnabled = await applyButton.GetAttributeAsync("disabled") == null;
-        var isResetButtonEnabled = await resetButton.GetAttributeAsync("disabled") == null;
+        var isApplyButtonEnabled = await applyButton.GetAttributeAsync("disabled");
+        var isResetButtonEnabled = await resetButton.GetAttributeAsync("disabled");
 
         // Assert
-        isApplyButtonEnabled.Should().BeTrue();
-        isResetButtonEnabled.Should().BeTrue();
+        isApplyButtonEnabled.Should().BeNull();
+        isResetButtonEnabled.Should().BeNull();
     }
 
     [Test]
@@ -197,13 +197,13 @@ public partial class PlaygroundPageTests : PageTest
         await systemMessageTextAreaControl.FillAsync(expectedValue);
         await applyButton.ClickAsync();
         var actualValue = await systemMessageTextArea.GetAttributeAsync("value");
-        var isApplyButtonEnabled = await applyButton.GetAttributeAsync("disabled") == null;
-        var isResetButtonEnabled = await resetButton.GetAttributeAsync("disabled") == null;
+        var isApplyButtonEnabled = await applyButton.GetAttributeAsync("disabled");
+        var isResetButtonEnabled = await resetButton.GetAttributeAsync("disabled");
 
         // Assert
         actualValue.Should().Be(expectedValue);
-        isApplyButtonEnabled.Should().BeFalse();
-        isResetButtonEnabled.Should().BeTrue();
+        isApplyButtonEnabled.Should().NotBeNull();
+        isResetButtonEnabled.Should().BeNull();
     }
 
     [Test]
@@ -224,13 +224,13 @@ public partial class PlaygroundPageTests : PageTest
         await systemMessageTextAreaControl.FillAsync(expectedValue);
         await applyButton.ClickAsync();
         var actualValue = await systemMessageTextArea.GetAttributeAsync("value");
-        var isApplyButtonEnabled = await applyButton.GetAttributeAsync("disabled") == null;
-        var isResetButtonEnabled = await resetButton.GetAttributeAsync("disabled") == null;
+        var isApplyButtonEnabled = await applyButton.GetAttributeAsync("disabled");
+        var isResetButtonEnabled = await resetButton.GetAttributeAsync("disabled");
         
         // Assert
         actualValue.Should().Be(expectedValue);
-        isApplyButtonEnabled.Should().BeFalse();
-        isResetButtonEnabled.Should().BeFalse();
+        isApplyButtonEnabled.Should().NotBeNull();
+        isResetButtonEnabled.Should().NotBeNull();
     }
 
     [Test]
@@ -252,13 +252,13 @@ public partial class PlaygroundPageTests : PageTest
         await applyButton.ClickAsync();
         await resetButton.ClickAsync();
         var actualValue = await systemMessageTextArea.GetAttributeAsync("value");
-        var isApplyButtonEnabled = await applyButton.GetAttributeAsync("disabled") == null;
-        var isResetButtonEnabled = await resetButton.GetAttributeAsync("disabled") == null;
+        var isApplyButtonEnabled = await applyButton.GetAttributeAsync("disabled");
+        var isResetButtonEnabled = await resetButton.GetAttributeAsync("disabled");
         
         // Assert
         actualValue.Should().Be(expectedValue);
-        isApplyButtonEnabled.Should().BeFalse();
-        isResetButtonEnabled.Should().BeFalse();
+        isApplyButtonEnabled.Should().NotBeNull();
+        isResetButtonEnabled.Should().NotBeNull();
     }
     
     [Test]
