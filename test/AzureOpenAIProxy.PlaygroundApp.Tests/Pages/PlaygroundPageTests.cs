@@ -8,7 +8,7 @@ namespace AzureOpenAIProxy.PlaygroundApp.Tests.Pages;
 [Parallelizable(ParallelScope.Self)]
 [TestFixture]
 [Property("Category", "Integration")]
-public class PlaygroundPageTests : PageTest
+public partial class PlaygroundPageTests : PageTest
 {
     public override BrowserNewContextOptions ContextOptions() => new() { IgnoreHTTPSErrors = true, };
 
