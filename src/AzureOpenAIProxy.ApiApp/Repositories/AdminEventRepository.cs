@@ -45,8 +45,8 @@ public interface IAdminEventRepository
 /// </summary>
 public class AdminEventRepository(TableServiceClient tableServiceClient, StorageAccountSettings storageAccountSettings) : IAdminEventRepository
 {
-    private readonly TableServiceClient _tableServiceClient = tableServiceClient ?? throw new ArgumentException(nameof(tableServiceClient));
-    private readonly StorageAccountSettings _storageAccountSettings = storageAccountSettings ?? throw new ArgumentException(nameof(storageAccountSettings));
+    private readonly TableServiceClient _tableServiceClient = tableServiceClient ?? throw new ArgumentNullException(nameof(tableServiceClient));
+    private readonly StorageAccountSettings _storageAccountSettings = storageAccountSettings ?? throw new ArgumentNullException(nameof(storageAccountSettings));
 
     /// <inheritdoc />
     public async Task<AdminEventDetails> CreateEvent(AdminEventDetails eventDetails)
