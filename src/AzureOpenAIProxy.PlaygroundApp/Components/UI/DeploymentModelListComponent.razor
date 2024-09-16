@@ -1,74 +1,39 @@
-<FluentLayout Id="@Id" Style="margin: 10px;">
-    <div style="display: flex; align-items: center; margin-bottom: 5px;">
-        <label id="deployment-model-label" for="deployment-model-list-options" style="margin-right: 5px;">Deployment</label>
-        <span style="color: red;">*</span>
-    </div>
-
-    <FluentSelect Items=@deploymentModelOptions Id="deployment-model-list-options" name="deployment-models"
-        TOption="Option<string>" Height="300px"
-        OptionText="@(e => e.Text?.ToString())"
-        OptionValue="@(e => e.Value?.ToString())" 
-        OptionSelected="@(e => e.Selected)"
-        @bind-SelectedOption="@selectedOption"
-        @onclick="OnValueChanged"
-        aria-labelledby="deployment-model-label">
-    </FluentSelect>
-</FluentLayout>
+<FluentStack Id="@Id" Style="width: 100%;" Orientation="Orientation.Vertical" VerticalAlignment="VerticalAlignment.Top">
+    <FluentSelect Id="deployment-model-list-options" Label="Deployment" Required="true"
+                  Placeholder="Select a deployment model"
+                  Items=@deploymentModels
+                  TOption="Option<string>"
+                  OptionText="@(option => option.Text!)"
+                  OptionValue="@(option => option.Value!)"
+                  @bind-SelectedOption="@selectedOption"
+                  @onchange="SetDeploymentModel"/>
+</FluentStack>
 
 @code {
-    private Option<string>? selectedOption { get; set; } = new();
+    private List<Option<string>>? deploymentModels;
+    private Option<string>? selectedOption { get; set; }
 
     [Parameter]
     public string? Id { get; set; }
 
     [Parameter]
     public EventCallback<string> OnUserOptionSelected { get; set; }
-    
-    private async Task OnValueChanged()
+
+    protected override async Task OnInitializedAsync()
     {
-        string? selectedValue = selectedOption?.Value?.ToString();
-        await OnUserOptionSelected.InvokeAsync(selectedValue);
+        this.deploymentModels = new()
+        {
+            new Option<string> { Value = "model-gpt35turbo16k-0613", Text = "model-gpt35turbo16k-0613" },
+            new Option<string> { Value = "model-gpt4o-20240513", Text = "model-gpt4o-20240513" },
+        };
+
+        await Task.CompletedTask;
     }
 
-    static List<Option<string>> deploymentModelOptions = new()
+    private async Task SetDeploymentModel()
     {
-        new Option<string> { Value = "AL", Text = "Alabama" },
-        new Option<string> { Value = "AK", Text = "Alaska" },
-        new Option<string> { Value = "AZ", Text = "Arizona" },
-        new Option<string> { Value = "AR", Text = "Arkansas" },
-        new Option<string> { Value = "CA", Text = "California" },
-        new Option<string> { Value = "CO", Text = "Colorado" },
-        new Option<string> { Value = "CT", Text = "Connecticut" },
-        new Option<string> { Value = "DE", Text = "Delaware" },
-        new Option<string> { Value = "FL", Text = "Florida" },
-        new Option<string> { Value = "GA", Text = "Georgia" },
-        new Option<string> { Value = "HI", Text = "Hawaii" },
-        new Option<string> { Value = "ID", Text = "Idaho" },
-        new Option<string> { Value = "IL", Text = "Illinois" },
-        new Option<string> { Value = "IN", Text = "Indiana" },
-        new Option<string> { Value = "IA", Text = "Iowa" },
-        new Option<string> { Value = "KS", Text = "Kansas" },
-        new Option<string> { Value = "KY", Text = "Kentucky" },
-        new Option<string> { Value = "LA", Text = "Louisiana" },
-        new Option<string> { Value = "ME", Text = "Maine" },
-        new Option<string> { Value = "MD", Text = "Maryland" },
-        new Option<string> { Value = "MA", Text = "Massachussets" },
-        new Option<string> { Value = "MI", Text = "Michigain" },
-        new Option<string> { Value = "MN", Text = "Minnesota" },
-        new Option<string> { Value = "MS", Text = "Mississippi" },
-        new Option<string> { Value = "MO", Text = "Missouri" },
-        new Option<string> { Value = "MT", Text = "Montana" },
-        new Option<string> { Value = "NE", Text = "Nebraska" },
-        new Option<string> { Value = "NV", Text = "Nevada" },
-        new Option<string> { Value = "NH", Text = "New Hampshire" },
-        new Option<string> { Value = "NJ", Text = "New Jersey" },
-        new Option<string> { Value = "NM", Text = "New Mexico" },
-        new Option<string> { Value = "NY", Text = "New York" },
-        new Option<string> { Value = "NC", Text = "North Carolina" },
-        new Option<string> { Value = "ND", Text = "North Dakota" },
-        new Option<string> { Value = "OH", Text = "Ohio" },
-        new Option<string> { Value = "OK", Text = "Oklahoma" },
-        new Option<string> { Value = "OR", Text = "Oregon" },
-        new Option<string> { Value = "PA", Text = "Pennsylvania" }
-    };
+        var selectedValue = selectedOption?.Value!;
+
+        await OnUserOptionSelected.InvokeAsync(selectedValue);
+    }
 }

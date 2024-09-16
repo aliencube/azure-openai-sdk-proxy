@@ -1,6 +1,8 @@
-﻿using AzureOpenAIProxy.ApiApp.Models;
-using Azure.Data.Tables;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Azure.Data.Tables;
+
+using AzureOpenAIProxy.ApiApp.Configurations;
+using AzureOpenAIProxy.ApiApp.Extensions;
+using AzureOpenAIProxy.ApiApp.Models;
 
 namespace AzureOpenAIProxy.ApiApp.Repositories;
 
@@ -41,32 +43,15 @@ public interface IAdminEventRepository
 /// <summary>
 /// This represents the repository entity for the admin event.
 /// </summary>
-public class AdminEventRepository : IAdminEventRepository
+public class AdminEventRepository(TableServiceClient tableServiceClient, StorageAccountSettings storageAccountSettings) : IAdminEventRepository
 {
-    private readonly string TableName = "events";
-
-    private readonly TableServiceClient _tableServiceClient;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AdminEventRepository"/> class.
-    /// </summary>
-    public AdminEventRepository()
-    {
-        // TODO: [tae0y] 빌드 실패 방지용 임시코드
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AdminEventRepository"/> class.
-    /// </summary>
-    public AdminEventRepository(TableServiceClient tableServiceClient)
-    {
-        _tableServiceClient = tableServiceClient ?? throw new ArgumentNullException(nameof(tableServiceClient));
-    }
+    private readonly TableServiceClient _tableServiceClient = tableServiceClient ?? throw new ArgumentNullException(nameof(tableServiceClient));
+    private readonly StorageAccountSettings _storageAccountSettings = storageAccountSettings ?? throw new ArgumentNullException(nameof(storageAccountSettings));
 
     /// <inheritdoc />
     public async Task<AdminEventDetails> CreateEvent(AdminEventDetails eventDetails)
     {
-        var tableServiceClient = _tableServiceClient.GetTableClient(TableName);
+        var tableServiceClient = _tableServiceClient.GetTableClient("events");
 
         // 데이터 저장
         var createResponse = await tableServiceClient.AddEntityAsync(eventDetails).ConfigureAwait(false);

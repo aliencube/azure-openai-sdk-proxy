@@ -1,7 +1,10 @@
 ﻿using Azure.Data.Tables;
 
+using AzureOpenAIProxy.ApiApp.Configurations;
 using AzureOpenAIProxy.ApiApp.Models;
 using AzureOpenAIProxy.ApiApp.Repositories;
+
+using Castle.Core.Configuration;
 
 using FluentAssertions;
 
@@ -29,11 +32,41 @@ public class AdminEventRepositoryTests
     }
 
     [Fact]
+    public void Given_Null_TableServiceClient_When_Creating_AdminEventRepository_Then_It_Should_Throw_Exception()
+    {
+        // Arrange
+        var settings = Substitute.For<StorageAccountSettings>();
+        var tableServiceClient = default(TableServiceClient);
+        
+        // Act
+        Action action = () => new AdminEventRepository(tableServiceClient, settings);
+
+        // Assert
+        action.Should().Throw<ArgumentNullException>();
+    }
+
+    [Fact]
+    public void Given_Null_StorageAccountSettings_When_Creating_AdminEventRepository_Then_It_Should_Throw_Exception()
+    {
+        // Arrange
+        var settings = default(StorageAccountSettings);
+        var tableServiceClient = Substitute.For<TableServiceClient>();
+        
+        // Act
+        Action action = () => new AdminEventRepository(tableServiceClient, settings);
+
+        // Assert
+        action.Should().Throw<ArgumentNullException>();
+    }
+
+    [Fact]
     public void Given_Instance_When_CreateEvent_Invoked_Then_It_Should_Throw_Exception()
     {
         // Arrange
+        var settings = Substitute.For<StorageAccountSettings>();
+        var tableServiceClient = Substitute.For<TableServiceClient>();
         var eventDetails = new AdminEventDetails();
-        var repository = new AdminEventRepository();
+        var repository = new AdminEventRepository(tableServiceClient, settings);
 
         // Act
         Func<Task> func = async () => await repository.CreateEvent(eventDetails);
@@ -46,7 +79,9 @@ public class AdminEventRepositoryTests
     public void Given_Instance_When_GetEvents_Invoked_Then_It_Should_Throw_Exception()
     {
         // Arrange
-        var repository = new AdminEventRepository();
+        var settings = Substitute.For<StorageAccountSettings>();
+        var tableServiceClient = Substitute.For<TableServiceClient>();
+        var repository = new AdminEventRepository(tableServiceClient, settings);
 
         // Act
         Func<Task> func = async () => await repository.GetEvents();
@@ -59,8 +94,10 @@ public class AdminEventRepositoryTests
     public void Given_Instance_When_GetEvent_Invoked_Then_It_Should_Throw_Exception()
     {
         // Arrange
+        var settings = Substitute.For<StorageAccountSettings>();
+        var tableServiceClient = Substitute.For<TableServiceClient>();
         var eventId = Guid.NewGuid();
-        var repository = new AdminEventRepository();
+        var repository = new AdminEventRepository(tableServiceClient, settings);
 
         // Act
         Func<Task> func = async () => await repository.GetEvent(eventId);
@@ -73,9 +110,11 @@ public class AdminEventRepositoryTests
     public void Given_Instance_When_UpdateEvent_Invoked_Then_It_Should_Throw_Exception()
     {
         // Arrange
+        var settings = Substitute.For<StorageAccountSettings>();
+        var tableServiceClient = Substitute.For<TableServiceClient>();
         var eventId = Guid.NewGuid();
         var eventDetails = new AdminEventDetails();
-        var repository = new AdminEventRepository();
+        var repository = new AdminEventRepository(tableServiceClient, settings);
 
         // Act
         Func<Task> func = async () => await repository.UpdateEvent(eventId, eventDetails);
@@ -89,8 +128,13 @@ public class AdminEventRepositoryTests
     public async Task Given_TableServiceClientIsNull_When_CreateEvent_Invoked_Then_ItShould_Throw_NullReferenceException()
     {
         // Arrange
-        var eventDetails = new AdminEventDetails();
-        var repository = new AdminEventRepository();
+        var eventDetails = createRandomEventDetails(
+                new AdminEventDetails(), 
+                new HashSet<string> { }
+            );
+        var settings = Substitute.For<StorageAccountSettings>();
+        var tableServiceClient = Substitute.For<TableServiceClient>();
+        var repository = new AdminEventRepository(tableServiceClient, settings);
 
         // Act
         Func<Task> func = async () => await repository.CreateEvent(eventDetails);
@@ -108,8 +152,9 @@ public class AdminEventRepositoryTests
                 new HashSet<string> { }
             );
         // TODO: [tae0y] TableServiceClient를 Mocking하지 않고 실제 의존성을 주입
+        var settings = Substitute.For<StorageAccountSettings>();
         var tableServiceClient = Substitute.For<TableServiceClient>();
-        var repository = new AdminEventRepository(tableServiceClient);
+        var repository = new AdminEventRepository(tableServiceClient, settings);
 
         // Act
         var result = await repository.CreateEvent(eventDetails);
@@ -127,9 +172,9 @@ public class AdminEventRepositoryTests
                 new AdminEventDetails(), 
                 new HashSet<string> { }
             );
+        var settings = Substitute.For<StorageAccountSettings>();
         var tableServiceClient = Substitute.For<TableServiceClient>();
-        var repository = new AdminEventRepository(tableServiceClient);
-        var result = await repository.CreateEvent(eventDetails);
+        var repository = new AdminEventRepository(tableServiceClient, settings);
 
         // Act
         Func<Task> func = async () => await repository.CreateEvent(eventDetails);
@@ -146,8 +191,9 @@ public class AdminEventRepositoryTests
                 new AdminEventDetails(), 
                 new HashSet<string> { }
             );
+        var settings = Substitute.For<StorageAccountSettings>();
         var tableServiceClient = Substitute.For<TableServiceClient>();
-        var repository = new AdminEventRepository(tableServiceClient);
+        var repository = new AdminEventRepository(tableServiceClient, settings);
 
         // Act
         var result = await repository.CreateEvent(eventDetails);
