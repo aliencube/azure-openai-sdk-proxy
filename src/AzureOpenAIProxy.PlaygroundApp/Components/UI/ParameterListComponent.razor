@@ -1,0 +1,56 @@
+﻿@inherits FluentComponentBase
+
+<div id="@Id">
+    <label id=@($"{Id}-label") for=@($"{Id}-content")
+           style="display:inline-block;padding-left:5px;font-weight:bold;">
+        @LabelText
+
+        @* Tooltip Image *@
+        <FluentIcon Id=@($"{Id}-anchor") Value="@(new Icons.Regular.Size12.Info())" />
+        <FluentTooltip Id=@($"{Id}-tooltip")
+                       Anchor=@($"{Id}-anchor")
+                       Position="TooltipPosition.End"
+                       UseTooltipService="false"
+                       MaxWidth="250px"
+                       Style="line-break:anywhere">
+            @TooltipText
+        </FluentTooltip>
+    </label>
+
+    <div id=@($"{Id}-content")>
+        <FluentAutocomplete TOption="string" Multiple="true" AutoComplete="false"
+                            ShowOverlayOnEmptyResults="false"
+                            SelectValueOnTab="true"
+                            MaximumOptionsSearch="1"
+                            @bind-SelectedOptions=stopSequenceValue
+                            OnOptionsSearch=OnSearchAsync
+                            Style="width:95%;padding:5px 0px;margin: 0 auto">
+            <OptionTemplate>
+                <FluentLabel>Create "@(context)"</FluentLabel>
+            </OptionTemplate>
+        </FluentAutocomplete>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public string LabelText { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public string TooltipText { get; set; } = string.Empty;
+
+    private IEnumerable<string> stopSequenceValue = new List<string>();
+    private List<string> searchTextItems = new();
+
+    private Task OnSearchAsync(OptionsSearchEventArgs<string> e)
+    {
+        searchTextItems.Clear();
+        if (string.IsNullOrEmpty(e.Text) || stopSequenceValue.Contains(e.Text))
+            return Task.CompletedTask;
+
+        searchTextItems.Add(e.Text);
+        e.Items = searchTextItems;
+
+        return Task.CompletedTask;
+    }
+}

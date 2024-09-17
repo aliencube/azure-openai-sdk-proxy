@@ -1,21 +1,38 @@
 ﻿@inherits FluentComponentBase
 @typeparam TValue where TValue : System.Numerics.INumber<TValue>
 
-<div class=@Class>
-    <FluentStack Orientation="Orientation.Horizontal">
+<div id="@Id">
+    <label id=@($"{Id}-label") class="parameter-label" for=@($"{Id}-content")>
+        @LabelText
 
-        <FluentSlider Min="@Min" Max="@Max" Step="@Step"
-                      @bind-Value=Value @bind-Value:after=AfterSliderChange
-                      Style="width:88%;padding-top:15px;" />
+        @* Tooltip Image *@
+        <FluentIcon Id=@($"{Id}-anchor") Value="@(new Icons.Regular.Size12.Info())" />
+        <FluentTooltip Id=@($"{Id}-tooltip")
+                       Anchor=@($"{Id}-anchor")
+                       Position="TooltipPosition.End"
+                       UseTooltipService="false"
+                       MaxWidth="250px"
+                       Style="line-break:anywhere">
+            @TooltipText
+        </FluentTooltip>
+    </label>
 
-        <FluentTextField @bind-Value=textFieldValue @bind-Value:after=AfterTextFieldChange
-                         Style="width:12%;font-size:9px" />
+    <FluentStack Id=@($"{Id}-content")
+                 Orientation="Orientation.Horizontal"
+                 Style="column-gap:0px">
+
+        <FluentSlider Class="parameter-slider"
+                      Min="@Min" Max="@Max" Step="@Step"
+                      @bind-Value=Value @bind-Value:after=AfterSliderChange />
+
+        <FluentTextField Class="parameter-textfield"
+                         @bind-Value=textFieldValue @bind-Value:after=AfterTextFieldChange />
 
     </FluentStack>
 
     @if (!hasNoError)
     {
-        <FluentCard Style="padding:10px;width:95%;margin:0 auto;border-color:crimson;background-color:lightcoral;color:black">
+        <FluentCard Class="parameter-error">
             @errorText
         </FluentCard>
     }
@@ -37,8 +54,11 @@
     [Parameter]
     public EventCallback<TValue> ValueChanged { get; set; }
 
-    [Parameter]
-    public EventCallback OnChangeEvent { get; set; }
+    [Parameter, EditorRequired]
+    public string LabelText { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public string TooltipText { get; set; } = string.Empty;
 
     public string? textFieldValue { get; set; }
 
@@ -47,9 +67,10 @@
 
     protected override void OnInitialized()
     {
-        base.OnInitialized();
         textFieldValue = Value!.ToString();
         errorText = $"Only numbers between {Min} and {Max} are permitted";
+
+        base.OnInitialized();
     }
 
     private async Task AfterSliderChange()
@@ -58,7 +79,6 @@
         textFieldValue = Value!.ToString();
 
         await ValueChanged.InvokeAsync(Value);
-        await OnChangeEvent.InvokeAsync();
     }
 
     private async Task AfterTextFieldChange()
@@ -73,6 +93,5 @@
 
         this.Value = parsed;
         await ValueChanged.InvokeAsync(Value);
-        await OnChangeEvent.InvokeAsync();
     }
 }
