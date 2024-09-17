@@ -168,21 +168,12 @@ public class GetDeploymentModelsOpenApiTests(AspireAppHostFixture host) : IClass
         result.ValueKind.Should().Be(JsonValueKind.Object);
     }
 
-    public static IEnumerable<object[]> DeploymentModelAttributeData =>
-    [
-        ["name", true, "string"]
-    ];
-
-
     [Theory]
-    [MemberData(nameof(DeploymentModelAttributeData))]
-    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Required(string attribute, bool isRequired, string type)
+    [InlineData("name", true)]
+    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Required(string attribute, bool isRequired)
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
-
-        var isReq = isRequired;
-        var typeStr = type;
 
         // Act
         var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
@@ -198,8 +189,8 @@ public class GetDeploymentModelsOpenApiTests(AspireAppHostFixture host) : IClass
     }
 
     [Theory]
-    [MemberData(nameof(DeploymentModelAttributeData))]
-    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Property(string attribute, bool isRequired, string type)
+    [InlineData("name")]
+    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Property(string attribute)
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
@@ -218,8 +209,8 @@ public class GetDeploymentModelsOpenApiTests(AspireAppHostFixture host) : IClass
     }
 
     [Theory]
-    [MemberData(nameof(DeploymentModelAttributeData))]
-    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Type(string attribute, bool isRequired, string type)
+    [InlineData("name", "string")]
+    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Type(string attribute, string type)
     {
         // Arrange
         using var httpClient = host.App!.CreateHttpClient("apiapp");
