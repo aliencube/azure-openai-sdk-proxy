@@ -22,4 +22,12 @@ public static class AdminEndpointUrls
     /// - POST method for new event creation
     /// </remarks>
     public const string AdminEvents = "/admin/events";
+
+    /// <summary>
+    /// Declares the admin resource details endpoint.
+    /// </summary>
+    /// <remarks>
+    /// - POST method for new resource creation
+    /// </remarks>
+    public const string AdminResources = "/admin/resources";
 }
