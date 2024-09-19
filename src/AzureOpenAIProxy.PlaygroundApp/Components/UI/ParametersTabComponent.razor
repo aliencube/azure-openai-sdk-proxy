@@ -1,12 +1,6 @@
 ﻿@using System.Linq
 
 <div id="@Id" class="parameter-tab">
-    <ParameterSliderComponent Id="slider-pastmessages"
-                              Class="label-with-tooltip"
-                              LabelText="Past messages included"
-                              TooltipText="Select the number of past messages to include in each new API request. This helps give the model context for new user queries. Setting this number to 10 will include 5 user queries and 5 system responses."
-                              Min="1" Max="20" Step="1" @bind-Value=@pastMessagesValue />
-
     @* Past Messages Slider *@
     <ParameterSliderComponent Id="slider-past-messages"
                               Class="label-with-tooltip"
