@@ -222,6 +222,8 @@ public partial class PlaygroundPageTests
         // Act
         await systemMessageTab.ClickAsync();
         await systemMessageTextAreaControl.FillAsync("New system message");
+        await Task.Delay(500);
+
         var isApplyButtonEnabled = await applyButton.GetAttributeAsync("disabled");
         var isResetButtonEnabled = await resetButton.GetAttributeAsync("disabled");
 
@@ -248,6 +250,8 @@ public partial class PlaygroundPageTests
         await systemMessageTab.ClickAsync();
         await systemMessageTextAreaControl.FillAsync(expectedValue);
         await applyButton.ClickAsync();
+        await Task.Delay(500);
+
         var actualValue = await systemMessageTextArea.GetAttributeAsync("value");
         var isApplyButtonEnabled = await applyButton.GetAttributeAsync("disabled");
         var isResetButtonEnabled = await resetButton.GetAttributeAsync("disabled");
@@ -275,6 +279,8 @@ public partial class PlaygroundPageTests
         await systemMessageTab.ClickAsync();
         await systemMessageTextAreaControl.FillAsync(expectedValue);
         await applyButton.ClickAsync();
+        await Task.Delay(500);
+
         var actualValue = await systemMessageTextArea.GetAttributeAsync("value");
         var isApplyButtonEnabled = await applyButton.GetAttributeAsync("disabled");
         var isResetButtonEnabled = await resetButton.GetAttributeAsync("disabled");
@@ -303,6 +309,8 @@ public partial class PlaygroundPageTests
         await systemMessageTextAreaControl.FillAsync("New system message");
         await applyButton.ClickAsync();
         await resetButton.ClickAsync();
+        await Task.Delay(500);
+        
         var actualValue = await systemMessageTextArea.GetAttributeAsync("value");
         var isApplyButtonEnabled = await applyButton.GetAttributeAsync("disabled");
         var isResetButtonEnabled = await resetButton.GetAttributeAsync("disabled");
