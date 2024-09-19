@@ -38,7 +38,8 @@
     @* Stop Sequence Auto Complete *@
     <ParameterListComponent Id="complete-stop-sequence"
                             LabelText="Stop sequence"
-                            TooltipText="Make the model end its response at a desired point. The model response will end before the specified sequence, so it won't contain the stop sequence text. For ChatGPT, using <|im_end|> ensures that the model response doesn't generate a follow-up user query. You can include as many as four stop sequences." />
+                            TooltipText="Make the model end its response at a desired point. The model response will end before the specified sequence, so it won't contain the stop sequence text. For ChatGPT, using <|im_end|> ensures that the model response doesn't generate a follow-up user query. You can include as many as four stop sequences."
+                            @ref=stopSequence />
 
     @* Frequency Penalty Slider *@
     <ParameterSliderComponent Id="slider-frequency-penalty"
@@ -67,6 +68,5 @@
     private double frequencyPenaltyValue = 0;
     private double presencePenaltyValue = 0;
 
-    private IEnumerable<string> stopSequenceValue = new List<string>();
-    private List<string> searchTextItems = new();
+    private ParameterListComponent? stopSequence;
 }

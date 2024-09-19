@@ -39,6 +39,8 @@
     [Parameter, EditorRequired]
     public string TooltipText { get; set; } = string.Empty;
 
+    public IEnumerable<string> Value => stopSequenceValue;
+
     private IEnumerable<string> stopSequenceValue = new List<string>();
     private List<string> searchTextItems = new();
 
