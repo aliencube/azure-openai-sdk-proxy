@@ -1,0 +1,4 @@
+﻿.parameter-tab ::deep label {
+    font-size: 12px;
+    font-weight: bold;
+}
