@@ -16,6 +16,9 @@ builder.Services.AddOpenAIService();
 // Add OpenAPI service
 builder.Services.AddOpenApiService();
 
+// Add Storage Account settings
+builder.Services.AddStorageAccountSettings();
+
 // Add TableStorageClient
 builder.Services.AddTableStorageService();
 
@@ -54,11 +57,14 @@ app.AddChatCompletions();
 
 // Playground endpoints
 app.AddListEvents();
+app.AddListDeploymentModels();
 
 // Admin endpoints
 app.AddNewAdminEvent();
 app.AddListAdminEvents();
 app.AddGetAdminEvent();
 app.AddUpdateAdminEvent();
+
+app.AddNewAdminResource();
 
 await app.RunAsync();
