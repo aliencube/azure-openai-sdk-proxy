@@ -1,10 +1,10 @@
 <FluentLayout Id="@Id" Style="margin: 10px;">
     <FluentToolbar id="system-message-tab-toolbar" Style="display: flex; align-items: center; padding-bottom: 10px; background-color: white;">
-        <FluentButton id="system-message-tab-apply-button" @onclick="OnApplyChanges" Disabled="@(!isApplyButtonEnabled)"
+        <FluentButton id="system-message-tab-apply-button" @onclick="OnApplyChanges" Disabled="@(isApplyButtonEnabled == false)"
             IconStart="@(new Icons.Filled.Size20.ArrowSwap())" Appearance="Appearance.Stealth">
             Apply changes
         </FluentButton>
-        <FluentButton id="system-message-tab-reset-button" @onclick="OnResetToDefault" Disabled="@(!isResetButtonEnabled)"
+        <FluentButton id="system-message-tab-reset-button" @onclick="OnResetToDefault" Disabled="@(isResetButtonEnabled == false)"
             IconStart="@(new Icons.Filled.Size20.ArrowReset())" Appearance="Appearance.Stealth">
             Reset to default
         </FluentButton>
@@ -19,7 +19,7 @@
 
 @code {
     private string? userSystemMessage;
-    private string? changedSystemMessage;
+    private string? userInput;
     private string? defaultSystemMessage = "You are an AI assistant that helps people find information.";
     private bool isApplyButtonEnabled;
     private bool isResetButtonEnabled;
@@ -33,25 +33,29 @@
     protected override async Task OnInitializedAsync()
     {
         userSystemMessage = defaultSystemMessage;
+
         await OnSystemMessageChanged.InvokeAsync(userSystemMessage);
     }
 
-    private async Task OnInputChanged(ChangeEventArgs e)
+    private async Task OnInputChanged(ChangeEventArgs userInput)
     {
-        changedSystemMessage = e.Value!.ToString();
+        this.userInput = userInput.Value!.ToString();
         isApplyButtonEnabled = true;
         isResetButtonEnabled = true;
+
         await Task.CompletedTask;
     }
 
     private async Task OnApplyChanges()
     {
-        userSystemMessage = changedSystemMessage;
+        userSystemMessage = userInput;
         isApplyButtonEnabled = false;
+
         if(userSystemMessage == defaultSystemMessage)
         {
             isResetButtonEnabled = false;
         }
+
         await OnSystemMessageChanged.InvokeAsync(userSystemMessage);
     }
 
@@ -60,6 +64,7 @@
         userSystemMessage = defaultSystemMessage;
         isApplyButtonEnabled = false;
         isResetButtonEnabled = false;
+        
         await OnSystemMessageChanged.InvokeAsync(userSystemMessage);
     }
 }
