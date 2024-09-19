@@ -1,4 +1,5 @@
 ﻿@using AzureOpenAIProxy.PlaygroundApp.Models;
+
 @using NodaTime
 @using NodaTime.Extensions
 @using NodaTime.TimeZones
@@ -128,14 +129,18 @@
     private DateTime? tempEventEndDate;
     private DateTime? tempEventStartTime;
     private DateTime? tempEventEndTime;
-    private List<DateTimeZone> timeZoneList;
-    private AdminEventDetails adminEventDetails;
+    private List<DateTimeZone>? timeZoneList;
+    private AdminEventDetails? adminEventDetails;
 
     [Parameter]
     public string? Id { get; set; }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        // Simulate asynchronous loading to demonstrate streaming rendering
+        await Task.Delay(500);
+
+        adminEventDetails = adminEventDetails == null ? new() : adminEventDetails;
         DateTime currentTime = DateTime.Now;
 
         tempEventStartDate = currentTime;
@@ -144,15 +149,14 @@
         tempEventEndTime = currentTime.AddHours(1).AddMinutes(-currentTime.Minute);
 
         timeZoneList = DateTimeZoneProviders.Tzdb.GetAllZones().ToList();
-        adminEventDetails = adminEventDetails == null ? new() : adminEventDetails;
     }
 
-    private void AddEvent()
+    private async Task AddEvent()
     {
 
     }
 
-    private void CancelEvent()
+    private async Task CancelEvent()
     {
 
     }
