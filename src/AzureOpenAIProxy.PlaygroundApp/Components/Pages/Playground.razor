@@ -8,7 +8,7 @@
 
     <FluentGrid Spacing="3" AdaptiveRendering="true" Justify="JustifyContent.FlexStart">
         <FluentGridItem Class="config-grid" xs="12" sm="12" md="4" lg="4" xl="4" xxl="4">
-            <ConfigWindowComponent Id="config-window" @rendermode="InteractiveServer" />
+            <ConfigWindowComponent Id="config-window" OnSystemMessageChanged="SetSystemMessage" @rendermode="InteractiveServer" />
         </FluentGridItem>
 
         <FluentGridItem Class="chat-grid" xs="12" sm="12" md="8" lg="8" xl="8" xxl="8" Style="height: 900px;">
@@ -16,3 +16,14 @@
         </FluentGridItem>
     </FluentGrid>
 </FluentLayout>
+
+@code {
+    private string? systemMessage;
+
+    private async Task SetSystemMessage(string systemMessage)
+    {
+        this.systemMessage = systemMessage;
+
+        await Task.CompletedTask;
+    }
+}

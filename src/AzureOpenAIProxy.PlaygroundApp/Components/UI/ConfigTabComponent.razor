@@ -16,15 +16,20 @@
     [Parameter]
     public string? Id { get; set; }
 
+    [Parameter]
+    public EventCallback<string> OnSystemMessageChanged { get; set; }
+
     private async Task ChangeTab(FluentTab tab)
     {
         this.selectedTab = tab;
+
         await Task.CompletedTask;
     }
 
-    private async Task SetSystemMessage(string value)
+    private async Task SetSystemMessage(string systemMessage)
     {
-        systemMessage = value;
-        await Task.CompletedTask;
+        this.systemMessage = systemMessage;
+        
+        await OnSystemMessageChanged.InvokeAsync(systemMessage);
     }
 }
