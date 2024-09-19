@@ -57,14 +57,14 @@
 
                 <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
                     <FluentLabel For="event-start-date" class="create-input-label">Event Start Date</FluentLabel>
-                    <FluentDatePicker Id="event-start-date" Value="@adminEventDetails.DateStart.DateTime" ValueChanged="@(e => adminEventDetails.DateStart = e.Value.Date)" />
-                    <FluentTimePicker Id="event-start-time" Value="@adminEventDetails.DateStart.DateTime" ValueChanged="@(e => adminEventDetails.DateStart = e.Value.Date + e.Value.TimeOfDay)" />
+                    <FluentDatePicker Id="event-start-date" Value="@adminEventDetails.DateStart.DateTime" ValueChanged="@(e => adminEventDetails.DateStart = e.Value)" />
+                    <FluentTimePicker Id="event-start-time" Value="@adminEventDetails.DateStart.DateTime" ValueChanged="@(e => adminEventDetails.DateStart = e.Value)" />
                 </FluentStack>
 
                 <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
                     <FluentLabel For="event-end-date" class="create-input-label">Event End Date</FluentLabel>
-                    <FluentDatePicker Id="event-end-date" Value="@adminEventDetails.DateEnd.DateTime" ValueChanged="@(e => adminEventDetails.DateEnd = e.Value.Date)" />
-                    <FluentTimePicker Id="event-end-time" Value="@adminEventDetails.DateEnd.DateTime" ValueChanged="@(e => adminEventDetails.DateEnd = e.Value.Date + e.Value.TimeOfDay)" />
+                    <FluentDatePicker Id="event-end-date" Value="@adminEventDetails.DateEnd.DateTime" ValueChanged="@(e => adminEventDetails.DateEnd = e.Value)" />
+                    <FluentTimePicker Id="event-end-time" Value="@adminEventDetails.DateEnd.DateTime" ValueChanged="@(e => adminEventDetails.DateEnd = e.Value)" />
                 </FluentStack>
 
                 <FluentStack class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
