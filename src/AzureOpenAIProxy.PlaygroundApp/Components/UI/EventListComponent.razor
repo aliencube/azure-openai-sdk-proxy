@@ -8,7 +8,7 @@
                 padding-block: 1.5em;
                 padding-inline: 1.0em; align-items: center; margin-top: 18px; border-radius: 8px;">
 
-    @if (_events == null || _events.Any() == false)
+    @if (events == null || events.Any() == false)
     {
         <FluentGridItem Id="no-events" xs="12" sm="12" Justify="JustifyContent.Center" Style="text-align: center; flex-grow: 1;">
             <FluentCard MinimalStyle="true" Style="flex-grow: 1; background-color: var(--neutral-layer-2); display: flex; padding: 0em; flex-direction: row; align-items: center; align-content: center; justify-content: center; background-color: transparent; box-shadow: none !important; border: hidden;">
@@ -19,7 +19,8 @@
     else
     {
         // Shows up to 4 events that the user currently joined.
-        @foreach (var e in _events)
+        var entries = events.Take(4);
+        @foreach (var e in entries)
         {
             <EventItemComponent Id="@e.EventId.ToString()"
                                 Title="@e.Title"
@@ -30,7 +31,7 @@
 </FluentGrid>
 
 @code {
-    private List<EventDetails>? _events = null;
+    private List<EventDetails>? events = null;
 
     [Parameter]
     public string? Id { get; set; }
@@ -38,7 +39,7 @@
     protected override async Task OnInitializedAsync()
     {
         // TODO: Fetch events from the API server.
-        _events = await CreateEventDetailsAsync();
+        events = await CreateEventDetailsAsync();
     }
 
     private async Task<List<EventDetails>> CreateEventDetailsAsync()
