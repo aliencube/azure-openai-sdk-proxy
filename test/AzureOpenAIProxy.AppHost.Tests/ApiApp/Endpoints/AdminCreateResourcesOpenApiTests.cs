@@ -8,7 +8,7 @@ using IdentityModel.Client;
 
 namespace AzureOpenAIProxy.AppHost.Tests.ApiApp.Endpoints;
 
-public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClassFixture<AspireAppHostFixture>
+public class AdminCreateResourcesOpenApiTests(AspireAppHostFixture host) : IClassFixture<AspireAppHostFixture>
 {
     [Fact]
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Path()
@@ -23,7 +23,7 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
 
         // Assert
         var result = openapi!.RootElement.GetProperty("paths")
-                                         .TryGetProperty("/admin/events/{eventId}", out var property) ? property : default;
+                                         .GetProperty("/admin/resources");
         result.ValueKind.Should().Be(JsonValueKind.Object);
     }
 
@@ -40,8 +40,8 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
 
         // Assert
         var result = openapi!.RootElement.GetProperty("paths")
-                                         .GetProperty("/admin/events/{eventId}")
-                                         .TryGetProperty("get", out var property) ? property : default;
+                                         .GetProperty("/admin/resources")
+                                         .GetProperty("post");
         result.ValueKind.Should().Be(JsonValueKind.Object);
     }
 
@@ -59,9 +59,9 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
 
         // Assert
         var result = openapi!.RootElement.GetProperty("paths")
-                                         .GetProperty("/admin/events/{eventId}")
-                                         .GetProperty("get")
-                                         .TryGetProperty("tags", out var property) ? property : default;
+                                         .GetProperty("/admin/resources")
+                                         .GetProperty("post")
+                                         .GetProperty("tags");
         result.ValueKind.Should().Be(JsonValueKind.Array);
         result.EnumerateArray().Select(p => p.GetString()).Should().Contain(tag);
     }
@@ -82,56 +82,14 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
 
         // Assert
         var result = openapi!.RootElement.GetProperty("paths")
-                                         .GetProperty("/admin/events/{eventId}")
-                                         .GetProperty("get")
-                                         .TryGetProperty(attribute, out var property) ? property : default;
+                                         .GetProperty("/admin/resources")
+                                         .GetProperty("post")
+                                         .GetProperty(attribute);
         result.ValueKind.Should().Be(JsonValueKind.String);
     }
 
     [Theory]
-    [InlineData("parameters")]
-    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Array(string attribute)
-    {
-        // Arrange
-        using var httpClient = host.App!.CreateHttpClient("apiapp");
-        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
-
-        // Act
-        var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
-        var openapi = JsonSerializer.Deserialize<JsonDocument>(json);
-
-        // Assert
-        var result = openapi!.RootElement.GetProperty("paths")
-                                         .GetProperty("/admin/events/{eventId}")
-                                         .GetProperty("get")
-                                         .TryGetProperty(attribute, out var property) ? property : default;
-        result.ValueKind.Should().Be(JsonValueKind.Array);
-    }
-
-    [Theory]
-    [InlineData("eventId")]
-    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Path_Parameter(string name)
-    {
-        // Arrange
-        using var httpClient = host.App!.CreateHttpClient("apiapp");
-        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
-
-        // Act
-        var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
-        var openapi = JsonSerializer.Deserialize<JsonDocument>(json);
-
-        // Assert
-        var result = openapi!.RootElement.GetProperty("paths")
-                                         .GetProperty("/admin/events/{eventId}")
-                                         .GetProperty("get")
-                                         .GetProperty("parameters")
-                                         .EnumerateArray()
-                                         .Where(p => p.GetProperty("in").GetString() == "path")
-                                         .Select(p => p.GetProperty("name").ToString());
-        result.Should().Contain(name);
-    }
-
-    [Theory]
+    [InlineData("requestBody")]
     [InlineData("responses")]
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Object(string attribute)
     {
@@ -145,14 +103,15 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
 
         // Assert
         var result = openapi!.RootElement.GetProperty("paths")
-                                         .GetProperty("/admin/events/{eventId}")
-                                         .GetProperty("get")
-                                         .TryGetProperty(attribute, out var property) ? property : default;
+                                         .GetProperty("/admin/resources")
+                                         .GetProperty("post")
+                                         .GetProperty(attribute);
         result.ValueKind.Should().Be(JsonValueKind.Object);
     }
 
     [Theory]
     [InlineData("200")]
+    [InlineData("400")]
     [InlineData("401")]
     [InlineData("500")]
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Response(string attribute)
@@ -167,10 +126,10 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
 
         // Assert
         var result = openapi!.RootElement.GetProperty("paths")
-                                         .GetProperty("/admin/events/{eventId}")
-                                         .GetProperty("get")
+                                         .GetProperty("/admin/resources")
+                                         .GetProperty("post")
                                          .GetProperty("responses")
-                                         .TryGetProperty(attribute, out var property) ? property : default;
+                                         .GetProperty(attribute);
         result.ValueKind.Should().Be(JsonValueKind.Object);
     }
 
@@ -187,7 +146,7 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
 
         // Assert
         var result = openapi!.RootElement.GetProperty("components")
-                                         .TryGetProperty("schemas", out var property) ? property : default;
+                                         .GetProperty("schemas");
         result.ValueKind.Should().Be(JsonValueKind.Object);
     }
 
@@ -205,25 +164,19 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
         // Assert
         var result = openapi!.RootElement.GetProperty("components")
                                          .GetProperty("schemas")
-                                         .TryGetProperty("AdminEventDetails", out var property) ? property : default;
+                                         .GetProperty("AdminResourceDetails");
         result.ValueKind.Should().Be(JsonValueKind.Object);
     }
-
+    
     [Theory]
-    [InlineData("eventId", true)]
-    [InlineData("title", true)]
-    [InlineData("summary", true)]
-    [InlineData("description", false)]
-    [InlineData("dateStart", true)]
-    [InlineData("dateEnd", true)]
-    [InlineData("timeZone", true)]
+    [InlineData("resourceId", true)]
+    [InlineData("friendlyName", true)]
+    [InlineData("deploymentName", true)]
+    [InlineData("resourceType", true)]
+    [InlineData("endpoint", true)]
+    [InlineData("apiKey", true)]
+    [InlineData("region", true)]
     [InlineData("isActive", true)]
-    [InlineData("organizerName", true)]
-    [InlineData("organizerEmail", true)]
-    [InlineData("coorganizerName", false)]
-    [InlineData("coorganizerEmail", false)]
-    [InlineData("maxTokenCap", true)]
-    [InlineData("dailyRequestCap", true)]
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Required(string attribute, bool isRequired)
     {
         // Arrange
@@ -237,27 +190,21 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
         // Assert
         var result = openapi!.RootElement.GetProperty("components")
                                          .GetProperty("schemas")
-                                         .GetProperty("AdminEventDetails")
+                                         .GetProperty("AdminResourceDetails")
                                          .TryGetStringArray("required")
                                          .ToList();
         result.Contains(attribute).Should().Be(isRequired);
     }
 
     [Theory]
-    [InlineData("eventId")]
-    [InlineData("title")]
-    [InlineData("summary")]
-    [InlineData("description")]
-    [InlineData("dateStart")]
-    [InlineData("dateEnd")]
-    [InlineData("timeZone")]
+    [InlineData("resourceId")]
+    [InlineData("friendlyName")]
+    [InlineData("deploymentName")]
+    [InlineData("resourceType")]
+    [InlineData("endpoint")]
+    [InlineData("apiKey")]
+    [InlineData("region")]
     [InlineData("isActive")]
-    [InlineData("organizerName")]
-    [InlineData("organizerEmail")]
-    [InlineData("coorganizerName")]
-    [InlineData("coorganizerEmail")]
-    [InlineData("maxTokenCap")]
-    [InlineData("dailyRequestCap")]
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Property(string attribute)
     {
         // Arrange
@@ -271,27 +218,21 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
         // Assert
         var result = openapi!.RootElement.GetProperty("components")
                                          .GetProperty("schemas")
-                                         .GetProperty("AdminEventDetails")
+                                         .GetProperty("AdminResourceDetails")
                                          .GetProperty("properties")
-                                         .TryGetProperty(attribute, out var property) ? property : default;
+                                         .GetProperty(attribute);
         result.ValueKind.Should().Be(JsonValueKind.Object);
     }
 
     [Theory]
-    [InlineData("eventId", "string")]
-    [InlineData("title", "string")]
-    [InlineData("summary", "string")]
-    [InlineData("description", "string")]
-    [InlineData("dateStart", "string")]
-    [InlineData("dateEnd", "string")]
-    [InlineData("timeZone", "string")]
+    [InlineData("resourceId", "string")]
+    [InlineData("friendlyName", "string")]
+    [InlineData("deploymentName", "string")]
+    [InlineData("resourceType", "string")]
+    [InlineData("endpoint", "string")]
+    [InlineData("apiKey", "string")]
+    [InlineData("region", "string")]
     [InlineData("isActive", "boolean")]
-    [InlineData("organizerName", "string")]
-    [InlineData("organizerEmail", "string")]
-    [InlineData("coorganizerName", "string")]
-    [InlineData("coorganizerEmail", "string")]
-    [InlineData("maxTokenCap", "integer")]
-    [InlineData("dailyRequestCap", "integer")]
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Type(string attribute, string type)
     {
         // Arrange
@@ -305,9 +246,57 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
         // Assert
         var result = openapi!.RootElement.GetProperty("components")
                                          .GetProperty("schemas")
-                                         .GetProperty("AdminEventDetails")
+                                         .GetProperty("AdminResourceDetails")
                                          .GetProperty("properties")
                                          .GetProperty(attribute);
-        result.TryGetString("type").Should().Be(type);
+
+        if (!result.TryGetProperty("type", out var typeProperty))
+        {
+            var refPath = result.TryGetString("$ref").TrimStart('#', '/').Split('/');
+            var refSchema = openapi.RootElement;
+
+            foreach (var part in refPath)
+            {
+                refSchema = refSchema.GetProperty(part);
+            }
+
+            typeProperty = refSchema.GetProperty("type");
+        }
+        
+        typeProperty.GetString().Should().Be(type);
+    }
+
+    [Fact]
+    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Validate_ResourceType_As_Enum()
+    {
+        // Arrange
+        using var httpClient = host.App!.CreateHttpClient("apiapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
+
+        // Act
+        var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
+        var openapi = JsonSerializer.Deserialize<JsonDocument>(json);
+
+        // Assert
+        var result = openapi!.RootElement.GetProperty("components")
+                                         .GetProperty("schemas")
+                                         .GetProperty("AdminResourceDetails")
+                                         .GetProperty("properties")
+                                         .GetProperty("resourceType");
+
+        var refPath = result.TryGetString("$ref").TrimStart('#', '/').Split('/');
+        var refSchema = openapi.RootElement;
+
+        foreach (var part in refPath)
+        {
+            refSchema = refSchema.GetProperty(part);
+        }
+
+        var enumValues = refSchema.GetProperty("enum")
+                                  .EnumerateArray()
+                                  .Select(p => p.GetString())
+                                  .ToList();
+
+        enumValues.Should().BeEquivalentTo(["none", "chat", "image"]);
     }
 }
