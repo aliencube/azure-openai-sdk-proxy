@@ -19,8 +19,7 @@
     else
     {
         // Shows up to 4 events that the user currently joined.
-        var entries = events.Take(4);
-        @foreach (var e in entries)
+        @foreach (var e in events.Take(4))
         {
             <EventItemComponent Id="@e.EventId.ToString()"
                                 Title="@e.Title"
