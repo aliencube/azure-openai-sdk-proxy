@@ -1,20 +1,20 @@
-﻿::deep .parameter-label {
+﻿::deep .parameter-component-label {
     display: inline-block;
     padding-left: 5px;
 }
 
-::deep .parameter-slider {
+::deep .parameter-component-slider {
     width: 88%;
     padding-top: 15px;
 }
 
-::deep .parameter-textfield {
+::deep .parameter-component-textfield {
     width: 12%;
     font-size: 9px;
     padding-right: 5px;
 }
 
-::deep .parameter-error {
+::deep .parameter-component-error {
     padding: 10px;
     width: 95%;
     margin: 5px auto;

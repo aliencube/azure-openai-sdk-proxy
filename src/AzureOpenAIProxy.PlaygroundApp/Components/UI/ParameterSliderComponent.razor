@@ -2,7 +2,7 @@
 @typeparam TValue where TValue : System.Numerics.INumber<TValue>
 
 <div id="@Id">
-    <label id=@($"{Id}-label") class="parameter-label" for=@($"{Id}-content")>
+    <label id=@($"{Id}-label") class="parameter-component-label" for=@($"{Id}-content")>
         @LabelText
 
         @* Tooltip Image *@
@@ -21,18 +21,18 @@
                  Orientation="Orientation.Horizontal"
                  Style="column-gap:0px">
 
-        <FluentSlider Class="parameter-slider"
+        <FluentSlider Id=@($"{Id}-slider") Class="parameter-component-slider"
                       Min="@Min" Max="@Max" Step="@Step"
                       @bind-Value=Value @bind-Value:after=AfterSliderChange />
 
-        <FluentTextField Class="parameter-textfield"
+        <FluentTextField Id=@($"{Id}-textfield") Class="parameter-component-textfield"
                          @bind-Value=textFieldValue @bind-Value:after=AfterTextFieldChange />
 
     </FluentStack>
 
     @if (!hasNoError)
     {
-        <FluentCard Class="parameter-error">
+        <FluentCard Class="parameter-component-error">
             @errorText
         </FluentCard>
     }
