@@ -368,4 +368,64 @@ public partial class PlaygroundPageTests
         isApplyButtonEnabled.Should().NotBeNull();
         isResetButtonEnabled.Should().NotBeNull();
     }
+    
+    [TestCase("slider-past-messages", "Past messages included")]
+    [TestCase("slider-max-response", "Max response")]
+    [TestCase("slider-temperature", "Temperature")]
+    [TestCase("slider-top-p", "Top P")]
+    [TestCase("slider-frequency-penalty", "Frequency penalty")]
+    [TestCase("slider-presence-penalty", "Presence penalty")]
+    public async Task Given_ParameterTab_When_Updated_Then_Parameter_Slider_Should_Be_Visible(string id, string label)
+    {
+        // Arrange
+        var parameterTab = Page.Locator("div.config-grid")
+                               .Locator("fluent-tabs#config-tabs")
+                               .Locator("fluent-tab#parameters-tab");
+
+        await parameterTab.ClickAsync();
+
+        var component = Page.Locator("div.config-grid")
+                            .Locator("fluent-tabs#config-tabs")
+                            .Locator("fluent-tab-panel#parameters-tab-panel")
+                            .Locator($"div#{id}");
+
+        var labelComponent = component.Locator($"label[for='{id}-content']");
+
+        // Act
+        var labelText = await labelComponent.TextContentAsync();
+        var slider = component.Locator($"fluent-slider#{id}-slider");
+        var textfield = component.Locator($"fluent-text-field#{id}-textfield");
+
+        // Assert
+        labelText.Should().StartWith(label);
+        await Expect(slider).ToBeVisibleAsync();
+        await Expect(textfield).ToBeVisibleAsync();
+    }
+
+    [Test]
+    [TestCase("multiselect-stop-sequence", "Stop sequence")]
+    public async Task Given_ParameterTab_When_Updated_Then_Parameter_MultiSelect_Should_Be_Visible(string id, string label)
+    {
+        // Arrange
+        var parameterTab = Page.Locator("div.config-grid")
+                               .Locator("fluent-tabs#config-tabs")
+                               .Locator("fluent-tab#parameters-tab");
+
+        await parameterTab.ClickAsync();
+
+        var component = Page.Locator("div.config-grid")
+                            .Locator("fluent-tabs#config-tabs")
+                            .Locator("fluent-tab-panel#parameters-tab-panel")
+                            .Locator($"div#{id}");
+
+        var labelComponent = component.Locator($"label[for='{id}-content']");
+
+        // Act
+        var labelText = await labelComponent.TextContentAsync();
+        var multiselect = component.Locator($"fluent-text-field#{id}-textfield");
+
+        // Assert
+        labelText.Should().StartWith(label);
+        await Expect(multiselect).ToBeVisibleAsync();
+    }
 }
