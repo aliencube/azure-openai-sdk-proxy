@@ -48,13 +48,7 @@ public class AdminEventService(IAdminEventRepository repository) : IAdminEventSe
     public async Task<AdminEventDetails> CreateEvent(AdminEventDetails eventDetails)
     {
         // Validate
-        // TODO: [tae0y] PartitionKey, RowKey 정책 확인
-        if (string.IsNullOrEmpty(eventDetails.TimeZone) || string.IsNullOrEmpty(eventDetails.EventId.ToString()))
-        {
-            var invalidFields = string.Join(", ", new List<string> { "TimeZone", "EventId" }.Where(p => string.IsNullOrEmpty(p)));
-            throw new ArgumentNullException($"Invalid event details : {invalidFields} cannot be null or empty");
-        }
-        eventDetails.PartitionKey = eventDetails.TimeZone;
+        eventDetails.PartitionKey = "event-details";
         eventDetails.RowKey = eventDetails.EventId.ToString();
         
         // Save
