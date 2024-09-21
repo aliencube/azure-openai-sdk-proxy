@@ -51,7 +51,9 @@ public class AdminEventRepository(TableServiceClient tableServiceClient, Storage
     /// <inheritdoc />
     public async Task<AdminEventDetails> CreateEvent(AdminEventDetails eventDetails)
     {
-        var tableServiceClient = _tableServiceClient.GetTableClient("events");
+        // TODO: 설정파일, TableStorageSettings에 여러 개의 테이블 이름이 저장되어 있을 경우 대응
+        var tableName = _storageAccountSettings.TableStorage.TableName;
+        var tableServiceClient = _tableServiceClient.GetTableClient(tableName);
 
         // 데이터 저장
         var createResponse = await tableServiceClient.AddEntityAsync(eventDetails).ConfigureAwait(false);
