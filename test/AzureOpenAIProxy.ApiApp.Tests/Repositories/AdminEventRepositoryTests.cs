@@ -16,8 +16,6 @@ namespace AzureOpenAIProxy.ApiApp.Tests.Repositories;
 
 public class AdminEventRepositoryTests
 {
-
-
     [Fact]
     public void Given_ServiceCollection_When_AddAdminEventRepository_Invoked_Then_It_Should_Contain_AdminEventRepository()
     {
