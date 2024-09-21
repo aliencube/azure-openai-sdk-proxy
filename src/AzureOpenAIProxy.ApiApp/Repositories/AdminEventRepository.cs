@@ -58,15 +58,8 @@ public class AdminEventRepository(TableServiceClient tableServiceClient, Storage
         // 데이터 저장
         var createResponse = await tableClient.AddEntityAsync(eventDetails).ConfigureAwait(false);
 
-        // 저장한 데이터 재조회
-        // TODO: [tae0y] Azure.Tables REST API는 저장한 Entity를 반환하는 옵션이 있으나, tableServiceClient는 없으므로 추가 작업 필요
-        var getResponse = await tableClient.GetEntityAsync<AdminEventDetails>(
-            eventDetails.PartitionKey,
-            eventDetails.RowKey
-        ).ConfigureAwait(false);
-
         // 조회한 엔티티 반환
-        return getResponse.Value;
+        return eventDetails;
     }
 
     /// <inheritdoc />
