@@ -1,3 +1,5 @@
+using Azure;
+
 using AzureOpenAIProxy.ApiApp.Models;
 using AzureOpenAIProxy.ApiApp.Services;
 
@@ -118,11 +120,16 @@ public static class AdminEventEndpoints
             try
             {
                 var details = await service.GetEvent(eventId);
-                return details is null ? Results.NotFound() : Results.Ok(details);
+                return Results.Ok(details);
+            }
+            catch(RequestFailedException ex)
+            {
+                logger.LogError($"Failed to get event details of ${eventId}");
+                return Results.NotFound();
             }
             catch(Exception ex)
             {
-                logger.LogError(ex, $"Failed to get event details of ${eventId}");
+                logger.LogError(ex, $"Error occurred while fetching event details of ${eventId}");
 
                 return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
             }
