@@ -108,32 +108,24 @@ public static class AdminEventEndpoints
         // Todo: Issue #19 https://github.com/aliencube/azure-openai-sdk-proxy/issues/19
         // Need authorization by admin
         var builder = app.MapGet(AdminEndpointUrls.AdminEventDetails, async (
-            [FromRoute] string eventId,
+            [FromRoute] Guid eventId,
             IAdminEventService service,
             ILoggerFactory loggerFactory) =>
         {
             var logger = loggerFactory.CreateLogger(nameof(AdminEventEndpoints));
             logger.LogInformation($"Received request to fetch details for event with ID: {eventId}");
 
-            if(Guid.TryParse(eventId, out _))
-            {
-                logger.LogError($"{eventId} is not in a valid GUID format");
-                return Results.NotFound();
-            }
-
             try
             {
-                var details = await service.GetEvent(Guid.Parse(eventId));
+                var details = await service.GetEvent(eventId);
                 return details is null ? Results.NotFound() : Results.Ok(details);
             }
             catch(Exception ex)
             {
-                // TODO: 발생 가능한 exception 별로 다르게 처리할 필요가 있는지 검토
                 logger.LogError(ex, $"Failed to get event details of ${eventId}");
 
                 return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
             }
-
         })
         .Produces<AdminEventDetails>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
