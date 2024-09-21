@@ -8,7 +8,7 @@ namespace AzureOpenAIProxy.ApiApp.Models;
 /// <summary>
 /// This represent the entity for the event details for admin.
 /// </summary>
-public class AdminEventDetails : EventDetails, ITableEntity
+public class AdminEventDetails : EventDetails
 {
     /// <summary>
     /// Gets or sets the event description.
@@ -60,27 +60,4 @@ public class AdminEventDetails : EventDetails, ITableEntity
     /// Gets or sets the event coorganizer email.
     /// </summary>
     public string? CoorganizerEmail { get; set; }
-
-    // ITableEntity implementation
-    /// <summary>
-    /// Gets or sets the event Partition Key.
-    /// </summary>
-    public string? PartitionKey { get; set; }
-    
-    /// <summary>
-    /// Gets or sets the event Row Key.
-    /// </summary>
-    public string? RowKey { get; set; }
-    
-    /// <summary>
-    /// Gets or sets the event Timestamp.
-    /// </summary>
-    public DateTimeOffset? Timestamp { get; set; }
-    
-    /// <summary>
-    /// Gets or sets the event ETag.
-    /// </summary>
-    //TODO: [tae0y] request payload, table entity를 분리해야하는가? 혹은 Json 역직렬화시 제외만 해도 되는가?
-    [JsonIgnore]
-    public ETag ETag { get; set; }
 }
