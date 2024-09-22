@@ -63,7 +63,7 @@ public class AdminEventRepository(TableServiceClient tableServiceClient, Storage
     /// <inheritdoc />
     public async Task<AdminEventDetails> GetEvent(Guid eventId)
     {
-        TableClient tableClient = _tableServiceClient.GetTableClient(_storageAccountSettings.TableStorage.TableName);
+        TableClient tableClient = await GetTableClientAsync();
 
         var eventDetail = await tableClient.GetEntityAsync<AdminEventDetails>(
             rowKey: eventId.ToString(),
@@ -77,6 +77,15 @@ public class AdminEventRepository(TableServiceClient tableServiceClient, Storage
     public async Task<AdminEventDetails> UpdateEvent(Guid eventId, AdminEventDetails eventDetails)
     {
         throw new NotImplementedException();
+    }
+
+    private async Task<TableClient> GetTableClientAsync()
+    {
+        TableClient tableClient = _tableServiceClient.GetTableClient(_storageAccountSettings.TableStorage.TableName);
+
+        await tableClient.CreateIfNotExistsAsync();
+
+        return tableClient;
     }
 }
 

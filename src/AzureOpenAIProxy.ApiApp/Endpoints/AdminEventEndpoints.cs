@@ -124,13 +124,18 @@ public static class AdminEventEndpoints
             }
             catch(RequestFailedException ex)
             {
-                logger.LogError($"Failed to get event details of ${eventId}");
-                return Results.NotFound();
+                if(ex.Status == 404)
+                {
+                    logger.LogError($"Failed to get event details of {eventId}");
+                    return Results.NotFound();
+                }
+
+                logger.LogError(ex, $"Error occurred while fetching event details of {eventId} with status {ex.Status}");
+                return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
             }
             catch(Exception ex)
             {
-                logger.LogError(ex, $"Error occurred while fetching event details of ${eventId}");
-
+                logger.LogError(ex, $"Error occurred while fetching event details of {eventId}");
                 return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
             }
         })
