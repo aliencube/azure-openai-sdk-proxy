@@ -25,7 +25,6 @@
 </div>
 
 @code {
-    private string? endpoint = "https://localhost:7001/";
     private string? apiKey = "abcdef";
     private string? deploymentName = "model-gpt35turbo16k-0613";
     private int? maxTokens = 4096;
@@ -43,7 +42,6 @@
         {
             var options = new OpenAIApiClientOptions()
             {
-                Endpoint = endpoint,
                 ApiKey = apiKey,
                 DeploymentName = deploymentName,
                 MaxTokens = maxTokens,
@@ -51,7 +49,7 @@
                 SystemPrompt = systemPrompt,
                 UserPrompt = userInput,
             };
-            var result = await Api.CompleteChatAsync();
+            var result = await Api.CompleteChatAsync(options);
             assistantMessage = result;
 
         }

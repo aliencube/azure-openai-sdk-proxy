@@ -13,42 +13,39 @@ public interface IOpenAIApiClient
     /// <summary>
     /// Send a chat completion request to the OpenAI API.
     /// </summary>
+    /// <param name="clientOptions"><see cref="OpenAIApiClientOptions"/> instance.</param>
     /// <returns>Returns the chat completion result.</returns>
-    Task<string> CompleteChatAsync();
+    Task<string> CompleteChatAsync(OpenAIApiClientOptions clientOptions);
 }
 
 /// <summary>
 /// This represents the OpenAI API client entity.
 /// </summary>
-public class OpenAIApiClient(OpenAIApiClientOptions clientOptions) : IOpenAIApiClient
+public class OpenAIApiClient : IOpenAIApiClient
 {
-    private readonly OpenAIApiClientOptions _clientOptions =
-        clientOptions ?? throw new ArgumentNullException(nameof(clientOptions));
-
     /// <inheritdoc />
-    public async Task<string> CompleteChatAsync()
+    public async Task<string> CompleteChatAsync(OpenAIApiClientOptions clientOptions)
     {
         // test
-        _clientOptions.ApiKey = "abcdef";
-        _clientOptions.DeploymentName = "model-gpt4o-20240513";
-        _clientOptions.SystemPrompt = "You are an AI assistant that helps people find information.";
-        _clientOptions.MaxTokens = 4096;
-        _clientOptions.Temperature = 0.7f;
+        clientOptions.ApiKey = "abcdef";
+        clientOptions.DeploymentName = "model-gpt4o-20240513";
+        clientOptions.SystemPrompt = "You are an AI assistant that helps people find information.";
+        clientOptions.MaxTokens = 4096;
+        clientOptions.Temperature = 0.7f;
 
-        var endpoint = new Uri($"{_clientOptions.Endpoint!.TrimEnd('/')}/api");
-        var credential = new AzureKeyCredential(_clientOptions.ApiKey!);
-        var openai = new AzureOpenAIClient(endpoint, credential);
-        var chat = openai.GetChatClient(_clientOptions.DeploymentName);
+        var credential = new AzureKeyCredential(clientOptions.ApiKey!);
+        var openai = new AzureOpenAIClient(clientOptions.Endpoint, credential);
+        var chat = openai.GetChatClient(clientOptions.DeploymentName);
 
         var messages = new List<ChatMessage>()
         {
-            new SystemChatMessage(_clientOptions.SystemPrompt),
-            new UserChatMessage(_clientOptions.UserPrompt),
+            new SystemChatMessage(clientOptions.SystemPrompt),
+            new UserChatMessage(clientOptions.UserPrompt),
         };
         var options = new ChatCompletionOptions
         {
-            MaxTokens = _clientOptions.MaxTokens,
-            Temperature = _clientOptions.Temperature,
+            MaxTokens = clientOptions.MaxTokens,
+            Temperature = clientOptions.Temperature,
         };
 
         var result = await chat.CompleteChatAsync(messages, options).ConfigureAwait(false);

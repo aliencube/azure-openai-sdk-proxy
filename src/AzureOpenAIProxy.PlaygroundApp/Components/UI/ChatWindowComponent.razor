@@ -1,8 +1,8 @@
 ﻿@using AzureOpenAIProxy.PlaygroundApp.Clients
 @using AzureOpenAIProxy.PlaygroundApp.Models
 
-@inject OpenAIApiClientOptions Options
 @inject IOpenAIApiClient Api
+@inject OpenAIApiClientOptions Options
 
 <FluentStack Id="@Id" Style="width: 100%; height: 100%;" Orientation="Orientation.Vertical" VerticalAlignment="VerticalAlignment.Bottom">
     <ChatHistoryComponent Id="chat-history" Messages="messages" />
@@ -25,9 +25,10 @@
     private async Task SendPrompt(string prompt)
     {
         this.messages!.Add(new ChatMessage() { Role = MessageRole.User, Message = prompt });
+
         Options.UserPrompt = prompt;
 
-        await Api.CompleteChatAsync();
+        await Api.CompleteChatAsync(Options);
         await Task.CompletedTask;
     }
 
