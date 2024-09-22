@@ -1,12 +1,17 @@
-﻿using AzureOpenAIProxy.ApiApp.Models;
+﻿using Azure;
+
+using AzureOpenAIProxy.ApiApp.Models;
 using AzureOpenAIProxy.ApiApp.Repositories;
 using AzureOpenAIProxy.ApiApp.Services;
 
 using FluentAssertions;
 
+using Google.Protobuf.WellKnownTypes;
+
 using Microsoft.Extensions.DependencyInjection;
 
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 
 namespace AzureOpenAIProxy.ApiApp.Tests.Services;
 
@@ -54,19 +59,51 @@ public class AdminEventServiceTests
         func.Should().ThrowAsync<NotImplementedException>();
     }
 
-    [Fact]
-    public void Given_Instance_When_GetEvent_Invoked_Then_It_Should_Throw_Exception()
+
+    [Theory]
+    [InlineData(404)]
+    [InlineData(500)]
+    public async Task Given_Failure_In_Get_Entity_When_GetEvent_Invoked_Then_It_Should_Throw_Exception(int statusCode)
     {
         // Arrange
         var eventId = Guid.NewGuid();
         var repository = Substitute.For<IAdminEventRepository>();
         var service = new AdminEventService(repository);
 
+        var exception = new RequestFailedException(statusCode, "Request Failed", default, default);
+
+        repository.GetEvent(Arg.Any<Guid>()).ThrowsAsync(exception);
+
         // Act
-        Func<Task> func = async () => await service.GetEvent(eventId);
+        Func<Task> func = () => service.GetEvent(eventId);
 
         // Assert
-        func.Should().ThrowAsync<NotImplementedException>();
+        var assertion = await func.Should().ThrowAsync<RequestFailedException>();
+        assertion.Which.Status.Should().Be(statusCode);
+    }
+
+    [Theory]
+    [InlineData("c355cc28-d847-4637-aad9-2f03d39aa51f")]
+    public async Task Given_Exist_EventId_When_GetEvent_Invoked_Then_It_Should_Return_AdminEventDetails(string eventId)
+    {
+        // Arrange
+        var repository = Substitute.For<IAdminEventRepository>();
+        var service = new AdminEventService(repository);
+
+        var eventDetails = new AdminEventDetails
+        {
+            RowKey = eventId
+        };
+
+        var guid = Guid.Parse(eventId);
+
+        repository.GetEvent(guid).Returns(Task.FromResult(eventDetails));
+
+        // Act
+        var result = await service.GetEvent(guid);
+
+        // Assert
+        result.Should().BeEquivalentTo(eventDetails);
     }
 
     [Fact]

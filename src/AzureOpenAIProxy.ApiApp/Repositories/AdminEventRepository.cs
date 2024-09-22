@@ -70,7 +70,7 @@ public class AdminEventRepository(TableServiceClient tableServiceClient, Storage
             partitionKey: "event-details"
         ).ConfigureAwait(false);
 
-        return eventDetail;
+        return eventDetail.Value;
     }
 
     /// <inheritdoc />
