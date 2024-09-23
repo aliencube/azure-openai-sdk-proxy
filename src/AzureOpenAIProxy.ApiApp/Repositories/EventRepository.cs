@@ -28,7 +28,7 @@ public class EventRepository(TableServiceClient tableServiceClient, StorageAccou
 
         List<EventDetails> events = [];
 
-        await foreach(EventDetails eventDetails in tableClient.QueryAsync<EventDetails>(e => e.PartitionKey.Equals(PartitionKeys.EventDetails)))
+        await foreach(EventDetails eventDetails in tableClient.QueryAsync<EventDetails>(e => e.PartitionKey.Equals(PartitionKeys.EventDetails)).ConfigureAwait(false))
         {
             events.Add(eventDetails);
         }
