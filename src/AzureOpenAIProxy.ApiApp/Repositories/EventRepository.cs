@@ -45,3 +45,21 @@ public class EventRepository(TableServiceClient tableServiceClient, StorageAccou
         return tableClient;
     }
 }
+
+/// <summary>
+/// This represents the extension class for <see cref="IServiceCollection"/>
+/// </summary>
+public static class EventRepositoryExtensions
+{
+    /// <summary>
+    /// Adds the <see cref="EventRepository"/> instance to the service collection.
+    /// </summary>
+    /// <param name="services"><see cref="IServiceCollection"/> instance.</param>
+    /// <returns>Returns <see cref="IServiceCollection"/> instance.</returns>
+    public static IServiceCollection AddEventRepository(this IServiceCollection services)
+    {
+        services.AddScoped<IEventRepository, EventRepository>();
+
+        return services;
+    }
+}
