@@ -14,10 +14,11 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddFluentUIComponents();
 
-builder.Services.AddScoped<IOpenAIApiClient, OpenAIApiClient>();
 
-builder.Services.AddScoped<OpenAIApiClientOptions>(_ =>
-    new OpenAIApiClientOptions { Endpoint = new Uri("https+http://apiapp") });
+builder.Services.AddHttpClient<IOpenAIApiClient, OpenAIApiClient>(client =>
+    client.BaseAddress = new Uri("https+http://apiapp"));
+
+builder.Services.AddScoped<OpenAIApiClientOptions>();
 
 var app = builder.Build();
 

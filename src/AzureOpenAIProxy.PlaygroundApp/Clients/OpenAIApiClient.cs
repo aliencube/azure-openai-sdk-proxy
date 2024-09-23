@@ -21,11 +21,14 @@ public interface IOpenAIApiClient
 /// <summary>
 /// This represents the OpenAI API client entity.
 /// </summary>
-public class OpenAIApiClient : IOpenAIApiClient
+public class OpenAIApiClient(HttpClient http) : IOpenAIApiClient
 {
+    private readonly HttpClient _http = http ?? throw new ArgumentNullException(nameof(http));
+    
     /// <inheritdoc />
     public async Task<string> CompleteChatAsync(OpenAIApiClientOptions clientOptions)
     {
+        clientOptions.Endpoint = _http.BaseAddress;
         // test
         clientOptions.ApiKey = "abcdef";
         clientOptions.DeploymentName = "model-gpt4o-20240513";
