@@ -120,7 +120,7 @@ public static class AdminEventEndpoints
             try
             {
                 var details = await service.GetEvent(eventId);
-                return details is null? Results.NotFound(): Results.Ok(details);
+                return Results.Ok(details);
             }
             catch(RequestFailedException ex)
             {
