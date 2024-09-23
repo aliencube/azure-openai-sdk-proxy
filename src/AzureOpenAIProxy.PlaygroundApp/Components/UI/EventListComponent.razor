@@ -3,14 +3,14 @@
 <FluentGrid AdaptiveRendering="true"
             Id="@Id"
             Spacing="3"
-            Justify="JustifyContent.FlexStart"
+            Justify="JustifyContent.Center"
             Style="background-color: var(--neutral-layer-4);
                 padding-block: 1.5em;
                 padding-inline: 1.0em; align-items: center; margin-top: 18px; border-radius: 8px;">
 
     @if (events == null || events.Any() == false)
     {
-        <EventItemComponent Id="no-events" ColumnBreakpoint="12"></EventItemComponent>
+        <EventItemComponent Id="no-event-item"></EventItemComponent>
     }
     else
     {

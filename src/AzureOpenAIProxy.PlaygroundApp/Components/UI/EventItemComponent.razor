@@ -1,19 +1,19 @@
-﻿<FluentGridItem Id="@Id" xl="@ColumnBreakpoint" xxl="@ColumnBreakpoint" Justify="JustifyContent.Center" Style="text-align: center;">
-    @if (Id == "no-events")
+﻿<FluentGridItem Id="@Id" xs="12" xl="6" xxl="3" Justify="JustifyContent.Center" Style="text-align: center;">
+    @if (Id == "no-event-item")
     {
-        <FluentCard MinimalStyle="true" Style="flex-grow: 1; background-color: var(--neutral-layer-2); display: flex; padding: 0em; flex-direction: row; align-items: center; align-content: center; justify-content: center; background-color: transparent; box-shadow: none !important; border: hidden;">
+        <FluentCard Class="no-event" MinimalStyle="true" Style="flex-grow: 1; background-color: var(--neutral-layer-2); display: flex; padding: 0em; flex-direction: row; align-items: center; align-content: center; justify-content: center; background-color: transparent; box-shadow: none !important; border: hidden;">
             <FluentLabel Typo="Typography.Header">You don’t have any events you have participated in now.</FluentLabel>
         </FluentCard>
     }
     else
     {
-        <FluentCard Id="event-title" Style="flex-grow: 1; padding: 0em; display: flex; flex-direction: column; align-items: normal;">
-            <FluentNavLink Id="event-details-link" Href="@($"/events/{Id}")" Style="flex-grow: 0; align-self: center;">
+        <FluentCard Class="no-event" MinimalStyle="true" Style="flex-grow: 1; display: flex; padding: 0em; flex-direction: column; align-items: normal; align-content: center; justify-content: center;">
+            <FluentNavLink Class="event-details-link" Href="@($"/events/{Id}")" Style="flex-grow: 0; align-self: center;">
                 <FluentLabel Typo="Typography.PaneHeader" Style="margin-block: 0.5em;">
                     @Title
                 </FluentLabel>
             </FluentNavLink>
-            <div id="event-summary" class="card border" style="background-color: var(--neutral-layer-2); padding: 1em; padding-inline: 1.5em; flex-grow: 1">
+            <div class="event-summary card border" style="background-color: var(--neutral-layer-2); padding: 1em; padding-inline: 1.5em; flex-grow: 1">
                 <div class="card-body">
                     <h5>@Summary</h5>
                 </div>
@@ -31,7 +31,4 @@
 
     [Parameter]
     public string? Summary { get; set; }
-
-    [Parameter]
-    public int ColumnBreakpoint { get; set; } = 6;
 }
