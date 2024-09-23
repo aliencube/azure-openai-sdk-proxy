@@ -67,7 +67,7 @@ public class AdminEventRepository(TableServiceClient tableServiceClient, Storage
 
         var eventDetail = await tableClient.GetEntityAsync<AdminEventDetails>(
             rowKey: eventId.ToString(),
-            partitionKey: "event-details"
+            partitionKey: PartitionKeys.EventDetails
         ).ConfigureAwait(false);
 
         return eventDetail.Value;
