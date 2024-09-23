@@ -1,3 +1,5 @@
+using Azure;
+
 using AzureOpenAIProxy.ApiApp.Services;
 
 using Microsoft.AspNetCore.Mvc;
@@ -18,10 +20,33 @@ public static class PlaygroundEndpoints
     {
         // ASSUMPTION: User has already logged in
         var builder = app.MapGet(PlaygroundEndpointUrls.Events, async (
-            IPlaygroundService service) =>
+            IPlaygroundService service,
+            ILoggerFactory loggerFactory) =>
         {
-            var eventDetailsList = await service.GetEvents();
-            return Results.Ok(eventDetailsList);
+            var logger = loggerFactory.CreateLogger(nameof(AdminEventEndpoints));
+            logger.LogInformation("Received request to fetch events list");
+
+            try
+            {
+                var eventDetailsList = await service.GetEvents();
+                return Results.Ok(eventDetailsList);
+            }
+            catch (RequestFailedException ex)
+            {
+                if(ex.Status == 404)
+                {
+                    logger.LogError($"Failed to get events list");
+                    return Results.NotFound();
+                }
+
+                logger.LogError(ex, $"Error occurred while fetching events list");
+                return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Error occurred while fetching events list");
+                return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
+            }
         })
         .Produces<List<EventDetails>>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
