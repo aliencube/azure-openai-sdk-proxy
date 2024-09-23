@@ -1,3 +1,5 @@
+using AzureOpenAIProxy.ApiApp.Services;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace AzureOpenAIProxy.ApiApp.Endpoints;
@@ -14,10 +16,12 @@ public static class PlaygroundEndpoints
     /// <returns>Returns <see cref="RouteHandlerBuilder"/> instance.</returns>
     public static RouteHandlerBuilder AddListEvents(this WebApplication app)
     {
-        var builder = app.MapGet(PlaygroundEndpointUrls.Events, () =>
+        // ASSUMPTION: User has already logged in
+        var builder = app.MapGet(PlaygroundEndpointUrls.Events, async (
+            IPlaygroundService service) =>
         {
-            // TODO: Issue #179 https://github.com/aliencube/azure-openai-sdk-proxy/issues/179
-            return Results.Ok();
+            var eventDetailsList = await service.GetEvents();
+            return Results.Ok(eventDetailsList);
         })
         .Produces<List<EventDetails>>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
