@@ -37,3 +37,21 @@ public class PlaygroundService(IEventRepository eventRepository) : IPlaygroundSe
         return result;
     }
 }
+
+/// <summary>
+/// This represents the extension class for <see cref="IServiceCollection"/>
+/// </summary>
+public static class PlaygroundServiceExtensions
+{
+    /// <summary>
+    /// Adds the <see cref="PlaygroundService"/> instance to the service collection.
+    /// </summary>
+    /// <param name="services"><see cref="IServiceCollection"/> instance.</param>
+    /// <returns>Returns <see cref="IServiceCollection"/> instance.</returns>
+    public static IServiceCollection AddPlaygroundService(this IServiceCollection services)
+    {
+        services.AddScoped<IPlaygroundService, PlaygroundService>();
+
+        return services;
+    }
+}
