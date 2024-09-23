@@ -6,8 +6,6 @@ using AzureOpenAIProxy.ApiApp.Services;
 
 using FluentAssertions;
 
-using Google.Protobuf.WellKnownTypes;
-
 using Microsoft.Extensions.DependencyInjection;
 
 using NSubstitute;
