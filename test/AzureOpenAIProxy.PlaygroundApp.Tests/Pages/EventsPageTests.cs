@@ -46,6 +46,44 @@ public class EventsPageTests : PageTest
         Assert.That(childrenCount, Is.LessThanOrEqualTo(4));
     }
 
+    [Test]
+    public async Task Given_Events_When_Loaded_Then_It_Should_Have_Header_And_Summary_In_The_Card()
+    {
+        // Act
+        var eventCards = await Page.Locator("div.fluent-card-minimal-style.event").AllAsync();
+
+        // Assert
+        foreach (var card in eventCards)
+        {
+            card.Should().NotBeNull();
+            // Check headers
+            var header = card.Locator("div.fluent-nav-item.event-details-link").First;
+            header.Should().NotBeNull();
+
+            // Check summaries
+            var summary = card.Locator("div.event-summary.card.border").First;
+            summary.Should().NotBeNull();
+        }
+    }
+
+    [Test]
+    public async Task Given_Events_When_Loaded_Then_Their_Links_Are_Enabled_To_Click()
+    {
+        // Act
+        var eventCards = await Page.Locator("div.fluent-card-minimal-style.event").AllAsync();
+
+        // Assert
+        foreach (var card in eventCards)
+        {
+            // Getting a link element.
+            var link = card.Locator("div.fluent-nav-item.event-details-link").First
+                .Locator("a.fluent-nav-link").First;
+
+            link.Should().NotBeNull();
+            await Expect(link).ToBeEnabledAsync();
+        }
+    }
+
     [TearDown]
     public async Task CleanUp()
     {
