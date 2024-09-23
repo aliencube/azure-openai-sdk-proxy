@@ -83,7 +83,7 @@ public class AdminEventRepository(TableServiceClient tableServiceClient, Storage
     {
         TableClient tableClient = _tableServiceClient.GetTableClient(_storageAccountSettings.TableStorage.TableName);
 
-        await tableClient.CreateIfNotExistsAsync();
+        await tableClient.CreateIfNotExistsAsync().ConfigureAwait(false);
 
         return tableClient;
     }
