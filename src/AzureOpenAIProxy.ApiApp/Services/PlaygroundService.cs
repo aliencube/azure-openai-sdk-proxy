@@ -1,3 +1,5 @@
+using AzureOpenAIProxy.ApiApp.Repositories;
+
 namespace AzureOpenAIProxy.ApiApp.Services;
 
 /// <summary>
@@ -18,8 +20,9 @@ public interface IPlaygroundService
     Task<List<EventDetails>> GetEvents();
 }
 
-public class PlaygroundService() : IPlaygroundService
+public class PlaygroundService(IEventRepository eventRepository) : IPlaygroundService
 {
+    private readonly IEventRepository _eventRepository = eventRepository ?? throw new ArgumentNullException(nameof(eventRepository));
     /// <inheritdoc/>
     public async Task<List<DeploymentModelDetails>> GetDeploymentModels(string eventId)
     {
@@ -29,6 +32,8 @@ public class PlaygroundService() : IPlaygroundService
     /// <inheritdoc/>
     public async Task<List<EventDetails>> GetEvents()
     {
-        throw new NotImplementedException();
+        var result = await _eventRepository.GetEvents().ConfigureAwait(false);
+
+        return result;
     }
 }
