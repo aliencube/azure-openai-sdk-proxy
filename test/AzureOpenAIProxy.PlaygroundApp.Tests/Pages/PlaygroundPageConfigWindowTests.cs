@@ -358,7 +358,7 @@ public partial class PlaygroundPageTests
         await applyButton.ClickAsync(new() { Delay = 500 });
         await resetButton.ClickAsync(new() { Delay = 500 });
         await Task.Delay(1000);
-        
+
         var actualValue = await systemMessageTextArea.GetAttributeAsync("value");
         var isApplyButtonEnabled = await applyButton.GetAttributeAsync("disabled");
         var isResetButtonEnabled = await resetButton.GetAttributeAsync("disabled");
@@ -368,27 +368,24 @@ public partial class PlaygroundPageTests
         isApplyButtonEnabled.Should().NotBeNull();
         isResetButtonEnabled.Should().NotBeNull();
     }
-    
-    [TestCase("slider-past-messages", "Past messages included")]
-    [TestCase("slider-max-response", "Max response")]
-    [TestCase("slider-temperature", "Temperature")]
-    [TestCase("slider-top-p", "Top P")]
-    [TestCase("slider-frequency-penalty", "Frequency penalty")]
-    [TestCase("slider-presence-penalty", "Presence penalty")]
+
+    [TestCase("range-past-messages", "Past messages included")]
+    [TestCase("range-max-response", "Max response")]
+    [TestCase("range-temperature", "Temperature")]
+    [TestCase("range-top-p", "Top P")]
+    [TestCase("range-frequency-penalty", "Frequency penalty")]
+    [TestCase("range-presence-penalty", "Presence penalty")]
     public async Task Given_ParameterTab_When_Updated_Then_Parameter_Slider_Should_Be_Visible(string id, string label)
     {
         // Arrange
-        var parameterTab = Page.Locator("div.config-grid")
-                               .Locator("fluent-tabs#config-tabs")
-                               .Locator("fluent-tab#parameters-tab");
+        var configTab = Page.Locator("div.config-grid")
+                            .Locator("fluent-tabs#config-tabs");
 
+        var parameterTab = configTab.Locator("fluent-tab#parameters-tab");
         await parameterTab.ClickAsync();
 
-        var component = Page.Locator("div.config-grid")
-                            .Locator("fluent-tabs#config-tabs")
-                            .Locator("fluent-tab-panel#parameters-tab-panel")
-                            .Locator($"div#{id}");
-
+        var component = configTab.Locator("fluent-tab-panel#parameters-tab-panel")
+                                 .Locator($"div#{id}");
         var labelComponent = component.Locator($"label[for='{id}-content']");
 
         // Act
@@ -403,21 +400,18 @@ public partial class PlaygroundPageTests
     }
 
     [Test]
-    [TestCase("multiselect-stop-sequence", "Stop sequence")]
+    [TestCase("select-stop-sequence", "Stop sequence")]
     public async Task Given_ParameterTab_When_Updated_Then_Parameter_MultiSelect_Should_Be_Visible(string id, string label)
     {
         // Arrange
-        var parameterTab = Page.Locator("div.config-grid")
-                               .Locator("fluent-tabs#config-tabs")
-                               .Locator("fluent-tab#parameters-tab");
+        var configTab = Page.Locator("div.config-grid")
+                            .Locator("fluent-tabs#config-tabs");
 
+        var parameterTab = configTab.Locator("fluent-tab#parameters-tab");
         await parameterTab.ClickAsync();
 
-        var component = Page.Locator("div.config-grid")
-                            .Locator("fluent-tabs#config-tabs")
-                            .Locator("fluent-tab-panel#parameters-tab-panel")
-                            .Locator($"div#{id}");
-
+        var component = configTab.Locator("fluent-tab-panel#parameters-tab-panel")
+                                 .Locator($"div#{id}");
         var labelComponent = component.Locator($"label[for='{id}-content']");
 
         // Act
