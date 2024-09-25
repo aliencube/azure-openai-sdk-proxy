@@ -48,7 +48,7 @@ public class AdminEventService(IAdminEventRepository repository) : IAdminEventSe
     public async Task<AdminEventDetails> CreateEvent(AdminEventDetails eventDetails)
     {
         // Validate
-        eventDetails.PartitionKey = "event-details";
+        eventDetails.PartitionKey = PartitionKeys.EventDetails;
         eventDetails.RowKey = eventDetails.EventId.ToString();
         
         // Save

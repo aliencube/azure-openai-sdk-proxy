@@ -52,12 +52,12 @@ public class AdminEventRepository(TableServiceClient tableServiceClient, Storage
     public async Task<AdminEventDetails> CreateEvent(AdminEventDetails eventDetails)
     {
         // 테이블 클라이언트
-        var tableClient = await GetEventTableClientAsync().ConfigureAwait(false);
+        TableClient tableClient = await GetTableClientAsync();
 
         // 데이터 저장
         var createResponse = await tableClient.AddEntityAsync(eventDetails).ConfigureAwait(false);
 
-        // 조회한 엔티티 반환
+        // 저장한 엔티티 반환
         return eventDetails;
     }
 
