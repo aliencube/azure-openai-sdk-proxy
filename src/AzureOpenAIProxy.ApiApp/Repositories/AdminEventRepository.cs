@@ -70,7 +70,14 @@ public class AdminEventRepository(TableServiceClient tableServiceClient, Storage
     /// <inheritdoc />
     public async Task<AdminEventDetails> GetEvent(Guid eventId)
     {
-        throw new NotImplementedException();
+        TableClient tableClient = await GetTableClientAsync();
+
+        var eventDetail = await tableClient.GetEntityAsync<AdminEventDetails>(
+            rowKey: eventId.ToString(),
+            partitionKey: PartitionKeys.EventDetails
+        ).ConfigureAwait(false);
+
+        return eventDetail.Value;
     }
 
     /// <inheritdoc />
@@ -83,17 +90,11 @@ public class AdminEventRepository(TableServiceClient tableServiceClient, Storage
     /// Gets the <see cref="TableClient"/> instance.
     /// </summary>
     /// <returns>TableClient</returns>
-    private async Task<TableClient> GetEventTableClientAsync()
+    private async Task<TableClient> GetTableClientAsync()
     {
-        // TODO: 설정파일, TableStorageSettings에 여러 개의 테이블 이름이 저장되어 있을 경우 대응
-        var tableName = _storageAccountSettings.TableStorage.TableName;
-        if (string.IsNullOrWhiteSpace(tableName))
-        {
-            throw new InvalidOperationException("Table name not found");
-        }
+        TableClient tableClient = _tableServiceClient.GetTableClient(_storageAccountSettings.TableStorage.TableName);
 
-        await _tableServiceClient.CreateTableIfNotExistsAsync(tableName).ConfigureAwait(false);
-        var tableClient = _tableServiceClient.GetTableClient(tableName);
+        await tableClient.CreateIfNotExistsAsync().ConfigureAwait(false);
 
         return tableClient;
     }

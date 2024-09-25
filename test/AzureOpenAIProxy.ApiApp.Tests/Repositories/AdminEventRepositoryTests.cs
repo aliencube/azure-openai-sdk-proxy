@@ -1,16 +1,16 @@
-﻿using Azure.Data.Tables;
+﻿using Azure;
+using Azure.Data.Tables;
 
 using AzureOpenAIProxy.ApiApp.Configurations;
 using AzureOpenAIProxy.ApiApp.Models;
 using AzureOpenAIProxy.ApiApp.Repositories;
-
-using Castle.Core.Configuration;
 
 using FluentAssertions;
 
 using Microsoft.Extensions.DependencyInjection;
 
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 
 namespace AzureOpenAIProxy.ApiApp.Tests.Repositories;
 
@@ -88,8 +88,10 @@ public class AdminEventRepositoryTests
         func.Should().ThrowAsync<NotImplementedException>();
     }
 
-    [Fact]
-    public void Given_Instance_When_GetEvent_Invoked_Then_It_Should_Throw_Exception()
+    [Theory]
+    [InlineData(404)]
+    [InlineData(500)]
+    public async Task Given_Failure_In_Get_Entity_When_GetEvent_Invoked_Then_It_Should_Throw_Exception(int statusCode)
     {
         // Arrange
         var settings = Substitute.For<StorageAccountSettings>();
@@ -97,11 +99,48 @@ public class AdminEventRepositoryTests
         var eventId = Guid.NewGuid();
         var repository = new AdminEventRepository(tableServiceClient, settings);
 
+        var exception = new RequestFailedException(statusCode, "Request Error", default, default);
+
+        var tableClient = Substitute.For<TableClient>();
+        tableServiceClient.GetTableClient(Arg.Any<string>()).Returns(tableClient);
+        tableClient.GetEntityAsync<AdminEventDetails>(Arg.Any<string>(), Arg.Any<string>())
+            .ThrowsAsync(exception);
+
         // Act
-        Func<Task> func = async () => await repository.GetEvent(eventId);
+        Func<Task> func = () => repository.GetEvent(eventId);
 
         // Assert
-        func.Should().ThrowAsync<NotImplementedException>();
+        var assertion = await func.Should().ThrowAsync<RequestFailedException>();
+        assertion.Which.Status.Should().Be(statusCode);
+    }
+
+    [Theory]
+    [InlineData("c355cc28-d847-4637-aad9-2f03d39aa51f", "event-details")]
+    public async Task Given_Exist_EventId_When_GetEvent_Invoked_Then_It_Should_Return_AdminEventDetails(string eventId, string partitionKey)
+    {
+        // Arrange
+        var settings = Substitute.For<StorageAccountSettings>();
+        var tableServiceClient = Substitute.For<TableServiceClient>();
+        var repository = new AdminEventRepository(tableServiceClient, settings);
+
+        var eventDetails = new AdminEventDetails
+        {
+            RowKey = eventId,
+            PartitionKey = partitionKey
+        };
+
+        var response = Response.FromValue(eventDetails, Substitute.For<Response>());
+
+        var tableClient = Substitute.For<TableClient>();
+        tableServiceClient.GetTableClient(Arg.Any<string>()).Returns(tableClient);
+        tableClient.GetEntityAsync<AdminEventDetails>(partitionKey, eventId)
+            .Returns(Task.FromResult(response));
+
+        // Act
+        var result = await repository.GetEvent(Guid.Parse(eventId));
+
+        // Assert
+        result.Should().BeEquivalentTo(eventDetails);
     }
 
     [Fact]
