@@ -1,4 +1,7 @@
-﻿using Azure.Data.Tables;
+﻿using System.Collections.Specialized;
+using System.Text.Json;
+
+using Azure.Data.Tables;
 
 using AzureOpenAIProxy.ApiApp.Configurations;
 using AzureOpenAIProxy.ApiApp.Extensions;
@@ -51,13 +54,26 @@ public class AdminEventRepository(TableServiceClient tableServiceClient, Storage
     /// <inheritdoc />
     public async Task<AdminEventDetails> CreateEvent(AdminEventDetails eventDetails)
     {
-        throw new NotImplementedException();
+        var tableClient = _tableServiceClient.GetTableClient(_storageAccountSettings.TableStorage.TableName);
+        
+        await tableClient.AddEntityAsync<AdminEventDetails>(eventDetails);
+        
+        return eventDetails;
     }
 
     /// <inheritdoc />
     public async Task<List<AdminEventDetails>> GetEvents()
     {
-        throw new NotImplementedException();
+        var tableClient = await GetTableClientAsync();
+
+        var eventDetailsList = new List<AdminEventDetails>();
+
+        await foreach (var entity in tableClient.QueryAsync<AdminEventDetails>())
+        {
+            eventDetailsList.Add(entity);
+        }
+
+        return eventDetailsList;
     }
 
     /// <inheritdoc />
@@ -76,7 +92,13 @@ public class AdminEventRepository(TableServiceClient tableServiceClient, Storage
     /// <inheritdoc />
     public async Task<AdminEventDetails> UpdateEvent(Guid eventId, AdminEventDetails eventDetails)
     {
-        throw new NotImplementedException();
+        var tableClient = await GetTableClientAsync();
+
+        eventDetails.EventId = eventId;
+
+        await tableClient.UpdateEntityAsync<AdminEventDetails>(eventDetails, eventDetails.ETag, TableUpdateMode.Replace);
+
+        return eventDetails;
     }
 
     private async Task<TableClient> GetTableClientAsync()
