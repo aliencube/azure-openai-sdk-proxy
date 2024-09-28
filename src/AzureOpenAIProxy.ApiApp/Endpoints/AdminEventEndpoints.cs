@@ -1,3 +1,5 @@
+using Azure;
+
 using AzureOpenAIProxy.ApiApp.Models;
 using AzureOpenAIProxy.ApiApp.Services;
 
@@ -107,12 +109,35 @@ public static class AdminEventEndpoints
     {
         // Todo: Issue #19 https://github.com/aliencube/azure-openai-sdk-proxy/issues/19
         // Need authorization by admin
-        var builder = app.MapGet(AdminEndpointUrls.AdminEventDetails, (
-            [FromRoute] string eventId) =>
+        var builder = app.MapGet(AdminEndpointUrls.AdminEventDetails, async (
+            [FromRoute] Guid eventId,
+            IAdminEventService service,
+            ILoggerFactory loggerFactory) =>
         {
-            // Todo: Issue #208 https://github.com/aliencube/azure-openai-sdk-proxy/issues/208
-            return Results.Ok();
-            // Todo: Issue #208
+            var logger = loggerFactory.CreateLogger(nameof(AdminEventEndpoints));
+            logger.LogInformation($"Received request to fetch details for event with ID: {eventId}");
+
+            try
+            {
+                var details = await service.GetEvent(eventId);
+                return Results.Ok(details);
+            }
+            catch(RequestFailedException ex)
+            {
+                if(ex.Status == 404)
+                {
+                    logger.LogError($"Failed to get event details of {eventId}");
+                    return Results.NotFound();
+                }
+
+                logger.LogError(ex, $"Error occurred while fetching event details of {eventId} with status {ex.Status}");
+                return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
+            }
+            catch(Exception ex)
+            {
+                logger.LogError(ex, $"Error occurred while fetching event details of {eventId}");
+                return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
+            }
         })
         .Produces<AdminEventDetails>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
