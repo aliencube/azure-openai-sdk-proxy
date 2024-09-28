@@ -15,6 +15,13 @@ namespace AzureOpenAIProxy.ApiApp.Tests.Services;
 
 public class AdminEventServiceTests
 {
+    private readonly IAdminEventRepository mockRepository;
+
+    public AdminEventServiceTests()
+    {
+        mockRepository = Substitute.For<IAdminEventRepository>();
+    }
+
     [Fact]
     public void Given_ServiceCollection_When_AddAdminEventService_Invoked_Then_It_Should_Contain_AdminEventService()
     {
@@ -33,8 +40,7 @@ public class AdminEventServiceTests
     {
         // Arrange
         var eventDetails = new AdminEventDetails();
-        var repository = Substitute.For<IAdminEventRepository>();
-        var service = new AdminEventService(repository);
+        var service = new AdminEventService(mockRepository);
 
         // Act
         Func<Task> func = async () => await service.CreateEvent(eventDetails);
@@ -47,8 +53,7 @@ public class AdminEventServiceTests
     public void Given_Instance_When_GetEvents_Invoked_Then_It_Should_Throw_Exception()
     {
         // Arrange
-        var repository = Substitute.For<IAdminEventRepository>();
-        var service = new AdminEventService(repository);
+        var service = new AdminEventService(mockRepository);
 
         // Act
         Func<Task> func = async () => await service.GetEvents();
@@ -65,12 +70,11 @@ public class AdminEventServiceTests
     {
         // Arrange
         var eventId = Guid.NewGuid();
-        var repository = Substitute.For<IAdminEventRepository>();
-        var service = new AdminEventService(repository);
+        var service = new AdminEventService(mockRepository);
 
         var exception = new RequestFailedException(statusCode, "Request Failed", default, default);
 
-        repository.GetEvent(Arg.Any<Guid>()).ThrowsAsync(exception);
+        mockRepository.GetEvent(Arg.Any<Guid>()).ThrowsAsync(exception);
 
         // Act
         Func<Task> func = () => service.GetEvent(eventId);
@@ -85,8 +89,7 @@ public class AdminEventServiceTests
     public async Task Given_Exist_EventId_When_GetEvent_Invoked_Then_It_Should_Return_AdminEventDetails(string eventId)
     {
         // Arrange
-        var repository = Substitute.For<IAdminEventRepository>();
-        var service = new AdminEventService(repository);
+        var service = new AdminEventService(mockRepository);
 
         var eventDetails = new AdminEventDetails
         {
@@ -95,7 +98,7 @@ public class AdminEventServiceTests
 
         var guid = Guid.Parse(eventId);
 
-        repository.GetEvent(guid).Returns(Task.FromResult(eventDetails));
+        mockRepository.GetEvent(guid).Returns(Task.FromResult(eventDetails));
 
         // Act
         var result = await service.GetEvent(guid);
@@ -105,18 +108,37 @@ public class AdminEventServiceTests
     }
 
     [Fact]
-    public void Given_Instance_When_UpdateEvent_Invoked_Then_It_Should_Throw_Exception()
+    public async Task Given_Instance_When_UpdateEvent_Invoked_Then_It_Should_Return_Updated_Event_Details()
     {
         // Arrange
         var eventId = Guid.NewGuid();
         var eventDetails = new AdminEventDetails();
-        var repository = Substitute.For<IAdminEventRepository>();
-        var service = new AdminEventService(repository);
+        var service = new AdminEventService(mockRepository);
+
+        mockRepository.UpdateEvent(eventId, eventDetails).Returns(eventDetails);
 
         // Act
-        Func<Task> func = async () => await service.UpdateEvent(eventId, eventDetails);
+        var updatedEventDetails = await service.UpdateEvent(eventId, eventDetails);
 
         // Assert
-        func.Should().ThrowAsync<NotImplementedException>();
+        updatedEventDetails.Should().BeEquivalentTo(eventDetails);
+    }
+
+    [Fact]
+    public async Task Given_Instance_When_DeleteEvent_Invoked_Then_It_Should_Return_Deleted_Event_Id()
+    {
+        // Arrange
+        var eventId = Guid.NewGuid();
+        var eventDetails = new AdminEventDetails();
+        var service = new AdminEventService(mockRepository);
+
+        eventDetails.EventId = eventId;
+        mockRepository.DeleteEvent(eventDetails).Returns(eventDetails.EventId);
+
+        // Act
+        var deletedEventId = await service.DeleteEvent(eventDetails);
+
+        // Assert
+        deletedEventId.Should().Be(eventId);
     }
 }

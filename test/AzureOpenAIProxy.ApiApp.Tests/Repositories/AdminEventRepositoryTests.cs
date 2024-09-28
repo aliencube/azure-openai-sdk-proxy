@@ -1,6 +1,4 @@
-﻿using System.Configuration;
-
-using Azure;
+﻿using Azure;
 using Azure.Data.Tables;
 
 using AzureOpenAIProxy.ApiApp.Configurations;
@@ -14,15 +12,13 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
-using Xunit.Sdk;
-
 namespace AzureOpenAIProxy.ApiApp.Tests.Repositories;
 
 public class AdminEventRepositoryTests
 {
-    private StorageAccountSettings mockSettings;
-    private TableServiceClient mockTableServiceClient;
-    private TableClient mockTableClient;
+    private readonly StorageAccountSettings mockSettings;
+    private readonly TableServiceClient mockTableServiceClient;
+    private readonly TableClient mockTableClient;
 
     public AdminEventRepositoryTests()
     {
@@ -162,5 +158,24 @@ public class AdminEventRepositoryTests
                     .UpdateEntityAsync<AdminEventDetails>(Arg.Any<AdminEventDetails>(),
                                                           Arg.Any<Azure.ETag>(),
                                                           TableUpdateMode.Replace);
+    }
+
+    [Fact]
+    public async Task Given_Instance_When_DeleteEvent_Invoked_Then_It_Should_Invoke_DeleteEntityAsync_Method()
+    {
+        // Arrange
+        var eventDetails = new AdminEventDetails();
+        var repository = new AdminEventRepository(mockTableServiceClient, mockSettings);
+        var eventId = Guid.NewGuid();
+
+        eventDetails.EventId = eventId;
+
+        // Act
+        Guid deletedEventId = await repository.DeleteEvent(eventDetails);
+
+        // Assert
+        deletedEventId.Should().Be(eventId);
+        await mockTableClient.Received(1)
+                             .DeleteEntityAsync(Arg.Any<string>(), Arg.Any<string>());
     }
 }

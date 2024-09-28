@@ -35,6 +35,13 @@ public interface IAdminEventService
     /// <param name="eventDetails">Event details to update.</param>
     /// <returns>Returns the updated event details.</returns>
     Task<AdminEventDetails> UpdateEvent(Guid eventId, AdminEventDetails eventDetails);
+
+     /// <summary>
+    /// Deletes the event details.
+    /// </summary>
+    /// <param name="eventDetails">Event details to update.</param>
+    /// <returns>Removed EventID of event details instance.</returns>
+    Task<Guid> DeleteEvent(AdminEventDetails eventDetails);
 }
 
 /// <summary>
@@ -72,6 +79,14 @@ public class AdminEventService(IAdminEventRepository repository) : IAdminEventSe
     public async Task<AdminEventDetails> UpdateEvent(Guid eventId, AdminEventDetails eventDetails)
     {
         var result = await this._repository.UpdateEvent(eventId, eventDetails).ConfigureAwait(false);
+
+        return result;
+    }
+
+    /// <inheritdoc />
+    public async Task<Guid> DeleteEvent(AdminEventDetails eventDetails)
+    {
+        var result = await this._repository.DeleteEvent(eventDetails).ConfigureAwait(false);
 
         return result;
     }

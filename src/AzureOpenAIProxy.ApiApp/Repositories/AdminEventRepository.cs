@@ -41,6 +41,13 @@ public interface IAdminEventRepository
     /// <param name="eventDetails">Event details instance.</param>
     /// <returns>Returns the updated record of the event details.</returns>
     Task<AdminEventDetails> UpdateEvent(Guid eventId, AdminEventDetails eventDetails);
+
+    /// <summary>
+    /// Deletes the event details.
+    /// </summary>
+    /// <param name="eventDetails">Event details instance.</param>
+    /// <returns>Removed EventID of event details instance.</returns>
+    Task<Guid> DeleteEvent(AdminEventDetails eventDetails);
 }
 
 /// <summary>
@@ -65,7 +72,6 @@ public class AdminEventRepository(TableServiceClient tableServiceClient, Storage
     public async Task<List<AdminEventDetails>> GetEvents()
     {
         var tableClient = await GetTableClientAsync();
-
         var eventDetailsList = new List<AdminEventDetails>();
 
         await foreach (var entity in tableClient.QueryAsync<AdminEventDetails>())
@@ -99,6 +105,15 @@ public class AdminEventRepository(TableServiceClient tableServiceClient, Storage
         await tableClient.UpdateEntityAsync<AdminEventDetails>(eventDetails, eventDetails.ETag, TableUpdateMode.Replace);
 
         return eventDetails;
+    }
+
+    public async Task<Guid> DeleteEvent(AdminEventDetails eventDetails)
+    {
+        var tableClient = await GetTableClientAsync();
+
+        await tableClient.DeleteEntityAsync(eventDetails.PartitionKey, eventDetails.RowKey);
+
+        return eventDetails.EventId;
     }
 
     private async Task<TableClient> GetTableClientAsync()
