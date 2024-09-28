@@ -38,7 +38,8 @@ public class OpenAIApiClient : IOpenAIApiClient
         };
         var options = new ChatCompletionOptions
         {
-            MaxTokens = clientOptions.MaxTokens,
+            // TODO: [tae0y] 빌드 오류 방지를 위한 임시조치
+            MaxOutputTokenCount = clientOptions.MaxTokens,
             Temperature = clientOptions.Temperature,
         };
 
