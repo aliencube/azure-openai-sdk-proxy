@@ -34,8 +34,8 @@
 
                 <FluentStack Class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
                     <FluentLabel For="event-start-date" Class="create-input-label">Event Start Date</FluentLabel>
-                    <FluentDatePicker Id="event-start-date" Value="@adminEventDetails.DateStart.DateTime" ValueChanged="@(e => adminEventDetails.DateStart = e.Value)" Format="yyyy-mm-dd"/>
-                    <FluentTimePicker Id="event-start-time" Value="@adminEventDetails.DateStart.DateTime" ValueChanged="@(e => adminEventDetails.DateStart = e.Value)" Format="HH:MM"/>
+                    <FluentDatePicker Id="event-start-date" Value="@adminEventDetails.DateStart.DateTime" ValueChanged="@(e => adminEventDetails.DateStart = e.Value)" Format="yyyy-mm-dd" />
+                    <FluentTimePicker Id="event-start-time" Value="@adminEventDetails.DateStart.DateTime" ValueChanged="@(e => adminEventDetails.DateStart = e.Value)" Format="HH:MM" />
                 </FluentStack>
 
                 <FluentStack Class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
@@ -46,7 +46,7 @@
 
                 <FluentStack Class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
                     <FluentLabel For="event-timezone" Class="create-input-label">Time Zone</FluentLabel>
-                    <FluentSelect Id="event-timezone" Height="500px" TOption="string" Required>
+                    <FluentSelect Id="event-timezone" @bind-Value="@adminEventDetails.TimeZone" Height="500px" TOption="string" Required>
                         @foreach (var timeZone in timeZoneList)
                         {
                             <FluentOption Value="@timeZone.Id">@timeZone.Id</FluentOption>
@@ -110,19 +110,37 @@
 @code {
     private List<DateTimeZone>? timeZoneList;
     private AdminEventDetails? adminEventDetails;
+    private DateTimeOffset currentTime = DateTimeOffset.UtcNow;
 
     [Parameter]
     public string? Id { get; set; }
 
+    [Inject]
+    public IJSRuntime JSRuntime { get; set; } = default!;
+
+
     protected override async Task OnInitializedAsync()
     {
         adminEventDetails = adminEventDetails == null ? new() : adminEventDetails;
-        DateTimeOffset currentTime = DateTimeOffset.UtcNow;
-
-        adminEventDetails.DateStart = currentTime.AddHours(1).AddMinutes(-currentTime.Minute);
-        adminEventDetails.DateEnd = currentTime.AddDays(1).AddHours(1).AddMinutes(-currentTime.Minute);
 
         timeZoneList = DateTimeZoneProviders.Tzdb.GetAllZones().ToList();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var timezoneId = await GetLocalTimezoneId();
+            var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timezoneId);
+
+            currentTime = TimeZoneInfo.ConvertTime(currentTime, timeZoneInfo);
+
+            adminEventDetails.DateStart = currentTime.AddHours(1).AddMinutes(-currentTime.Minute);
+            adminEventDetails.DateEnd = currentTime.AddDays(1).AddHours(1).AddMinutes(-currentTime.Minute);
+            adminEventDetails.TimeZone = timezoneId;
+
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
     private async Task AddEvent()
@@ -133,6 +151,24 @@
     private async Task CancelEvent()
     {
         await Task.CompletedTask;
+    }
+
+    private async Task<string> GetLocalTimezoneId()
+    {
+        string timezoneId = "";
+
+        try
+        {
+            await using var module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./timezone.js");
+            timezoneId = await module.InvokeAsync<string>("getBrowserTimeZone");
+
+        }
+        catch (JSDisconnectedException)
+        {
+            
+        }
+
+        return timezoneId;
     }
 }
 
