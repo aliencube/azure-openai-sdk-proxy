@@ -161,11 +161,11 @@
         {
             await using var module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./timezone.js");
             timezoneId = await module.InvokeAsync<string>("getBrowserTimeZone");
-
         }
-        catch (JSDisconnectedException)
+        catch (JSDisconnectedException ex)
         {
-            
+            Console.WriteLine($"Unable to connect javascript: {ex.Message}");
+            timezoneId = TimeZoneInfo.Local.Id;
         }
 
         return timezoneId;
