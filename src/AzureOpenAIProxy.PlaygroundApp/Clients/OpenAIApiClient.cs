@@ -35,13 +35,7 @@ public class OpenAIApiClient(ServiceNamesSettings names, ServicesSettings settin
         var endpoint = service.Https.FirstOrDefault() ?? service.Http.First();
 
         clientOptions.Endpoint = new Uri($"{endpoint!.TrimEnd('/')}/api");
-        // test
-        clientOptions.ApiKey = "abcdef";
-        clientOptions.DeploymentName = "model-gpt4o-20240513";
-        clientOptions.SystemPrompt = "You are an AI assistant that helps people find information.";
-        clientOptions.MaxTokens = 4096;
-        clientOptions.Temperature = 0.7f;
-
+        
         var credential = new AzureKeyCredential(clientOptions.ApiKey!);
         var openai = new AzureOpenAIClient(clientOptions.Endpoint, credential);
         var chat = openai.GetChatClient(clientOptions.DeploymentName);
@@ -53,7 +47,7 @@ public class OpenAIApiClient(ServiceNamesSettings names, ServicesSettings settin
         };
         var options = new ChatCompletionOptions
         {
-            MaxTokens = clientOptions.MaxTokens,
+            MaxOutputTokenCount = clientOptions.MaxTokens,
             Temperature = clientOptions.Temperature,
         };
 
