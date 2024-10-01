@@ -1,6 +1,8 @@
 ﻿using Azure;
 using Azure.AI.OpenAI;
 
+using AzureOpenAIProxy.PlaygroundApp.Configurations;
+
 using OpenAI.Chat;
 
 namespace AzureOpenAIProxy.PlaygroundApp.Clients;
@@ -21,14 +23,18 @@ public interface IOpenAIApiClient
 /// <summary>
 /// This represents the OpenAI API client entity.
 /// </summary>
-public class OpenAIApiClient(HttpClient http) : IOpenAIApiClient
+public class OpenAIApiClient(ServiceNamesSettings names, ServicesSettings settings) : IOpenAIApiClient
 {
-    private readonly HttpClient _http = http ?? throw new ArgumentNullException(nameof(http));
-    
+    private readonly ServiceNamesSettings _names = names ?? throw new ArgumentNullException(nameof(names));
+    private readonly ServicesSettings _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+
     /// <inheritdoc />
     public async Task<string> CompleteChatAsync(OpenAIApiClientOptions clientOptions)
     {
-        clientOptions.Endpoint = _http.BaseAddress;
+        var service = settings[this._names.Backend!];
+        var endpoint = service.Https.FirstOrDefault() ?? service.Http.First();
+
+        clientOptions.Endpoint = new Uri($"{endpoint!.TrimEnd('/')}/api");
         // test
         clientOptions.ApiKey = "abcdef";
         clientOptions.DeploymentName = "model-gpt4o-20240513";
