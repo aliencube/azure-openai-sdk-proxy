@@ -1,9 +1,12 @@
 using System.Text.Json.Serialization;
 
+using Azure;
+using Azure.Data.Tables;
+
 /// <summary>
 /// This represent the entity for the event details for users.
 /// </summary>
-public class EventDetails
+public class EventDetails : ITableEntity
 {
     /// <summary>
     /// Gets or sets the event id.
@@ -34,4 +37,20 @@ public class EventDetails
     /// </summary>
     [JsonRequired]
     public int DailyRequestCap { get; set; }
+
+    /// <inheritdoc />
+    [JsonIgnore]
+    public string PartitionKey { get; set; } = string.Empty;
+
+    /// <inheritdoc />
+    [JsonIgnore]
+    public string RowKey { get; set; } = string.Empty;
+
+    /// <inheritdoc />
+    [JsonIgnore]
+    public DateTimeOffset? Timestamp { get; set; }
+
+    /// <inheritdoc />
+    [JsonIgnore]
+    public ETag ETag { get; set; }
 }

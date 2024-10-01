@@ -1,4 +1,8 @@
-﻿using AzureOpenAIProxy.ApiApp.Models;
+﻿using Azure.Data.Tables;
+
+using AzureOpenAIProxy.ApiApp.Configurations;
+using AzureOpenAIProxy.ApiApp.Extensions;
+using AzureOpenAIProxy.ApiApp.Models;
 
 namespace AzureOpenAIProxy.ApiApp.Repositories;
 
@@ -39,8 +43,11 @@ public interface IAdminEventRepository
 /// <summary>
 /// This represents the repository entity for the admin event.
 /// </summary>
-public class AdminEventRepository : IAdminEventRepository
+public class AdminEventRepository(TableServiceClient tableServiceClient, StorageAccountSettings storageAccountSettings) : IAdminEventRepository
 {
+    private readonly TableServiceClient _tableServiceClient = tableServiceClient ?? throw new ArgumentNullException(nameof(tableServiceClient));
+    private readonly StorageAccountSettings _storageAccountSettings = storageAccountSettings ?? throw new ArgumentNullException(nameof(storageAccountSettings));
+
     /// <inheritdoc />
     public async Task<AdminEventDetails> CreateEvent(AdminEventDetails eventDetails)
     {
@@ -56,13 +63,29 @@ public class AdminEventRepository : IAdminEventRepository
     /// <inheritdoc />
     public async Task<AdminEventDetails> GetEvent(Guid eventId)
     {
-        throw new NotImplementedException();
+        TableClient tableClient = await GetTableClientAsync();
+
+        var eventDetail = await tableClient.GetEntityAsync<AdminEventDetails>(
+            rowKey: eventId.ToString(),
+            partitionKey: PartitionKeys.EventDetails
+        ).ConfigureAwait(false);
+
+        return eventDetail.Value;
     }
 
     /// <inheritdoc />
     public async Task<AdminEventDetails> UpdateEvent(Guid eventId, AdminEventDetails eventDetails)
     {
         throw new NotImplementedException();
+    }
+
+    private async Task<TableClient> GetTableClientAsync()
+    {
+        TableClient tableClient = _tableServiceClient.GetTableClient(_storageAccountSettings.TableStorage.TableName);
+
+        await tableClient.CreateIfNotExistsAsync().ConfigureAwait(false);
+
+        return tableClient;
     }
 }
 
