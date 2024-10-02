@@ -39,7 +39,7 @@ public class OpenAIApiClient : IOpenAIApiClient
         };
         var options = new ChatCompletionOptions
         {
-            MaxOutputTokenCount = clientOptions.MaxTokens,
+            MaxOutputTokenCount = clientOptions.MaxOutputTokenCount,
             Temperature = clientOptions.Temperature,
         };
 
