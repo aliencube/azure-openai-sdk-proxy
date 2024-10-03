@@ -1,4 +1,5 @@
-﻿using Azure;
+﻿using System.ClientModel;
+
 using Azure.AI.OpenAI;
 
 using OpenAI.Chat;
@@ -27,7 +28,7 @@ public class OpenAIApiClient : IOpenAIApiClient
     public async Task<string> CompleteChatAsync(OpenAIApiClientOptions clientOptions)
     {
         var endpoint = new Uri($"{clientOptions.Endpoint!.TrimEnd('/')}/api");
-        var credential = new AzureKeyCredential(clientOptions.ApiKey!);
+        var credential = new ApiKeyCredential(clientOptions.ApiKey!);
         var openai = new AzureOpenAIClient(endpoint, credential);
         var chat = openai.GetChatClient(clientOptions.DeploymentName);
 
@@ -38,7 +39,7 @@ public class OpenAIApiClient : IOpenAIApiClient
         };
         var options = new ChatCompletionOptions
         {
-            MaxTokens = clientOptions.MaxTokens,
+            MaxOutputTokenCount = clientOptions.MaxOutputTokenCount,
             Temperature = clientOptions.Temperature,
         };
 
