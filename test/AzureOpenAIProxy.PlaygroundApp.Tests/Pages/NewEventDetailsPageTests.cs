@@ -71,8 +71,7 @@ public class NewEventDetailsPageTests : PageTest
     {
         // Arrange
         await Page.WaitForSelectorAsync("#event-timezone");
-
-        string timeZone = await Page.EvaluateAsync<string>(@"() => Intl.DateTimeFormat().resolvedOptions().timeZone");
+        string timeZone = TimeZoneInfo.Local.Id;
 
         // Act
         string inputTimezoneValue = await Page.GetAttributeAsync("#event-timezone", "current-value");
@@ -88,11 +87,10 @@ public class NewEventDetailsPageTests : PageTest
         await Page.WaitForSelectorAsync("#event-start-date");
         await Page.WaitForSelectorAsync("#event-start-time");
 
-        string timezoneId = await Page.EvaluateAsync<string>(@"() => Intl.DateTimeFormat().resolvedOptions().timeZone");
+        string timezoneId = TimeZoneInfo.Local.Id;
         var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timezoneId);
         DateTimeOffset currentTime = TimeZoneInfo.ConvertTime(DateTime.Now, timeZoneInfo);
         var startTime = currentTime.AddHours(1).AddMinutes(-currentTime.Minute);
-
 
         // Act
         var inputStartDateValue = await Page.GetAttributeAsync("#event-start-date", "current-value");
@@ -110,11 +108,10 @@ public class NewEventDetailsPageTests : PageTest
         await Page.WaitForSelectorAsync("#event-end-date");
         await Page.WaitForSelectorAsync("#event-end-time");
 
-        string timezoneId = await Page.EvaluateAsync<string>(@"() => Intl.DateTimeFormat().resolvedOptions().timeZone");
+        string timezoneId = TimeZoneInfo.Local.Id;
         var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timezoneId);
         DateTimeOffset currentTime = TimeZoneInfo.ConvertTime(DateTime.Now, timeZoneInfo);
         var endTime = currentTime.AddDays(1).AddHours(1).AddMinutes(-currentTime.Minute);
-
 
         // Act
         var inputEndDateValue = await Page.GetAttributeAsync("#event-end-date", "current-value");

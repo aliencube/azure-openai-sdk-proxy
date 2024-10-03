@@ -115,10 +115,6 @@
     [Parameter]
     public string? Id { get; set; }
 
-    [Inject]
-    public IJSRuntime JSRuntime { get; set; } = default!;
-
-
     protected override async Task OnInitializedAsync()
     {
         adminEventDetails = adminEventDetails == null ? new() : adminEventDetails;
@@ -130,7 +126,7 @@
     {
         if (firstRender)
         {
-            var timezoneId = await GetLocalTimezoneId();
+            var timezoneId = TimeZoneInfo.Local.Id;
             var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timezoneId);
 
             currentTime = TimeZoneInfo.ConvertTime(currentTime, timeZoneInfo);
@@ -151,23 +147,6 @@
     private async Task CancelEvent()
     {
         await Task.CompletedTask;
-    }
-
-    private async Task<string> GetLocalTimezoneId()
-    {
-        string timezoneId = TimeZoneInfo.Local.Id;
-
-        try
-        {
-            await using var module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./timezone.js");
-            timezoneId = await module.InvokeAsync<string>("getBrowserTimeZone");
-        }
-        catch (JSDisconnectedException ex)
-        {
-            Console.WriteLine($"Unable to connect javascript: {ex.Message}");
-        }
-
-        return timezoneId;
     }
 }
 
