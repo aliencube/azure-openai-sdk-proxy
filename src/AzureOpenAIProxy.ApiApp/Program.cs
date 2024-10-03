@@ -31,7 +31,7 @@ builder.Services.AddAdminEventRepository();
 // Add playground services
 builder.Services.AddPlaygroundService();
 
-// Add event repository
+// Add playground repositories
 builder.Services.AddEventRepository();
 
 var app = builder.Build();
