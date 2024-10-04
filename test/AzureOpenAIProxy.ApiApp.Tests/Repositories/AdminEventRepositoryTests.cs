@@ -70,7 +70,7 @@ public class AdminEventRepositoryTests
         var eventDetails = new AdminEventDetails();
         var repository = new AdminEventRepository(tableServiceClient, settings);
 
-        // Act
+        // Act  
         var result = await repository.CreateEvent(eventDetails);
 
         // Assert
