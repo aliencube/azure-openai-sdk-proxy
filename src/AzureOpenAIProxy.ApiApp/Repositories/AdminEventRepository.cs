@@ -86,10 +86,6 @@ public class AdminEventRepository(TableServiceClient tableServiceClient, Storage
         throw new NotImplementedException();
     }
 
-    /// <summary>
-    /// Gets the <see cref="TableClient"/> instance.
-    /// </summary>
-    /// <returns>TableClient</returns>
     private async Task<TableClient> GetTableClientAsync()
     {
         TableClient tableClient = _tableServiceClient.GetTableClient(_storageAccountSettings.TableStorage.TableName);
