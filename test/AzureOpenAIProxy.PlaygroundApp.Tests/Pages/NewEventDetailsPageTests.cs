@@ -89,7 +89,7 @@ public class NewEventDetailsPageTests : PageTest
 
         string timezoneId = TimeZoneInfo.Local.Id;
         var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timezoneId);
-        DateTimeOffset currentTime = TimeZoneInfo.ConvertTime(DateTime.Now, timeZoneInfo);
+        DateTimeOffset currentTime = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, timeZoneInfo);
         var startTime = currentTime.AddHours(1).AddMinutes(-currentTime.Minute);
 
         // Act
@@ -110,7 +110,7 @@ public class NewEventDetailsPageTests : PageTest
 
         string timezoneId = TimeZoneInfo.Local.Id;
         var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timezoneId);
-        DateTimeOffset currentTime = TimeZoneInfo.ConvertTime(DateTime.Now, timeZoneInfo);
+        DateTimeOffset currentTime = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, timeZoneInfo);
         var endTime = currentTime.AddDays(1).AddHours(1).AddMinutes(-currentTime.Minute);
 
         // Act
