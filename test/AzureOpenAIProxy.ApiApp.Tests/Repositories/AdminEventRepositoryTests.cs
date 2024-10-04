@@ -63,6 +63,8 @@ public class AdminEventRepositoryTests
         // Arrange
         var settings = Substitute.For<StorageAccountSettings>();
         var tableServiceClient = Substitute.For<TableServiceClient>();
+        var tableClient = Substitute.For<TableClient>();
+        tableServiceClient.GetTableClient(Arg.Any<string>()).Returns(tableClient);
         var eventDetails = new AdminEventDetails();
         var repository = new AdminEventRepository(tableServiceClient, settings);
 
