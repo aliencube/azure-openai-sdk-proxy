@@ -65,6 +65,8 @@ public class AdminEventRepositoryTests
         var tableServiceClient = Substitute.For<TableServiceClient>();
         var tableClient = Substitute.For<TableClient>();
         tableServiceClient.GetTableClient(Arg.Any<string>()).Returns(tableClient);
+        tableClient.AddEntityAsync<AdminEventDetails>(Arg.Any<AdminEventDetails>())
+            .Returns(Task.FromResult(default(Response)));
         var eventDetails = new AdminEventDetails();
         var repository = new AdminEventRepository(tableServiceClient, settings);
 
