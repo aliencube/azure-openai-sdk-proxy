@@ -451,11 +451,11 @@ public partial class PlaygroundPageTests
         (await slider.GetAttributeAsync("current-value")).Should().Be(start.ToString());
         (await textfield.GetAttributeAsync("current-value")).Should().Be(start.ToString());
 
-        await Page.Mouse.DragToPoint(handle, 0, bound!.Y);
+        await Page.Mouse.DragElementToPoint(handle, 0, bound!.Y);
         (await slider.GetAttributeAsync("current-value")).Should().Be(min.ToString());
         (await textfield.GetAttributeAsync("current-value")).Should().Be(min.ToString());
 
-        await Page.Mouse.DragToPoint(handle, float.MaxValue, bound!.Y);
+        await Page.Mouse.DragElementToPoint(handle, float.MaxValue, bound!.Y);
         (await slider.GetAttributeAsync("current-value")).Should().Be(max.ToString());
         (await textfield.GetAttributeAsync("current-value")).Should().Be(max.ToString());
     }
