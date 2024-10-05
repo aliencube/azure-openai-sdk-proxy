@@ -1,28 +1,28 @@
 ﻿@using AzureOpenAIProxy.PlaygroundApp.Models;
 
-<FluentGrid AdaptiveRendering="true"
-            Spacing="3"
-            Justify="JustifyContent.FlexStart"
-            Style="background-color: var(--neutral-layer-4);
-                padding-block: 1.5em;
-                padding-inline: 1.0em; align-items: center; margin-top: 18px; border-radius: 8px;">
-
-    @if (events == null || events.Any() == false)
-    {
-            <EventItemComponent Id="no-event-item" HasNoEvent="true"></EventItemComponent>
-    }
-    else
-    {
-        // Shows up to 4 events that the user currently joined.
-        @foreach (var e in events.Take(4))
+<!-- Source: https://khalidabuhakmeh.com/blazors-css-isolation-deep-issue-and-solution -->
+<div>
+    <FluentGrid AdaptiveRendering="true"
+                Spacing="3"
+                Justify="JustifyContent.FlexStart"
+                Class="event-list">
+        @if (events == null || events.Any() == false)
         {
-            <EventItemComponent Id="@e.EventId.ToString()"
-                                Title="@e.Title"
-                                Summary="@e.Summary">
-            </EventItemComponent>
+            <EventItemComponent Id="no-event-item" HasNoEvent="true"></EventItemComponent>
         }
-    }
-</FluentGrid>
+        else
+        {
+            // Shows up to 4 events that the user currently joined.
+            @foreach (var e in events.Take(4))
+            {
+                <EventItemComponent Id="@e.EventId.ToString()"
+                                    Title="@e.Title"
+                                    Summary="@e.Summary">
+                </EventItemComponent>
+            }
+        }
+    </FluentGrid>
+</div>
 
 @code {
     private List<EventDetails>? events;
