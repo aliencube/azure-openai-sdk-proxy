@@ -19,14 +19,9 @@ public interface IAdminResourceService
 /// <summary>
 /// This represents the service entity for admin resource.
 /// </summary>
-public class AdminResourceService : IAdminResourceService
+public class AdminResourceService(IAdminResourceRepository repository) : IAdminResourceService
 {
-    private readonly IAdminResourceRepository _repository;
-
-    public AdminResourceService(IAdminResourceRepository repository)
-    {
-        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
-    }
+    private readonly IAdminResourceRepository _repository = repository ?? throw new ArgumentNullException(nameof(repository));
 
     /// <inheritdoc />
     public async Task<AdminResourceDetails> CreateResource(AdminResourceDetails resourceDetails)

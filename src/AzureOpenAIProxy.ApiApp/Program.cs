@@ -24,14 +24,10 @@ builder.Services.AddTableStorageService();
 
 // Add admin services
 builder.Services.AddAdminEventService();
+builder.Services.AddAdminResourceService();
 
 // Add admin repositories
 builder.Services.AddAdminEventRepository();
-
-// Add admin resource services
-builder.Services.AddAdminResourceService();
-
-// Add admin resource repositories
 builder.Services.AddAdminResourceRepository();
 
 var app = builder.Build();
