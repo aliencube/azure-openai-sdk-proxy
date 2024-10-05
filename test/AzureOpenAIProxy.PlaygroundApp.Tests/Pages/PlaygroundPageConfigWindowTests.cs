@@ -380,9 +380,8 @@ public partial class PlaygroundPageTests
         // Arrange
         var configTab = Page.Locator("div.config-grid")
                             .Locator("fluent-tabs#config-tabs");
-
-        var parameterTab = configTab.Locator("fluent-tab#parameters-tab");
-        await parameterTab.ClickAsync();
+        await configTab.Locator("fluent-tab#parameters-tab")
+                       .ClickAsync();
 
         var component = configTab.Locator("fluent-tab-panel#parameters-tab-panel")
                                  .Locator($"div#{id}");
@@ -406,9 +405,8 @@ public partial class PlaygroundPageTests
         // Arrange
         var configTab = Page.Locator("div.config-grid")
                             .Locator("fluent-tabs#config-tabs");
-
-        var parameterTab = configTab.Locator("fluent-tab#parameters-tab");
-        await parameterTab.ClickAsync();
+        await configTab.Locator("fluent-tab#parameters-tab")
+                       .ClickAsync();
 
         var component = configTab.Locator("fluent-tab-panel#parameters-tab-panel")
                                  .Locator($"div#{id}");
@@ -421,5 +419,44 @@ public partial class PlaygroundPageTests
         // Assert
         labelText.Should().StartWith(label);
         await Expect(multiselect).ToBeVisibleAsync();
+    }
+
+    [Test]
+    [TestCase("range-past-messages", 1, 20, 10)]
+    [TestCase("range-max-response", 1, 16000, 800)]
+    [TestCase("range-temperature", 0, 1, 0.7)]
+    [TestCase("range-top-p", 0, 1, 0.95)]
+    [TestCase("range-frequency-penalty", 0, 2, 0)]
+    [TestCase("range-presence-penalty", 0, 2, 0)]
+    public async Task Given_ParameterTab_When_Updated_Then_Parameter_Range_Should_Have_Correct_Range(string id, decimal min, decimal max, decimal start)
+    {
+        // Arrange
+        var configTab = Page.Locator("div.config-grid")
+                            .Locator("fluent-tabs#config-tabs");
+        await configTab.Locator("fluent-tab#parameters-tab")
+                       .ClickAsync();
+
+        var content = configTab.Locator("fluent-tab-panel#parameters-tab-panel")
+                               .Locator($"div#{id}")
+                               .Locator($"div#{id}-content");
+
+        // Act
+        var slider = content.Locator("fluent-slider.parameter-component-slider");
+        var textfield = content.Locator("fluent-text-field.parameter-component-textfield");
+
+        var handle = slider.Locator("div.thumb-cursor");
+        var bound = await handle.BoundingBoxAsync();
+
+        // Assert
+        (await slider.GetAttributeAsync("current-value")).Should().Be(start.ToString());
+        (await textfield.GetAttributeAsync("current-value")).Should().Be(start.ToString());
+
+        await Page.Mouse.DragToPoint(handle, 0, bound!.Y);
+        (await slider.GetAttributeAsync("current-value")).Should().Be(min.ToString());
+        (await textfield.GetAttributeAsync("current-value")).Should().Be(min.ToString());
+
+        await Page.Mouse.DragToPoint(handle, float.MaxValue, bound!.Y);
+        (await slider.GetAttributeAsync("current-value")).Should().Be(max.ToString());
+        (await textfield.GetAttributeAsync("current-value")).Should().Be(max.ToString());
     }
 }
