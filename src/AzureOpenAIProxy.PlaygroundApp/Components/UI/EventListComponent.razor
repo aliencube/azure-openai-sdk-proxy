@@ -3,9 +3,10 @@
 <!-- Source: https://khalidabuhakmeh.com/blazors-css-isolation-deep-issue-and-solution -->
 <div>
     <FluentGrid AdaptiveRendering="true"
+                Id="@Id"
                 Spacing="3"
                 Justify="JustifyContent.FlexStart"
-                Class="event-list">
+                Class="event-list-grid">
         @if (events == null || events.Any() == false)
         {
             <EventItemComponent Id="no-event-item" HasNoEvent="true"></EventItemComponent>
