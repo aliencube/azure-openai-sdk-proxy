@@ -26,54 +26,44 @@ public class NewEventDetailsPageTests : PageTest
     }
 
     [Test]
-    public async Task Given_New_Event_Details_Page_When_Navigated_Then_It_Should_Load_Correctly()
+    [TestCase("event-title")]
+    [TestCase("event-summary")]
+    [TestCase("event-description")]
+    [TestCase("event-start-date")]
+    [TestCase("event-start-time")]
+    [TestCase("event-end-date")]
+    [TestCase("event-end-time")]
+    [TestCase("event-timezone")]
+    [TestCase("event-organizer-name")]
+    [TestCase("event-organizer-email")]
+    [TestCase("event-coorgnizer-name")]
+    [TestCase("event-coorgnizer-email")]
+    [TestCase("event-max-token-cap")]
+    [TestCase("event-daily-request-cap")]
+    [TestCase("admin-event-detail-add")]
+    [TestCase("admin-event-detail-cancel")]
+    public async Task Given_New_Event_Details_Page_When_Navigated_Then_It_Should_Load_Correctly(string id)
     {
         // Act
-        var inputTitle = await Page.QuerySelectorAsync("#event-title");
-        var inputSummary = await Page.QuerySelectorAsync("#event-summary");
-        var inputDescription = await Page.QuerySelectorAsync("#event-description");
-        var inputStartDate = await Page.QuerySelectorAsync("#event-start-date");
-        var inputStartTime = await Page.QuerySelectorAsync("#event-start-time");
-        var inputEndDate = await Page.QuerySelectorAsync("#event-end-date");
-        var inputEndTime = await Page.QuerySelectorAsync("#event-end-time");
-        var inputTimezone = await Page.QuerySelectorAsync("#event-timezone");
-        var inputOrganizerName = await Page.QuerySelectorAsync("#event-organizer-name");
-        var inputOrganizerEmail = await Page.QuerySelectorAsync("#event-organizer-email");
-        var inputCoorgnizerName = await Page.QuerySelectorAsync("#event-coorgnizer-name");
-        var inputCoorgnizerEmail = await Page.QuerySelectorAsync("#event-coorgnizer-email");
-        var inputMaxTokenCap = await Page.QuerySelectorAsync("#event-max-token-cap");
-        var inputDailyRequestCap = await Page.QuerySelectorAsync("#event-daily-request-cap");
-        var buttonAdd = await Page.QuerySelectorAsync("#admin-event-detail-add");
-        var buttonCancel = await Page.QuerySelectorAsync("#admin-event-detail-cancel");
+        var element = Page.Locator($"#{id}");
+
+        var inputValue = await element.GetAttributeAsync("current-value");
 
         // Assert
-        inputTitle.Should().NotBeNull();
-        inputSummary.Should().NotBeNull();
-        inputDescription.Should().NotBeNull();
-        inputStartDate.Should().NotBeNull();
-        inputStartTime.Should().NotBeNull();
-        inputEndDate.Should().NotBeNull();
-        inputEndTime.Should().NotBeNull();
-        inputTimezone.Should().NotBeNull();
-        inputOrganizerName.Should().NotBeNull();
-        inputOrganizerEmail.Should().NotBeNull();
-        inputCoorgnizerName.Should().NotBeNull();
-        inputCoorgnizerEmail.Should().NotBeNull();
-        inputMaxTokenCap.Should().NotBeNull();
-        inputDailyRequestCap.Should().NotBeNull();
-        buttonAdd.Should().NotBeNull();
-        buttonCancel.Should().NotBeNull();
+        inputValue.Should().NotBeNull();
     }
 
     [Test]
     public async Task Given_Input_Event_Timezone_When_Initialized_Timezone_Then_It_Should_Update_Value()
     {
         // Arrange
-        await Page.WaitForSelectorAsync("#event-timezone");
+        var inputTimezone = Page.Locator("#event-timezone");
+        await inputTimezone.WaitForAsync();
+
         string timeZone = OperatingSystem.IsWindows() ? TZConvert.WindowsToIana(TimeZoneInfo.Local.Id) : TimeZoneInfo.Local.Id;
 
         // Act
-        string inputTimezoneValue = await Page.GetAttributeAsync("#event-timezone", "current-value");
+        string inputTimezoneValue = await inputTimezone.GetAttributeAsync("current-value");
 
         // Assert
         inputTimezoneValue.Should().Be(timeZone);
@@ -83,17 +73,20 @@ public class NewEventDetailsPageTests : PageTest
     public async Task Given_Input_Event_Start_DateTime_When_Initialized_Timezone_Then_It_Should_Update_Value()
     {
         // Arrange
-        await Page.WaitForSelectorAsync("#event-start-date");
-        await Page.WaitForSelectorAsync("#event-start-time");
+        var inputStartDate = Page.Locator("#event-start-date");
+        var inputStartTime = Page.Locator("#event-start-time");
 
-        string timezoneId = TZConvert.WindowsToIana(TimeZoneInfo.Local.Id);
+        await inputStartDate.WaitForAsync();
+        await inputStartTime.WaitForAsync();
+
+        string timezoneId = OperatingSystem.IsWindows() ? TZConvert.WindowsToIana(TimeZoneInfo.Local.Id) : TimeZoneInfo.Local.Id;
         var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timezoneId);
         DateTimeOffset currentTime = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, timeZoneInfo);
         var startTime = currentTime.AddHours(1).AddMinutes(-currentTime.Minute);
 
         // Act
-        var inputStartDateValue = await Page.GetAttributeAsync("#event-start-date", "current-value");
-        var inputStartTimeValue = await Page.GetAttributeAsync("#event-start-time", "current-value");
+        var inputStartDateValue = await inputStartDate.GetAttributeAsync("current-value");
+        var inputStartTimeValue = await inputStartTime.GetAttributeAsync("current-value");
 
         // Assert
         inputStartDateValue.Should().Be(startTime.ToString("yyyy-MM-dd"));
@@ -104,8 +97,11 @@ public class NewEventDetailsPageTests : PageTest
     public async Task Given_Input_Event_End_DateTime_When_Initialized_Timezone_Then_It_Should_Update_Value()
     {
         // Arrange
-        await Page.WaitForSelectorAsync("#event-end-date");
-        await Page.WaitForSelectorAsync("#event-end-time");
+        var inputEndDate = Page.Locator("#event-end-date");
+        var inputEndTime = Page.Locator("#event-end-time");
+
+        await inputEndDate.WaitForAsync();
+        await inputEndTime.WaitForAsync();
 
         string timezoneId = OperatingSystem.IsWindows() ? TZConvert.WindowsToIana(TimeZoneInfo.Local.Id) : TimeZoneInfo.Local.Id;
         var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timezoneId);
@@ -113,8 +109,8 @@ public class NewEventDetailsPageTests : PageTest
         var endTime = currentTime.AddDays(1).AddHours(1).AddMinutes(-currentTime.Minute);
 
         // Act
-        var inputEndDateValue = await Page.GetAttributeAsync("#event-end-date", "current-value");
-        var inputEndTimeValue = await Page.GetAttributeAsync("#event-end-time", "current-value");
+        var inputEndDateValue = await inputEndDate.GetAttributeAsync("current-value");
+        var inputEndTimeValue = await inputEndTime.GetAttributeAsync("current-value");
 
         // Assert
         inputEndDateValue.Should().Be(endTime.ToString("yyyy-MM-dd"));
