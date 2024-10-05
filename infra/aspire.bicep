@@ -24,7 +24,7 @@ param enableRbacAuthorization bool = true
 // parameters for storage account
 param storageAccountName string = ''
 // tableNames passed as a comma separated string from command line
-param tableNames string = 'events'
+param tableNames string = 'resources'
 
 var abbrs = loadJsonContent('./abbreviations.json')
 

@@ -28,6 +28,12 @@ builder.Services.AddAdminEventService();
 // Add admin repositories
 builder.Services.AddAdminEventRepository();
 
+// Add admin resource services
+builder.Services.AddAdminResourceService();
+
+// Add admin resource repositories
+builder.Services.AddAdminResourceRepository();
+
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
