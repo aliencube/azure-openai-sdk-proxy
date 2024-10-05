@@ -34,13 +34,13 @@
 
                 <FluentStack Class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
                     <FluentLabel For="event-start-date" Class="create-input-label">Event Start Date</FluentLabel>
-                    <FluentDatePicker Id="event-start-date" Value="@adminEventDetails.DateStart.DateTime" ValueChanged="@(e => adminEventDetails.DateStart = e.Value)" />
+                    <FluentDatePicker Id="event-start-date" Value="@adminEventDetails.DateStart.DateTime" ValueChanged="@(e => adminEventDetails.DateStart = e.Value)" Culture="System.Globalization.CultureInfo.CurrentCulture" />
                     <FluentTimePicker Id="event-start-time" Value="@adminEventDetails.DateStart.DateTime" ValueChanged="@(e => adminEventDetails.DateStart = e.Value)" />
                 </FluentStack>
 
                 <FluentStack Class="create-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
                     <FluentLabel For="event-end-date" Class="create-input-label">Event End Date</FluentLabel>
-                    <FluentDatePicker Id="event-end-date" Value="@adminEventDetails.DateEnd.DateTime" ValueChanged="@(e => adminEventDetails.DateEnd = e.Value)" />
+                    <FluentDatePicker Id="event-end-date" Value="@adminEventDetails.DateEnd.DateTime" ValueChanged="@(e => adminEventDetails.DateEnd = e.Value)" Culture="System.Globalization.CultureInfo.CurrentCulture" />
                     <FluentTimePicker Id="event-end-time" Value="@adminEventDetails.DateEnd.DateTime" ValueChanged="@(e => adminEventDetails.DateEnd = e.Value)" />
                 </FluentStack>
 
