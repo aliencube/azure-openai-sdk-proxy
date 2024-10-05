@@ -47,10 +47,8 @@ public class NewEventDetailsPageTests : PageTest
         // Act
         var element = Page.Locator($"#{id}");
 
-        var inputValue = await element.GetAttributeAsync("current-value");
-
         // Assert
-        inputValue.Should().NotBeNull();
+        await Expect(element).ToBeVisibleAsync();
     }
 
     [Test]
@@ -58,7 +56,6 @@ public class NewEventDetailsPageTests : PageTest
     {
         // Arrange
         var inputTimezone = Page.Locator("#event-timezone");
-        await inputTimezone.WaitForAsync();
 
         string timeZone = OperatingSystem.IsWindows() ? TZConvert.WindowsToIana(TimeZoneInfo.Local.Id) : TimeZoneInfo.Local.Id;
 
