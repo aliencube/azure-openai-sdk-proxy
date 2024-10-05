@@ -11,6 +11,7 @@
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Emoji" Version="$(FluentUIVersion)" />
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="$(FluentUIVersion)" />
     <PackageReference Include="NodaTime" Version="3.1.12" />
+    <PackageReference Include="TimeZoneConverter" Version="6.1.0" />
   </ItemGroup>
 
   <ItemGroup>

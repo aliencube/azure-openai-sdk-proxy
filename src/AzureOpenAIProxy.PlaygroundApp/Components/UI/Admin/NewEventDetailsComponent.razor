@@ -6,6 +6,7 @@
 @using NodaTime
 @using NodaTime.Extensions
 @using NodaTime.TimeZones
+@using TimeZoneConverter
 
 <FluentLayout Id="@Id">
     @if (adminEventDetails == null)
@@ -135,7 +136,7 @@
     {
         if (firstRender)
         {
-            var timezoneId = TimeZoneInfo.Local.Id;
+            var timezoneId = TZConvert.WindowsToIana(TimeZoneInfo.Local.Id);
             var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timezoneId);
 
             currentTime = TimeZoneInfo.ConvertTime(currentTime, timeZoneInfo);
