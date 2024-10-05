@@ -7,7 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-    <AspireVersion>8.2.0</AspireVersion>
+    <AspireVersion>8.2.1</AspireVersion>
     <AzureOpenAIVersion>2.*-*</AzureOpenAIVersion>
     <AspNetCoreVersion>8.*</AspNetCoreVersion>
     <MicrosoftExtensionsVersion>8.*</MicrosoftExtensionsVersion>
