@@ -1,4 +1,5 @@
-﻿using Azure;
+using System.ClientModel;
+
 using Azure.AI.OpenAI;
 
 using AzureOpenAIProxy.PlaygroundApp.Configurations;
@@ -35,20 +36,18 @@ public class OpenAIApiClient(ServiceNamesSettings names, ServicesSettings settin
         var endpoint = service.Https.FirstOrDefault() ?? service.Http.First();
 
         clientOptions.Endpoint = new Uri($"{endpoint!.TrimEnd('/')}/api");
-        
-        var credential = new AzureKeyCredential(clientOptions.ApiKey!);
+
+        var credential = new ApiKeyCredential(clientOptions.ApiKey!);
         var openai = new AzureOpenAIClient(clientOptions.Endpoint, credential);
         var chat = openai.GetChatClient(clientOptions.DeploymentName);
 
         var messages = new List<ChatMessage>()
         {
-            new SystemChatMessage(clientOptions.SystemPrompt),
-            new UserChatMessage(clientOptions.UserPrompt),
+            new SystemChatMessage(clientOptions.SystemPrompt), new UserChatMessage(clientOptions.UserPrompt),
         };
         var options = new ChatCompletionOptions
         {
-            MaxOutputTokenCount = clientOptions.MaxTokens,
-            Temperature = clientOptions.Temperature,
+            MaxOutputTokenCount = clientOptions.MaxTokens, Temperature = clientOptions.Temperature,
         };
 
         var result = await chat.CompleteChatAsync(messages, options).ConfigureAwait(false);
