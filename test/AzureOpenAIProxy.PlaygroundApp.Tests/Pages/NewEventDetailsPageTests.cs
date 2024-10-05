@@ -70,7 +70,7 @@ public class NewEventDetailsPageTests : PageTest
     {
         // Arrange
         await Page.WaitForSelectorAsync("#event-timezone");
-        string timeZone = TZConvert.WindowsToIana(TimeZoneInfo.Local.Id);
+        string timeZone = OperatingSystem.IsWindows() ? TZConvert.WindowsToIana(TimeZoneInfo.Local.Id) : TimeZoneInfo.Local.Id;
 
         // Act
         string inputTimezoneValue = await Page.GetAttributeAsync("#event-timezone", "current-value");
@@ -107,7 +107,7 @@ public class NewEventDetailsPageTests : PageTest
         await Page.WaitForSelectorAsync("#event-end-date");
         await Page.WaitForSelectorAsync("#event-end-time");
 
-        string timezoneId = TZConvert.WindowsToIana(TimeZoneInfo.Local.Id);
+        string timezoneId = OperatingSystem.IsWindows() ? TZConvert.WindowsToIana(TimeZoneInfo.Local.Id) : TimeZoneInfo.Local.Id;
         var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timezoneId);
         DateTimeOffset currentTime = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, timeZoneInfo);
         var endTime = currentTime.AddDays(1).AddHours(1).AddMinutes(-currentTime.Minute);
