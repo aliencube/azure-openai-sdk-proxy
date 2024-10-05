@@ -1,6 +1,8 @@
 ﻿@using AzureOpenAIProxy.PlaygroundApp.Clients
 @using AzureOpenAIProxy.PlaygroundApp.Models;
 
+@using System.Globalization
+
 @using NodaTime
 @using NodaTime.Extensions
 @using NodaTime.TimeZones
@@ -120,6 +122,13 @@
         adminEventDetails = adminEventDetails == null ? new() : adminEventDetails;
 
         timeZoneList = DateTimeZoneProviders.Tzdb.GetAllZones().ToList();
+
+        CultureInfo customCulture = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+        customCulture.DateTimeFormat.ShortDatePattern = "yyyy-MM-dd";
+        customCulture.DateTimeFormat.ShortTimePattern = "HH:mm";
+
+        CultureInfo.DefaultThreadCurrentCulture = customCulture;
+        CultureInfo.DefaultThreadCurrentUICulture = customCulture;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
