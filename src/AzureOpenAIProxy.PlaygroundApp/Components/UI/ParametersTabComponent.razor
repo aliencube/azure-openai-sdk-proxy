@@ -3,27 +3,27 @@
 <div id="@Id" class="parameter-tab">
     @* Past Messages Range *@
     <ParameterRangeComponent Id="range-past-messages"
-                              LabelText="Past messages included"
-                              TooltipText="Select the number of past messages to include in each new API request. This helps give the model context for new user queries. Setting this number to 10 will include 5 user queries and 5 system responses."
-                              Min="1" Max="20" Step="1" @bind-Value=@pastMessagesValue />
+                             LabelText="Past messages included"
+                             TooltipText="Select the number of past messages to include in each new API request. This helps give the model context for new user queries. Setting this number to 10 will include 5 user queries and 5 system responses."
+                             Min="1" Max="20" Step="1" @bind-Value=@pastMessagesValue />
 
     @* Max Response Range *@
     <ParameterRangeComponent Id="range-max-response"
-                              LabelText="Max response"
-                              TooltipText="Set a limit on the number of tokens per model response. The API supports a maximum of MaxTokensPlaceholderDoNotTranslate tokens shared between the prompt (including system message, examples, message history, and user query) and the model's response. One token is roughly 4 characters for typical English text."
-                              Min="1" Max="16000" Step="1" @bind-Value=@maxResponseValue />
+                             LabelText="Max response"
+                             TooltipText="Set a limit on the number of tokens per model response. The API supports a maximum of MaxTokensPlaceholderDoNotTranslate tokens shared between the prompt (including system message, examples, message history, and user query) and the model's response. One token is roughly 4 characters for typical English text."
+                             Min="1" Max="16000" Step="1" @bind-Value=@maxResponseValue />
 
     @* Temperature Range *@
     <ParameterRangeComponent Id="range-temperature"
-                              LabelText="Temperature"
-                              TooltipText="Controls randomness. Lowering the temperature means that the model will produce more repetitive and deterministic responses. Increasing the temperature will result in more unexpected or creative responses. Try adjusting temperature or Top P but not both."
-                              Min="0" Max="1" Step="0.01" @bind-Value=@temperatureValue />
+                             LabelText="Temperature"
+                             TooltipText="Controls randomness. Lowering the temperature means that the model will produce more repetitive and deterministic responses. Increasing the temperature will result in more unexpected or creative responses. Try adjusting temperature or Top P but not both."
+                             Min="0" Max="1" Step="0.01" @bind-Value=@temperatureValue />
 
     @* Top P Range *@
     <ParameterRangeComponent Id="range-top-p"
-                              LabelText="Top P"
-                              TooltipText="Similar to temperature, this controls randomness but uses a different method. Lowering Top P will narrow the model’s token selection to likelier tokens. Increasing Top P will let the model choose from tokens with both high and low likelihood. Try adjusting temperature or Top P but not both."
-                              Min="0" Max="1" Step="0.01" @bind-Value=@topPValue />
+                             LabelText="Top P"
+                             TooltipText="Similar to temperature, this controls randomness but uses a different method. Lowering Top P will narrow the model’s token selection to likelier tokens. Increasing Top P will let the model choose from tokens with both high and low likelihood. Try adjusting temperature or Top P but not both."
+                             Min="0" Max="1" Step="0.01" @bind-Value=@topPValue />
 
     @* Stop Sequence Multi Select *@
     <ParameterMultiselectComponent Id="select-stop-sequence"
@@ -33,15 +33,15 @@
 
     @* Frequency Penalty Range *@
     <ParameterRangeComponent Id="range-frequency-penalty"
-                              LabelText="Frequency penalty"
-                              TooltipText="Reduce the chance of repeating a token proportionally based on how often it has appeared in the text so far. This decreases the likelihood of repeating the exact same text in a response."
-                              Min="0" Max="2" Step="0.01" @bind-Value=@frequencyPenaltyValue />
+                             LabelText="Frequency penalty"
+                             TooltipText="Reduce the chance of repeating a token proportionally based on how often it has appeared in the text so far. This decreases the likelihood of repeating the exact same text in a response."
+                             Min="0" Max="2" Step="0.01" @bind-Value=@frequencyPenaltyValue />
 
     @* Presence Penalty Range *@
     <ParameterRangeComponent Id="range-presence-penalty"
-                              LabelText="Presence penalty"
-                              TooltipText="Reduce the chance of repeating any token that has appeared in the text at all so far. This increases the likelihood of introducing new topics in a response."
-                              Min="0" Max="2" Step="0.01" @bind-Value=@presencePenaltyValue />
+                             LabelText="Presence penalty"
+                             TooltipText="Reduce the chance of repeating any token that has appeared in the text at all so far. This increases the likelihood of introducing new topics in a response."
+                             Min="0" Max="2" Step="0.01" @bind-Value=@presencePenaltyValue />
 </div>
 
 @code {
