@@ -1,5 +1,4 @@
-﻿@inherits FluentComponentBase
-@typeparam TValue where TValue : System.Numerics.INumber<TValue>
+﻿@typeparam TValue where TValue : System.Numerics.INumber<TValue>
 
 <div id="@Id">
     <label id=@($"{Id}-label") class="parameter-component-label" for=@($"{Id}-content")>
@@ -32,9 +31,9 @@
 
     @if (!hasNoError)
     {
-        <FluentCard Class="parameter-component-error">
+            <FluentCard Class="parameter-component-error">
             @errorText
-        </FluentCard>
+            </FluentCard>
     }
 </div>
 
@@ -50,6 +49,9 @@
 
     [Parameter]
     public TValue? Value { get; set; }
+
+    [Parameter]
+    public string? Id { get; set; }
 
     [Parameter]
     public EventCallback<TValue> ValueChanged { get; set; }
