@@ -1,10 +1,9 @@
-﻿using System;
-
-using FluentAssertions;
+﻿using FluentAssertions;
 
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
-using Microsoft.VisualBasic;
+
+using TimeZoneConverter;
 
 namespace AzureOpenAIProxy.PlaygroundApp.Tests.Pages;
 
@@ -71,7 +70,7 @@ public class NewEventDetailsPageTests : PageTest
     {
         // Arrange
         await Page.WaitForSelectorAsync("#event-timezone");
-        string timeZone = TimeZoneInfo.Local.Id;
+        string timeZone = TZConvert.WindowsToIana(TimeZoneInfo.Local.Id);
 
         // Act
         string inputTimezoneValue = await Page.GetAttributeAsync("#event-timezone", "current-value");
@@ -87,7 +86,7 @@ public class NewEventDetailsPageTests : PageTest
         await Page.WaitForSelectorAsync("#event-start-date");
         await Page.WaitForSelectorAsync("#event-start-time");
 
-        string timezoneId = TimeZoneInfo.Local.Id;
+        string timezoneId = TZConvert.WindowsToIana(TimeZoneInfo.Local.Id);
         var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timezoneId);
         DateTimeOffset currentTime = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, timeZoneInfo);
         var startTime = currentTime.AddHours(1).AddMinutes(-currentTime.Minute);
@@ -108,7 +107,7 @@ public class NewEventDetailsPageTests : PageTest
         await Page.WaitForSelectorAsync("#event-end-date");
         await Page.WaitForSelectorAsync("#event-end-time");
 
-        string timezoneId = TimeZoneInfo.Local.Id;
+        string timezoneId = TZConvert.WindowsToIana(TimeZoneInfo.Local.Id);
         var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timezoneId);
         DateTimeOffset currentTime = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, timeZoneInfo);
         var endTime = currentTime.AddDays(1).AddHours(1).AddMinutes(-currentTime.Minute);
