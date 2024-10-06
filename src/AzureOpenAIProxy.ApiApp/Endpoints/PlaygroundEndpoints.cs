@@ -54,7 +54,7 @@ public static class PlaygroundEndpoints
             ILoggerFactory loggerFactory
         ) =>
         {
-            var logger = loggerFactory.CreateLogger(nameof(AdminEventEndpoints));
+            var logger = loggerFactory.CreateLogger(nameof(PlaygroundEndpoints));
             logger.LogInformation("Received request to fetch deployment models list");
 
             try 
