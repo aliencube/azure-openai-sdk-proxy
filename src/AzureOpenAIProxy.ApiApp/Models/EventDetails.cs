@@ -38,6 +38,18 @@ public class EventDetails : ITableEntity
     [JsonRequired]
     public int DailyRequestCap { get; set; }
 
+        /// <summary>
+    /// Gets or sets the event start date.
+    /// </summary>
+    [JsonRequired]
+    public DateTimeOffset DateStart { get; set; }
+
+    /// <summary>
+    /// Gets or sets the event end date.
+    /// </summary>
+    [JsonRequired]
+    public DateTimeOffset DateEnd { get; set; }
+
     /// <inheritdoc />
     [JsonIgnore]
     public string PartitionKey { get; set; } = string.Empty;
