@@ -6,7 +6,6 @@
 @using NodaTime
 @using NodaTime.Extensions
 @using NodaTime.TimeZones
-@using TimeZoneConverter
 
 <FluentLayout Id="@Id">
     @if (adminEventDetails == null)
@@ -136,10 +135,8 @@
     {
         if (firstRender)
         {
-            var timezoneId = OperatingSystem.IsWindows() ? TZConvert.WindowsToIana(TimeZoneInfo.Local.Id) : TimeZoneInfo.Local.Id;
-            var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timezoneId);
-
-            currentTime = TimeZoneInfo.ConvertTime(currentTime, timeZoneInfo);
+            var timezoneId = GetIanaTimezoneId();
+            currentTime = GetCurrentDateTimeOffset(timezoneId);
 
             adminEventDetails.DateStart = currentTime.AddHours(1).AddMinutes(-currentTime.Minute);
             adminEventDetails.DateEnd = currentTime.AddDays(1).AddHours(1).AddMinutes(-currentTime.Minute);
@@ -157,6 +154,28 @@
     private async Task CancelEvent()
     {
         await Task.CompletedTask;
+    }
+
+    private string GetIanaTimezoneId()
+    {
+        string timezoneId = TimeZoneInfo.Local.Id;
+
+        if (OperatingSystem.IsWindows())
+        {
+            if (TimeZoneInfo.TryConvertWindowsIdToIanaId(timezoneId, out var ianaTimezoneId))
+            {
+                timezoneId = ianaTimezoneId;
+            }
+        }
+
+        return timezoneId;
+    }
+
+    private DateTimeOffset GetCurrentDateTimeOffset(string timezoneId)
+    {
+        var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timezoneId);
+
+        return TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, timeZoneInfo);
     }
 }
 

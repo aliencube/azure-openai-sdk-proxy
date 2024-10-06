@@ -3,8 +3,6 @@
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
 
-using TimeZoneConverter;
-
 namespace AzureOpenAIProxy.PlaygroundApp.Tests.Pages;
 
 [Parallelizable(ParallelScope.Self)]
@@ -57,7 +55,7 @@ public class NewEventDetailsPageTests : PageTest
         // Arrange
         var inputTimezone = Page.Locator("#event-timezone");
 
-        string timeZone = OperatingSystem.IsWindows() ? TZConvert.WindowsToIana(TimeZoneInfo.Local.Id) : TimeZoneInfo.Local.Id;
+        string timeZone = GetIanaTimezoneId();
 
         // Act
         string inputTimezoneValue = await inputTimezone.GetAttributeAsync("current-value");
@@ -67,50 +65,70 @@ public class NewEventDetailsPageTests : PageTest
     }
 
     [Test]
-    public async Task Given_Input_Event_Start_DateTime_When_Initialized_Timezone_Then_It_Should_Update_Value()
+    public async Task Given_Input_Event_Start_Date_When_Initialized_Timezone_Then_It_Should_Update_Value()
     {
         // Arrange
         var inputStartDate = Page.Locator("#event-start-date");
-        var inputStartTime = Page.Locator("#event-start-time");
 
-        await inputStartDate.WaitForAsync();
-        await inputStartTime.WaitForAsync();
-
-        string timezoneId = OperatingSystem.IsWindows() ? TZConvert.WindowsToIana(TimeZoneInfo.Local.Id) : TimeZoneInfo.Local.Id;
-        var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timezoneId);
-        DateTimeOffset currentTime = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, timeZoneInfo);
+        string timezoneId = GetIanaTimezoneId();
+        DateTimeOffset currentTime = GetCurrentDateTimeOffset(timezoneId);
         var startTime = currentTime.AddHours(1).AddMinutes(-currentTime.Minute);
 
         // Act
         var inputStartDateValue = await inputStartDate.GetAttributeAsync("current-value");
-        var inputStartTimeValue = await inputStartTime.GetAttributeAsync("current-value");
 
         // Assert
         inputStartDateValue.Should().Be(startTime.ToString("yyyy-MM-dd"));
+    }
+
+    [Test]
+    public async Task Given_Input_Event_Start_Time_When_Initialized_Timezone_Then_It_Should_Update_Value()
+    {
+        // Arrange
+        var inputStartTime = Page.Locator("#event-start-time");
+
+        string timezoneId = GetIanaTimezoneId();
+        DateTimeOffset currentTime = GetCurrentDateTimeOffset(timezoneId);
+        var startTime = currentTime.AddHours(1).AddMinutes(-currentTime.Minute);
+
+        // Act
+        var inputStartTimeValue = await inputStartTime.GetAttributeAsync("current-value");
+
+        // Assert
         inputStartTimeValue.Should().Be(startTime.ToString("HH:mm"));
     }
 
     [Test]
-    public async Task Given_Input_Event_End_DateTime_When_Initialized_Timezone_Then_It_Should_Update_Value()
+    public async Task Given_Input_Event_End_Date_When_Initialized_Timezone_Then_It_Should_Update_Value()
     {
         // Arrange
         var inputEndDate = Page.Locator("#event-end-date");
-        var inputEndTime = Page.Locator("#event-end-time");
 
-        await inputEndDate.WaitForAsync();
-        await inputEndTime.WaitForAsync();
-
-        string timezoneId = OperatingSystem.IsWindows() ? TZConvert.WindowsToIana(TimeZoneInfo.Local.Id) : TimeZoneInfo.Local.Id;
-        var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timezoneId);
-        DateTimeOffset currentTime = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, timeZoneInfo);
+        string timezoneId = GetIanaTimezoneId();
+        DateTimeOffset currentTime = GetCurrentDateTimeOffset(timezoneId);
         var endTime = currentTime.AddDays(1).AddHours(1).AddMinutes(-currentTime.Minute);
 
         // Act
         var inputEndDateValue = await inputEndDate.GetAttributeAsync("current-value");
-        var inputEndTimeValue = await inputEndTime.GetAttributeAsync("current-value");
 
         // Assert
         inputEndDateValue.Should().Be(endTime.ToString("yyyy-MM-dd"));
+    }
+
+    [Test]
+    public async Task Given_Input_Event_End_Time_When_Initialized_Timezone_Then_It_Should_Update_Value()
+    {
+        // Arrange
+        var inputEndTime = Page.Locator("#event-end-time");
+
+        string timezoneId = GetIanaTimezoneId();
+        DateTimeOffset currentTime = GetCurrentDateTimeOffset(timezoneId);
+        var endTime = currentTime.AddDays(1).AddHours(1).AddMinutes(-currentTime.Minute);
+
+        // Act
+        var inputEndTimeValue = await inputEndTime.GetAttributeAsync("current-value");
+
+        // Assert
         inputEndTimeValue.Should().Be(endTime.ToString("HH:mm"));
     }
 
@@ -118,5 +136,27 @@ public class NewEventDetailsPageTests : PageTest
     public async Task CleanUp()
     {
         await Page.CloseAsync();
+    }
+
+    private string GetIanaTimezoneId()
+    {
+        string timezoneId = TimeZoneInfo.Local.Id;
+
+        if (OperatingSystem.IsWindows())
+        {
+            if (TimeZoneInfo.TryConvertWindowsIdToIanaId(timezoneId, out var ianaTimezoneId))
+            {
+                timezoneId = ianaTimezoneId;
+            }
+        }
+
+        return timezoneId;
+    }
+
+    private DateTimeOffset GetCurrentDateTimeOffset(string timezoneId)
+    {
+        var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timezoneId);
+
+        return TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, timeZoneInfo);
     }
 }
