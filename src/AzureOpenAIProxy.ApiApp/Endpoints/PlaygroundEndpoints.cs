@@ -55,7 +55,7 @@ public static class PlaygroundEndpoints
         ) =>
         {
             var logger = loggerFactory.CreateLogger(nameof(PlaygroundEndpoints));
-            logger.LogInformation("Received request to fetch deployment models list");
+            logger.LogInformation($"Received request to fetch deployment models list for event with ID: {eventId}");
 
             try 
             {
@@ -64,12 +64,18 @@ public static class PlaygroundEndpoints
             }
             catch (RequestFailedException ex)
             {
-                logger.LogError(ex, "Failed to fetch deployment models list");
+                if(ex.Status == 404)
+                {
+                    logger.LogError($"Failed to fetch deployment models list of {eventId}");
+                    return Results.NotFound();
+                }
+
+                logger.LogError(ex, $"Failed to fetch deployment models list of {eventId} with status {ex.Status}");
                 return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Failed to fetch deployment models list");
+                logger.LogError(ex, $"Failed to fetch deployment models list of {eventId}");
                 return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
             }  
         })
@@ -82,7 +88,7 @@ public static class PlaygroundEndpoints
         .WithOpenApi(operation =>
         {
             operation.Summary = "Gets all deployment models";
-            operation.Description = "This endpoint gets all deployment models avaliable";
+            operation.Description = "This endpoint gets all deployment models available";
 
             return operation;
         });
