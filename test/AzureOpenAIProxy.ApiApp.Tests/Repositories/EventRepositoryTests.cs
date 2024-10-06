@@ -82,18 +82,21 @@ public class EventRepositoryTests
         assertion.Which.Status.Should().Be(statusCode);
     }
 
-    [Theory]
-    [InlineData(2, "c355cc28-d847-4637-aad9-2f03d39aa51f")]
-    public async Task Given_Exist_Events_When_GetEvents_Invoked_Then_It_Should_Return_EventDetails_List(int listSize, string eventId)
+    [Fact]
+    public async Task Given_Exist_Events_When_GetEvents_Invoked_Then_It_Should_Return_EventDetails_List()
     {
         // Arrange
+        Random rand = new();
+        int listSize = rand.Next(0, 20);
+        Guid eventId = new();
+
         var settings = Substitute.For<StorageAccountSettings>();
         var tableServiceClient = Substitute.For<TableServiceClient>();
         var repository = new EventRepository(tableServiceClient, settings);
 
         var eventDetails = new EventDetails
         {
-            RowKey = eventId,
+            RowKey = eventId.ToString(),
             PartitionKey = PartitionKeys.EventDetails
         };
 
