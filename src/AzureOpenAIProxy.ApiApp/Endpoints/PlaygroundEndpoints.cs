@@ -1,3 +1,7 @@
+using Azure;
+
+using AzureOpenAIProxy.ApiApp.Services;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace AzureOpenAIProxy.ApiApp.Endpoints;
@@ -44,11 +48,30 @@ public static class PlaygroundEndpoints
     public static RouteHandlerBuilder AddListDeploymentModels(this WebApplication app)
     {
         // Todo: Issue #170 https://github.com/aliencube/azure-openai-sdk-proxy/issues/170
-        var builder = app.MapGet(PlaygroundEndpointUrls.DeploymentModels, (
-            [FromRoute] string eventId
+        var builder = app.MapGet(PlaygroundEndpointUrls.DeploymentModels, async (
+            [FromRoute] Guid eventId,
+            IPlaygroundService service,
+            ILoggerFactory loggerFactory
         ) =>
         {
-            return Results.Ok();
+            var logger = loggerFactory.CreateLogger(nameof(AdminEventEndpoints));
+            logger.LogInformation("Received request to fetch deployment models list");
+
+            try 
+            {
+                var deploymentModelsList = await service.GetDeploymentModels(eventId);
+                return Results.Ok(deploymentModelsList);
+            }
+            catch (RequestFailedException ex)
+            {
+                logger.LogError(ex, "Failed to fetch deployment models list");
+                return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to fetch deployment models list");
+                return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
+            }  
         })
         .Produces<List<DeploymentModelDetails>>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
