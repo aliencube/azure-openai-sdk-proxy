@@ -1,4 +1,5 @@
 using AzureOpenAIProxy.PlaygroundApp.Clients;
+using AzureOpenAIProxy.PlaygroundApp.Configurations;
 
 using Microsoft.FluentUI.AspNetCore.Components;
 
@@ -13,6 +14,28 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddFluentUIComponents();
+
+builder.Services.AddSingleton<ServicesSettings>(sp =>
+{
+    var configuration = sp.GetService<IConfiguration>()
+        ?? throw new InvalidOperationException($"{nameof(IConfiguration)} service is not registered.");
+
+    var settings = configuration.GetSection(ServicesSettings.Name).Get<ServicesSettings>()
+        ?? throw new InvalidOperationException($"{nameof(ServicesSettings)} could not be retrieved from the configuration.");
+
+    return settings!;
+});
+
+builder.Services.AddSingleton<ServiceNamesSettings>(sp =>
+{
+    var configuration = sp.GetService<IConfiguration>()
+        ?? throw new InvalidOperationException($"{nameof(IConfiguration)} service is not registered.");
+
+    var settings = configuration.GetSection(ServiceNamesSettings.Name).Get<ServiceNamesSettings>()
+        ?? throw new InvalidOperationException($"{nameof(ServiceNamesSettings)} could not be retrieved from the configuration.");
+
+    return settings!;
+});
 
 builder.Services.AddScoped<IOpenAIApiClient, OpenAIApiClient>();
 
