@@ -27,11 +27,9 @@ public class PlaygroundService(IEventRepository eventRepository) : IPlaygroundSe
     /// <inheritdoc/>
     public async Task<List<DeploymentModelDetails>> GetDeploymentModels(Guid eventId)
     {
-        // var result = await _eventRepository.GetDeploymentModels(eventId).ConfigureAwait(false);
+        var result = await _eventRepository.GetDeploymentModels(eventId).ConfigureAwait(false);
         
-        // return result;
-
-        throw new NotImplementedException();
+        return result;
     }
 
     /// <inheritdoc/>

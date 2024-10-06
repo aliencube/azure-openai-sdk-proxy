@@ -10,6 +10,12 @@ namespace AzureOpenAIProxy.ApiApp.Repositories;
 public interface IEventRepository
 {
     /// <summary>
+    /// Get the list of deployment model.
+    /// </summary>
+    /// <returns>Returns the list of deployment models.</returns>
+    Task<List<DeploymentModelDetails>> GetDeploymentModels(Guid eventId);
+
+    /// <summary>
     /// Gets the list of events.
     /// </summary>
     /// <returns>Returns the list of events.</returns>
@@ -20,6 +26,22 @@ public class EventRepository(TableServiceClient tableServiceClient, StorageAccou
 {
     private readonly TableServiceClient _tableServiceClient = tableServiceClient ?? throw new ArgumentNullException(nameof(tableServiceClient));
     private readonly StorageAccountSettings _storageAccountSettings = storageAccountSettings ?? throw new ArgumentNullException(nameof(storageAccountSettings));
+
+    /// <inheritdoc/>
+    public async Task<List<DeploymentModelDetails>> GetDeploymentModels(Guid eventId)
+    {
+        TableClient tableClient = await GetTableClientAsync();
+
+        List<DeploymentModelDetails> deploymentModels = [];
+
+        // 예. eventId로 특정 이벤트 정보 가져오기
+        // var eventDetail = await tableClient.GetEntityAsync<EventDetails>(
+        //     rowKey: eventId.ToString(),
+        //     partitionKey: PartitionKeys.EventDetails
+        // ).ConfigureAwait(false);
+
+        return deploymentModels;
+    }
 
     /// <inheritdoc/>
     public async Task<List<EventDetails>> GetEvents()
