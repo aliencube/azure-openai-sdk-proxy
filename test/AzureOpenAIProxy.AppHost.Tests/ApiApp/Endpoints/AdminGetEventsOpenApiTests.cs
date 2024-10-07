@@ -8,7 +8,6 @@ namespace AzureOpenAIProxy.AppHost.Tests.ApiApp.Endpoints;
 
 public class AdminGetEventsOpenApiTests(AspireAppHostFixture host) : IClassFixture<AspireAppHostFixture>
 {
-    // TODO: [tae0y] 테스트코드 작성하기
     [Fact]
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Path()
     {
