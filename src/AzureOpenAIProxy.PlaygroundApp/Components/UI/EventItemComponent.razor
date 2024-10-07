@@ -1,26 +1,36 @@
-﻿﻿<FluentGridItem Id="@Id" xs="12" lg="6" xxl="3" Justify="JustifyContent.Center" Style="text-align: center;">
-    @if (HasNoEvent)
-    {
-        <FluentCard Class="no-event" MinimalStyle="true" Style="flex-grow: 1; background-color: var(--neutral-layer-2); display: flex; padding: 0em; flex-direction: row; align-items: center; align-content: center; justify-content: center; background-color: transparent; box-shadow: none !important; border: hidden;">
-            <FluentLabel Typo="Typography.Header">You don’t have any events you have participated in now.</FluentLabel>
-        </FluentCard>
-    }
-    else
-    {
-        <FluentCard Class="event" MinimalStyle="true" Style="flex-grow: 1; display: flex; padding: 0em; flex-direction: column; align-items: normal; align-content: center; justify-content: center;">
-            <FluentNavLink Class="event-details-link" Href="@($"/events/{Id}")" Style="flex-grow: 0; align-self: center;">
-                <FluentLabel Typo="Typography.PaneHeader" Style="margin-block: 0.5em;">
-                    @Title
-                </FluentLabel>
-            </FluentNavLink>
-            <div class="event-summary card border" style="background-color: var(--neutral-layer-2); padding: 1em; padding-inline: 1.5em; flex-grow: 1">
-                <div class="card-body">
-                    <h5>@Summary</h5>
+﻿@if (HasNoEvent)
+{
+    <FluentGridItem Class="event-list-item" Id="@Id" xs="12" lg="12" xxl="12" Justify="JustifyContent.Center" Style="text-align: center;">
+        <div style="flex-grow: 1;">
+            <FluentCard Class="no-event" MinimalStyle="true">
+                <FluentLabel Typo="Typography.Header">You don’t have any events you have participated in now.</FluentLabel>
+            </FluentCard>
+        </div>
+    </FluentGridItem>
+}
+else
+{
+    <FluentGridItem Class="event-list-item" Id="@Id" xs="12" lg="6" xxl="3" Justify="JustifyContent.Center" Style="text-align: center;">
+        <div style="flex-grow: 1;">
+            <FluentCard Class="event" MinimalStyle="true">
+                <FluentNavLink Class="event-details-link" Href="@($"/events/{Id}")" Style="flex-grow: 0; align-self: center;">
+                    <FluentLabel Typo="Typography.PaneHeader" Style="margin-block: 0.5em;">
+                        @Title
+                    </FluentLabel>
+                </FluentNavLink>
+                <div class="event-summary card border">
+                    <div class="card-body">
+                        <h5>@Summary</h5>
+                    </div>
                 </div>
-            </div>
-        </FluentCard>
-    }
-</FluentGridItem>
+            </FluentCard>
+        </div>
+    </FluentGridItem>
+}
+
+
+
+
 
 @code {
     [Parameter]
