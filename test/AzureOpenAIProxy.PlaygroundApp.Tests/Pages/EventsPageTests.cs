@@ -27,19 +27,21 @@ public class EventsPageTests : PageTest
     public async Task Given_Events_Page_When_Navigated_Then_It_Should_Have_EventListComponent()
     {
         // Act
-        var eventListComponent = await Page.QuerySelectorAsync("#event-list");
+        var eventListComponent = Page.Locator("div.event-list").First;
 
         // Assert
-        eventListComponent.Should().NotBeNull();
+        await Expect(eventListComponent).ToBeVisibleAsync();
     }
 
     [Test]
     public async Task Given_Events_When_Loaded_Then_It_Should_Have_Less_Than_Or_Equal_To_Four_EventItemComponents()
     {
-        // Act
-        var availableEvents = await Page.QuerySelectorAsync("#event-list");
+        // Arrange
+        var eventList = Page.Locator("#user-event-list");
+        var listEvents = await eventList.Locator("div.event-list-item").AllAsync();
 
-        var childrenCount = await availableEvents.EvaluateAsync<int>("elist => elist.children.length");
+        // Act
+        var childrenCount = listEvents.Count;
 
         // Assert
         Assert.That(childrenCount, Is.GreaterThan(0));
@@ -58,11 +60,11 @@ public class EventsPageTests : PageTest
             card.Should().NotBeNull();
             // Check headers
             var header = card.Locator("div.fluent-nav-item.event-details-link").First;
-            header.Should().NotBeNull();
+            await Expect(header).ToBeVisibleAsync();
 
             // Check summaries
             var summary = card.Locator("div.event-summary.card.border").First;
-            summary.Should().NotBeNull();
+            await Expect(summary).ToBeVisibleAsync();
         }
     }
 
@@ -79,7 +81,6 @@ public class EventsPageTests : PageTest
             var link = card.Locator("div.fluent-nav-item.event-details-link").First
                 .Locator("a.fluent-nav-link").First;
 
-            link.Should().NotBeNull();
             await Expect(link).ToBeEnabledAsync();
         }
     }
