@@ -19,9 +19,18 @@
     border: hidden;
 }
 
+::deep .event-details-link {
+    flex-grow: 0;
+    align-self: center;
+}
+
 div.event-summary.card.border {
     background-color: var(--neutral-layer-2);
     padding: 1em;
     padding-inline: 1.5em;
+    flex-grow: 1;
+}
+
+div.event-item-flex-wrapper {
     flex-grow: 1;
 }
