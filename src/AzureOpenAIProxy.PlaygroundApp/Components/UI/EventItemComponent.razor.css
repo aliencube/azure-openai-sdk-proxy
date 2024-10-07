@@ -1,5 +1,4 @@
 ﻿::deep .event {
-    flex-grow: 1;
     display: flex;
     padding: 0em;
     flex-direction: column;
@@ -9,8 +8,6 @@
 }
 
 ::deep .no-event {
-    flex-grow: 1;
-    background-color: var(--neutral-layer-2);
     display: flex;
     padding: 0em;
     flex-direction: row;
