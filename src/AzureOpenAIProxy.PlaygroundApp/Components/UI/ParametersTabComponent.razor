@@ -1,6 +1,6 @@
 ﻿@using System.Linq
 
-<div id="@Id" class="parameter-tab">
+<FluentLayout Id="@Id" Style="font-size:12px;font-weight:bold;">
     @* Past Messages Range *@
     <ParameterRangeComponent Id="range-past-messages"
                              LabelText="Past messages included"
@@ -42,7 +42,7 @@
                              LabelText="Presence penalty"
                              TooltipText="Reduce the chance of repeating any token that has appeared in the text at all so far. This increases the likelihood of introducing new topics in a response."
                              Min="0" Max="2" Step="0.01" @bind-Value=@presencePenaltyValue />
-</div>
+</FluentLayout>
 
 @code {
     [Parameter]
