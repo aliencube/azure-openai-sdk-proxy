@@ -23,7 +23,7 @@
                             SelectValueOnTab="true"
                             MaximumOptionsSearch="1"
                             @bind-SelectedOptions=stopSequenceValue
-                            OnOptionsSearch=OnSearchAsync
+                            OnOptionsSearch=OnSearch
                             Style="width:95%;padding:5px 0px;margin: 0 auto">
             <OptionTemplate>
                 <FluentLabel>Create "@(context)"</FluentLabel>
@@ -47,15 +47,17 @@
     private IEnumerable<string> stopSequenceValue = new List<string>();
     private List<string> searchTextItems = new();
 
-    private Task OnSearchAsync(OptionsSearchEventArgs<string> e)
+    private void OnSearch(OptionsSearchEventArgs<string> e)
     {
         searchTextItems.Clear();
-        if (string.IsNullOrEmpty(e.Text) || stopSequenceValue.Contains(e.Text))
-            return Task.CompletedTask;
 
-        searchTextItems.Add(e.Text);
+        var input = e.Text.Trim();
+        if (string.IsNullOrWhiteSpace(input) || stopSequenceValue.Contains(input))
+        {
+            return;
+        }
+
+        searchTextItems.Add(input);
         e.Items = searchTextItems;
-
-        return Task.CompletedTask;
     }
 }
