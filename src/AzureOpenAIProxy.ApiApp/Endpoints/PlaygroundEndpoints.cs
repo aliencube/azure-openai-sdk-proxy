@@ -31,17 +31,6 @@ public static class PlaygroundEndpoints
                 var eventDetailsList = await service.GetEvents();
                 return Results.Ok(eventDetailsList);
             }
-            catch (RequestFailedException ex)
-            {
-                if(ex.Status == 404)
-                {
-                    logger.LogError($"Failed to get events list");
-                    return Results.NotFound();
-                }
-
-                logger.LogError(ex, $"Error occurred while fetching events list");
-                return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
-            }
             catch (Exception ex)
             {
                 logger.LogError(ex, $"Error occurred while fetching events list");
@@ -50,7 +39,6 @@ public static class PlaygroundEndpoints
         })
         .Produces<List<EventDetails>>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
         .Produces(statusCode: StatusCodes.Status401Unauthorized)
-        .Produces(statusCode: StatusCodes.Status404NotFound)
         .Produces<string>(statusCode: StatusCodes.Status500InternalServerError, contentType: "text/plain")
         .WithTags("events")
         .WithName("GetEvents")
