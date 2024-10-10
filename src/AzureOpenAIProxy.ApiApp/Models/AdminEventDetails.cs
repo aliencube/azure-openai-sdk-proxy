@@ -13,6 +13,18 @@ public class AdminEventDetails : EventDetails
     public string? Description { get; set; }
 
     /// <summary>
+    /// Gets or sets the event start date.
+    /// </summary>
+    [JsonRequired]
+    public DateTimeOffset DateStart { get; set; }
+
+    /// <summary>
+    /// Gets or sets the event end date.
+    /// </summary>
+    [JsonRequired]
+    public DateTimeOffset DateEnd { get; set; }
+
+    /// <summary>
     /// Gets or sets the event start to end date timezone.
     /// </summary>
     [JsonRequired]

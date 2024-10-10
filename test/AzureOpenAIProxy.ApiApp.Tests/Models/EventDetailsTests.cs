@@ -13,8 +13,6 @@ public class EventDetailsTests
         Summary = "Test Summary",
         MaxTokenCap = 1000,
         DailyRequestCap = 4000,
-        DateStart = DateTimeOffset.Parse("2024-12-01T12:34:56+00:00"),
-        DateEnd = DateTimeOffset.Parse("2024-12-02T12:34:56+00:00")
     };
 
     private static readonly string exampleJson = """
@@ -23,9 +21,7 @@ public class EventDetailsTests
         "title": "Test Title",
         "summary": "Test Summary",
         "maxTokenCap": 1000,
-        "dailyRequestCap": 4000,
-        "dateStart": "2024-12-01T12:34:56+00:00",
-        "dateEnd": "2024-12-02T12:34:56+00:00"
+        "dailyRequestCap": 4000
     }
     """;
 
@@ -47,10 +43,7 @@ public class EventDetailsTests
             "\"title\":", "\"Test Title\"",
             "\"summary\":", "\"Test Summary\"",
             "\"maxTokenCap\":", "1000",
-            "\"dailyRequestCap\":", "4000",
-            "\"dateStart\":", "\"2024-12-01T12:34:56+00:00\"",
-            "\"dateEnd\":", "\"2024-12-02T12:34:56+00:00\""
-            );
+            "\"dailyRequestCap\":", "4000");
     }
 
     [Fact]
