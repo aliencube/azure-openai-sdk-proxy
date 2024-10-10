@@ -24,9 +24,7 @@ public class EventRepository(TableServiceClient tableServiceClient, StorageAccou
     /// <inheritdoc/>
     /// <remarks>
     /// The results are sorted based on the following criteria:
-    /// 1. Lexical order of event titles.
-    /// 2. Start date of event.
-    /// 3. End date of event.
+    /// Lexical order of event titles.
     /// </remarks>
     public async Task<List<EventDetails>> GetEvents()
     {
@@ -39,20 +37,7 @@ public class EventRepository(TableServiceClient tableServiceClient, StorageAccou
             events.Add(eventDetails);
         }
 
-        events.Sort((e1, e2) => 
-        {
-            if(!e1.Title.Equals(e2.Title))
-            {
-                return e1.Title.CompareTo(e2.Title);
-            }
-
-            if(!e1.DateStart.Equals(e2.DateStart))
-            {
-                return e1.DateStart.CompareTo(e2.DateStart);
-            }
-
-            return e1.DateEnd.CompareTo(e2.DateEnd);
-        });
+        events.Sort((e1, e2) => e1.Title.CompareTo(e2.Title));
 
         return events;
     }
