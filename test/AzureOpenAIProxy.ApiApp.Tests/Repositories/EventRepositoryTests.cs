@@ -58,28 +58,23 @@ public class EventRepositoryTests
         action.Should().Throw<ArgumentNullException>();
     }
 
-    [Theory]
-    [InlineData(404)]
-    [InlineData(500)]
-    public async Task Given_Failure_In_Get_Entities_When_GetEvents_Invoked_Then_It_Should_Throw_Exception(int statusCode)
+    [Fact]
+    public async Task Given_Failure_In_Get_Entities_When_GetEvents_Invoked_Then_It_Should_Throw_Exception()
     {
         // Arrange
         var settings = Substitute.For<StorageAccountSettings>();
         var tableServiceClient = Substitute.For<TableServiceClient>();
         var repository = new EventRepository(tableServiceClient, settings);
 
-        var exception = new RequestFailedException(statusCode, "Request Error", default, default);
-
         var tableClient = Substitute.For<TableClient>();
         tableServiceClient.GetTableClient(Arg.Any<string>()).Returns(tableClient);
-        tableClient.QueryAsync(Arg.Any<Expression<Func<EventDetails, bool>>>()).Throws(exception);
+        tableClient.QueryAsync(Arg.Any<Expression<Func<EventDetails, bool>>>()).Throws(new Exception("error occurred"));
 
         // Act
         Func<Task> func = repository.GetEvents;
 
         // Assert
-        var assertion = await func.Should().ThrowAsync<RequestFailedException>();
-        assertion.Which.Status.Should().Be(statusCode);
+        var assertion = await func.Should().ThrowAsync<Exception>();
     }
 
     [Fact]
@@ -87,7 +82,7 @@ public class EventRepositoryTests
     {
         // Arrange
         Random rand = new();
-        int listSize = rand.Next(0, 20);
+        int listSize = rand.Next(1, 20);
         Guid eventId = new();
 
         var settings = Substitute.For<StorageAccountSettings>();

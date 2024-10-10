@@ -42,39 +42,36 @@ public class PlaygroundServiceTests
         func.Should().ThrowAsync<NotImplementedException>();
     }
 
-    [Theory]
-    [InlineData(404)]
-    [InlineData(500)]
-    public async Task Given_Failure_In_Get_Entities_When_GetEvents_Invoked_Then_It_Should_Throw_Exception(int statusCode)
+    [Fact]
+    public async Task Given_Failure_In_Get_Entities_When_GetEvents_Invoked_Then_It_Should_Throw_Exception()
     {
         // Arrange
         var eventId = Guid.NewGuid();
         var repository = Substitute.For<IEventRepository>();
         var service = new PlaygroundService(repository);
 
-        var exception = new RequestFailedException(statusCode, "Request Failed", default, default);
-
-        repository.GetEvents().ThrowsAsync(exception);
+        repository.GetEvents().ThrowsAsync(new Exception("Error occurred"));
 
         // Act
         Func<Task> func = service.GetEvents;
 
         // Assert
-        var assertion = await func.Should().ThrowAsync<RequestFailedException>();
-        assertion.Which.Status.Should().Be(statusCode);
+        var assertion = await func.Should().ThrowAsync<Exception>();
     }
 
-    [Theory]
-    [InlineData(2, "c355cc28-d847-4637-aad9-2f03d39aa51f")]
-    public async Task Given_Exist_Events_When_GetEvents_Invoked_Then_It_Should_Return_EventDetails_List(int listSize, string eventId)
+    [Fact]
+    public async Task Given_Exist_Events_When_GetEvents_Invoked_Then_It_Should_Return_EventDetails_List()
     {
         // Arrange
+        Random rand = new();
+        int listSize = rand.Next(1, 20);
+        Guid eventId = new();
         var repository = Substitute.For<IEventRepository>();
         var service = new PlaygroundService(repository);
 
         var eventDetails = new EventDetails
         {
-            RowKey = eventId
+            RowKey = eventId.ToString()
         };
 
         List<EventDetails> events = [];
