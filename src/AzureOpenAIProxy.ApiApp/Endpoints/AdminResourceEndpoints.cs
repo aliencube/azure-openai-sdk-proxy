@@ -19,7 +19,7 @@ public static class AdminResourceEndpoints
     {
         var builder = app.MapPost(AdminEndpointUrls.AdminResources, async (
             [FromBody] AdminResourceDetails payload,
-            IAdminEventService service,
+            IAdminResourceService service,
             ILoggerFactory loggerFactory) =>
         {
             var logger = loggerFactory.CreateLogger(nameof(AdminResourceEndpoints));
@@ -32,7 +32,20 @@ public static class AdminResourceEndpoints
                 return Results.BadRequest("Payload is null");
             }
 
-            return await Task.FromResult(Results.Ok());
+            try
+            {
+                var result = await service.CreateResource(payload);
+
+                logger.LogInformation("Created a new resource");
+
+                return Results.Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to create a new resource");
+
+                return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
+            }
         })
         .Accepts<AdminResourceDetails>(contentType: "application/json")
         .Produces<AdminResourceDetails>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
