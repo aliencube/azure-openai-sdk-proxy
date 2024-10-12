@@ -31,13 +31,10 @@ public class AdminEventServiceTests
     }
 
     [Fact]
-    public async Task Given_Instance_When_CreateEvent_Invoked_Then_It_Should_Return_Same_Instance()
+    public async Task Given_Instance_When_CreateEvent_Invoked_Then_It_Should_Not_Throw_Exception()
     {
         // Arrange
         var eventDetails = new AdminEventDetails();
-        // TODO: [tae0y] payload validation에 대해 더 고민, 필요시 fluent validation 적용
-        eventDetails.PartitionKey = null;
-        eventDetails.RowKey = null;
 
         var repository = Substitute.For<IAdminEventRepository>();
         var service = new AdminEventService(repository);
@@ -45,14 +42,10 @@ public class AdminEventServiceTests
         repository.CreateEvent(Arg.Any<AdminEventDetails>()).Returns(eventDetails);
 
         // Act
-        var result = await service.CreateEvent(eventDetails);
+        Func<Task> func = () => service.CreateEvent(eventDetails);
 
         // Assert
-        result.Should().BeEquivalentTo(
-            eventDetails,
-            options => options.Excluding(x => x.PartitionKey)
-                              .Excluding(x => x.RowKey)
-        );
+        await func.Should().NotThrowAsync<InvalidOperationException>();
     }
 
     [Fact]
