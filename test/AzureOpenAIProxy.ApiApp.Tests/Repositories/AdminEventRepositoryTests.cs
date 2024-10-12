@@ -58,7 +58,7 @@ public class AdminEventRepositoryTests
     }
 
     [Fact]
-    public async Task Given_Instance_When_CreateEvent_Invoked_Then_It_Should_Return_Same_Instance()
+    public async Task Given_Instance_When_CreateEvent_Invoked_Then_It_Should_Not_Throw_Exception()
     {
         // Arrange
         var settings = Substitute.For<StorageAccountSettings>();
@@ -71,11 +71,10 @@ public class AdminEventRepositoryTests
         var repository = new AdminEventRepository(tableServiceClient, settings);
 
         // Act  
-        var result = await repository.CreateEvent(eventDetails);
+        Func<Task> func = () => repository.CreateEvent(eventDetails);
 
         // Assert
-        result.Should().BeSameAs(eventDetails);
-        // TODO: [tae0y] 테스트관점이 다름, 예외없음을 검사
+        await func.Should().NotThrowAsync<InvalidOperationException>();
     }
 
     [Fact]
