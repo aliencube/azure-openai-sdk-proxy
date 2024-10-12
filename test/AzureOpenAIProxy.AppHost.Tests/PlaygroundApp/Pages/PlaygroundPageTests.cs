@@ -50,18 +50,18 @@ public class PlaygroundPageTests(AspireAppHostFixture host) : IClassFixture<Aspi
         html.Should().Contain(expected);
     }
 
-    // [Theory]
-    // [InlineData("<div class=\"fluent-tooltip-provider\"></div>")]
-    // public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_HTML_Elements(string expected)
-    // {
-    //     // Arrange
-    //     using var httpClient = host.App!.CreateHttpClient("playgroundapp");
-    //     await host.ResourceNotificationService.WaitForResourceAsync("playgroundapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
+    [Theory]
+    [InlineData("<div class=\"fluent-tooltip-provider\" style=\"display: fixed;\"></div>")]
+    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_HTML_Elements(string expected)
+    {
+        // Arrange
+        using var httpClient = host.App!.CreateHttpClient("playgroundapp");
+        await host.ResourceNotificationService.WaitForResourceAsync("playgroundapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
-    //     // Act
-    //     var html = await httpClient.GetStringAsync("/playground");
+        // Act
+        var html = await httpClient.GetStringAsync("/playground");
 
-    //     // Assert
-    //     html.Should().Contain(expected);
-    // }
+        // Assert
+        html.Should().Contain(expected);
+    }
 }
