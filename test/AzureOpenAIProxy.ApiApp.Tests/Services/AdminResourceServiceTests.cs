@@ -72,7 +72,7 @@ public class AdminResourceServiceTests
     }
 
     [Fact]
-    public async Task Given_RepositoryFails_When_CreateResource_Invoked_Then_It_Should_Throw_Exception()
+    public async Task Given_Failure_In_Add_Entity_When_CreateResource_Invoked_Then_It_Should_Throw_Exception()
     {
         // Arrange
         var repository = Substitute.For<IAdminResourceRepository>();
