@@ -30,6 +30,12 @@ builder.Services.AddAdminResourceService();
 builder.Services.AddAdminEventRepository();
 builder.Services.AddAdminResourceRepository();
 
+// Add playground services
+builder.Services.AddPlaygroundService();
+
+// Add playground repositories
+builder.Services.AddEventRepository();
+
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
