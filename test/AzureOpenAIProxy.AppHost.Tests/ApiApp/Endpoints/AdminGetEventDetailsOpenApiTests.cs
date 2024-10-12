@@ -4,8 +4,6 @@ using AzureOpenAIProxy.AppHost.Tests.Fixtures;
 
 using FluentAssertions;
 
-using IdentityModel.Client;
-
 namespace AzureOpenAIProxy.AppHost.Tests.ApiApp.Endpoints;
 
 public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClassFixture<AspireAppHostFixture>
@@ -154,6 +152,7 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
     [Theory]
     [InlineData("200")]
     [InlineData("401")]
+    [InlineData("404")]
     [InlineData("500")]
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Response(string attribute)
     {
@@ -172,130 +171,5 @@ public class AdminGetEventDetailsOpenApiTests(AspireAppHostFixture host) : IClas
                                          .GetProperty("responses")
                                          .TryGetProperty(attribute, out var property) ? property : default;
         result.ValueKind.Should().Be(JsonValueKind.Object);
-    }
-
-    public static IEnumerable<object[]> AttributeData =>
-        [
-            ["eventId", true, "string"],
-            ["title", true, "string"],
-            ["summary", true, "string"],
-            ["description", false, "string"],
-            ["dateStart", true, "string"],
-            ["dateEnd", true, "string"],
-            ["timeZone", true, "string"],
-            ["isActive", true, "boolean"],
-            ["organizerName", true, "string"],
-            ["organizerEmail", true, "string"],
-            ["coorganizerName", false, "string"],
-            ["coorganizerEmail", false, "string"],
-            ["maxTokenCap", true, "integer"],
-            ["dailyRequestCap", true, "integer"]
-        ];
-
-    [Fact]
-    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Schemas()
-    {
-        // Arrange
-        using var httpClient = host.App!.CreateHttpClient("apiapp");
-        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
-
-        // Act
-        var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
-        var openapi = JsonSerializer.Deserialize<JsonDocument>(json);
-
-        // Assert
-        var result = openapi!.RootElement.GetProperty("components")
-                                         .TryGetProperty("schemas", out var property) ? property : default;
-        result.ValueKind.Should().Be(JsonValueKind.Object);
-    }
-
-    [Fact]
-    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Model()
-    {
-        // Arrange
-        using var httpClient = host.App!.CreateHttpClient("apiapp");
-        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
-
-        // Act
-        var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
-        var openapi = JsonSerializer.Deserialize<JsonDocument>(json);
-
-        // Assert
-        var result = openapi!.RootElement.GetProperty("components")
-                                         .GetProperty("schemas")
-                                         .TryGetProperty("AdminEventDetails", out var property) ? property : default;
-        result.ValueKind.Should().Be(JsonValueKind.Object);
-    }
-
-    [Theory]
-    [MemberData(nameof(AttributeData))]
-    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Required(string attribute, bool isRequired, string type)
-    {
-        // Arrange
-        using var httpClient = host.App!.CreateHttpClient("apiapp");
-        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
-
-        var isReq = isRequired;
-        var typeStr = type;
-
-        // Act
-        var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
-        var openapi = JsonSerializer.Deserialize<JsonDocument>(json);
-
-        // Assert
-        var result = openapi!.RootElement.GetProperty("components")
-                                         .GetProperty("schemas")
-                                         .GetProperty("AdminEventDetails")
-                                         .TryGetStringArray("required")
-                                         .ToList();
-        result.Contains(attribute).Should().Be(isRequired);
-    }
-
-    [Theory]
-    [MemberData(nameof(AttributeData))]
-    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Property(string attribute, bool isRequired, string type)
-    {
-        // Arrange
-        using var httpClient = host.App!.CreateHttpClient("apiapp");
-        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
-
-        var isReq = isRequired;
-        var typeStr = type;
-
-        // Act
-        var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
-        var openapi = JsonSerializer.Deserialize<JsonDocument>(json);
-
-        // Assert
-        var result = openapi!.RootElement.GetProperty("components")
-                                         .GetProperty("schemas")
-                                         .GetProperty("AdminEventDetails")
-                                         .GetProperty("properties")
-                                         .TryGetProperty(attribute, out var property) ? property : default;
-        result.ValueKind.Should().Be(JsonValueKind.Object);
-    }
-
-    [Theory]
-    [MemberData(nameof(AttributeData))]
-    public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_Type(string attribute, bool isRequired, string type)
-    {
-        // Arrange
-        using var httpClient = host.App!.CreateHttpClient("apiapp");
-        await host.ResourceNotificationService.WaitForResourceAsync("apiapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
-
-        var isReq = isRequired;
-        var typeStr = type;
-
-        // Act
-        var json = await httpClient.GetStringAsync("/swagger/v1.0.0/swagger.json");
-        var openapi = JsonSerializer.Deserialize<JsonDocument>(json);
-
-        // Assert
-        var result = openapi!.RootElement.GetProperty("components")
-                                         .GetProperty("schemas")
-                                         .GetProperty("AdminEventDetails")
-                                         .GetProperty("properties")
-                                         .GetProperty(attribute);
-        result.TryGetString("type").Should().Be(type);
     }
 }

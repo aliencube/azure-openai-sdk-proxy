@@ -1,71 +1,52 @@
 ﻿@using AzureOpenAIProxy.PlaygroundApp.Clients
+@using AzureOpenAIProxy.PlaygroundApp.Models
+
 @inject IOpenAIApiClient Api
 
-<div class="container">
-    <h3>Chat Window</h3>
-
-    <div class="row">
-        <div class="col-md-6">
-            <textarea class="form-control" readonly>@userPrompt</textarea>
-        </div>
-        <div class="col-md-6">
-            <textarea class="form-control" readonly>@assistantMessage</textarea>
-        </div>
-    </div>
-
-    <div class="row mt-3">
-        <div class="col-md-6">
-            <textarea class="form-control" @bind="@userInput"></textarea>
-        </div>
-        <div class="col-md-6">
-            <button class="btn btn-primary" @onclick="SendAsync">Send</button>
-            <button class="btn btn-secondary" @onclick="ClearAsync">Clear</button>
-        </div>
-    </div>
-</div>
+<FluentStack Id="@Id" Style="width: 100%; height: 100%;" Orientation="Orientation.Vertical" VerticalAlignment="VerticalAlignment.Bottom">
+    <ChatHistoryComponent Id="chat-history" Messages="messages" />
+    <ChatPromptComponent Id="chat-prompt" OnPromptSent="SendPrompt" OnChatCleared="ClearMessage" />
+</FluentStack>
 
 @code {
-    private string? endpoint = "https://localhost:7001/";
     private string? apiKey = "abcdef";
     private string? deploymentName = "model-gpt35turbo16k-0613";
     private int? maxTokens = 4096;
     private float? temperature = 0.7f;
     private string? systemPrompt = "You are an AI assistant that helps people find information.";
-    private string? userPrompt;
-    private string? assistantMessage;
-    private string? userInput;
 
-    private async Task SendAsync()
+    private List<ChatMessage>? messages;
+
+    [Parameter]
+    public string? Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
     {
-        userPrompt = userInput;
+        this.messages = [];
 
-        try
-        {
-            var options = new OpenAIApiClientOptions()
-            {
-                Endpoint = endpoint,
-                ApiKey = apiKey,
-                DeploymentName = deploymentName,
-                MaxTokens = maxTokens,
-                Temperature = temperature,
-                SystemPrompt = systemPrompt,
-                UserPrompt = userInput,
-            };
-            var result = await Api.CompleteChatAsync(options);
-            assistantMessage = result;
-
-        }
-        catch (Exception ex)
-        {
-            assistantMessage = ex.Message;
-        }
+        await Task.CompletedTask;
     }
 
-    private async Task ClearAsync()
+    private async Task SendPrompt(string prompt)
     {
-        userPrompt = string.Empty;
-        assistantMessage = string.Empty;
-        userInput = string.Empty;
+        this.messages!.Add(new ChatMessage() { Role = MessageRole.User, Message = prompt });
+        var options = new OpenAIApiClientOptions()
+            {
+                ApiKey = apiKey,
+                DeploymentName = deploymentName,
+                MaxOutputTokenCount = maxTokens,
+                Temperature = temperature,
+                SystemPrompt = systemPrompt,
+                UserPrompt = prompt,
+            };
+
+        var result = await Api.CompleteChatAsync(options);
+        this.messages!.Add(new ChatMessage() { Role = MessageRole.Assistant, Message = result });
+    }
+
+    private async Task ClearMessage()
+    {
+        this.messages!.Clear();
 
         await Task.CompletedTask;
     }

@@ -1,5 +1,8 @@
-﻿using Azure;
+using System.ClientModel;
+
 using Azure.AI.OpenAI;
+
+using AzureOpenAIProxy.PlaygroundApp.Configurations;
 
 using OpenAI.Chat;
 
@@ -21,24 +24,30 @@ public interface IOpenAIApiClient
 /// <summary>
 /// This represents the OpenAI API client entity.
 /// </summary>
-public class OpenAIApiClient : IOpenAIApiClient
+public class OpenAIApiClient(ServiceNamesSettings names, ServicesSettings settings) : IOpenAIApiClient
 {
+    private readonly ServiceNamesSettings _names = names ?? throw new ArgumentNullException(nameof(names));
+    private readonly ServicesSettings _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+
     /// <inheritdoc />
     public async Task<string> CompleteChatAsync(OpenAIApiClientOptions clientOptions)
     {
-        var endpoint = new Uri($"{clientOptions.Endpoint!.TrimEnd('/')}/api");
-        var credential = new AzureKeyCredential(clientOptions.ApiKey!);
-        var openai = new AzureOpenAIClient(endpoint, credential);
+        var service = this._settings[this._names.Backend!];
+        var endpoint = service.Https!.FirstOrDefault() ?? service.Http!.First();
+
+        clientOptions.Endpoint = new Uri($"{endpoint!.TrimEnd('/')}/api");
+
+        var credential = new ApiKeyCredential(clientOptions.ApiKey!);
+        var openai = new AzureOpenAIClient(clientOptions.Endpoint, credential);
         var chat = openai.GetChatClient(clientOptions.DeploymentName);
 
         var messages = new List<ChatMessage>()
         {
-            new SystemChatMessage(clientOptions.SystemPrompt),
-            new UserChatMessage(clientOptions.UserPrompt),
+            new SystemChatMessage(clientOptions.SystemPrompt), new UserChatMessage(clientOptions.UserPrompt),
         };
         var options = new ChatCompletionOptions
         {
-            MaxTokens = clientOptions.MaxTokens,
+            MaxOutputTokenCount = clientOptions.MaxOutputTokenCount,
             Temperature = clientOptions.Temperature,
         };
 

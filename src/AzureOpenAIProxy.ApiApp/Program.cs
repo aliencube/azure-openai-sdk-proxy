@@ -16,11 +16,23 @@ builder.Services.AddOpenAIService();
 // Add OpenAPI service
 builder.Services.AddOpenApiService();
 
+// Add Storage Account settings
+builder.Services.AddStorageAccountSettings();
+
+// Add TableStorageClient
+builder.Services.AddTableStorageService();
+
 // Add admin services
 builder.Services.AddAdminEventService();
 
 // Add admin repositories
 builder.Services.AddAdminEventRepository();
+
+// Add playground services
+builder.Services.AddPlaygroundService();
+
+// Add playground repositories
+builder.Services.AddEventRepository();
 
 var app = builder.Build();
 
@@ -51,11 +63,14 @@ app.AddChatCompletions();
 
 // Playground endpoints
 app.AddListEvents();
+app.AddListDeploymentModels();
 
 // Admin endpoints
 app.AddNewAdminEvent();
 app.AddListAdminEvents();
 app.AddGetAdminEvent();
 app.AddUpdateAdminEvent();
+
+app.AddNewAdminResource();
 
 await app.RunAsync();

@@ -1,12 +1,14 @@
 using System.Text.Json;
+
 using AzureOpenAIProxy.ApiApp.Models;
+
 using FluentAssertions;
 
 namespace AzureOpenAIProxy.ApiApp.Tests.Models;
 
 public class CreateChatCompletionResponseTests
 {
-    private readonly string _exampleJson = @"
+    private static readonly string exampleJson = @"
     {
         ""id"": ""string"",
         ""object"": ""chat.completion"",
@@ -149,7 +151,7 @@ public class CreateChatCompletionResponseTests
         ]
     }";
 
-    private readonly CreateChatCompletionResponse exampleResponse = new CreateChatCompletionResponse
+    private static readonly CreateChatCompletionResponse examplePayload = new ()
     {
         Id = "string",
         Object = ChatCompletionResponseObject.ChatCompletion,
@@ -256,23 +258,22 @@ public class CreateChatCompletionResponseTests
     };
 
     [Fact]
-    public void Given_ExampleResponse_When_Serialized_Then_ShouldMatchExpectedJson()
+    public void Given_ExamplePayload_When_Serialized_Then_It_Should_Match_Json()
     {
         // Act
-        var serializedJson = JsonSerializer.Serialize(exampleResponse, new JsonSerializerOptions { WriteIndented = false });
+        var serialised = JsonSerializer.Serialize(examplePayload, new JsonSerializerOptions { WriteIndented = false });
 
         // Assert
-        serializedJson.Should().Be(_exampleJson.Replace("\r", "").Replace("\n", "").Replace(" ", ""));
+        serialised.Should().Be(exampleJson.Replace("\r", "").Replace("\n", "").Replace(" ", ""));
     }
 
     [Fact]
-    public void Given_ExampleJson_When_Deserialized_Then_ShouldReturnValidObject()
+    public void Given_ExampleJson_When_Deserialized_Then_It_Should__Match_Object()
     {
         // Arrange & Act
-        var deserializedResponse = JsonSerializer.Deserialize<CreateChatCompletionResponse>(_exampleJson);
+        var deserialised = JsonSerializer.Deserialize<CreateChatCompletionResponse>(exampleJson);
 
         // Assert
-        deserializedResponse.Should().NotBeNull();
-        deserializedResponse.Should().BeEquivalentTo(exampleResponse);
+        deserialised.Should().BeEquivalentTo(examplePayload);
     }
 }
