@@ -75,6 +75,7 @@ public class AdminEventRepositoryTests
 
         // Assert
         result.Should().BeSameAs(eventDetails);
+        // TODO: [tae0y] 테스트관점이 다름, 예외없음을 검사
     }
 
     [Fact]

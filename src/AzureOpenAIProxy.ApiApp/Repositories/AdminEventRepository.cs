@@ -55,7 +55,7 @@ public class AdminEventRepository(TableServiceClient tableServiceClient, Storage
         TableClient tableClient = await GetTableClientAsync();
 
         // 데이터 저장
-        var createResponse = await tableClient.AddEntityAsync(eventDetails).ConfigureAwait(false);
+        await tableClient.AddEntityAsync(eventDetails).ConfigureAwait(false);
 
         // 저장한 엔티티 반환
         return eventDetails;

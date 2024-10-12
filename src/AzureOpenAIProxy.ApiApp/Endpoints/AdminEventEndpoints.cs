@@ -33,6 +33,8 @@ public static class AdminEventEndpoints
 
                 return Results.BadRequest("Payload is null");
             }
+            // TODO: [tae0y] [테스트] 필수값이 null일때 언마샬 가능한가? 언마샬이 통과돼버리면.. 조치 필요
+            // fluent validation
 
             try
             {

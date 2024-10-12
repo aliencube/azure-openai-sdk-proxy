@@ -35,6 +35,10 @@ public class AdminEventServiceTests
     {
         // Arrange
         var eventDetails = new AdminEventDetails();
+        // TODO: [tae0y] payload validation에 대해 더 고민, 필요시 fluent validation 적용
+        eventDetails.PartitionKey = null;
+        eventDetails.RowKey = null;
+
         var repository = Substitute.For<IAdminEventRepository>();
         var service = new AdminEventService(repository);
 
