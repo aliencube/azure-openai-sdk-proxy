@@ -9,6 +9,7 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 
 namespace AzureOpenAIProxy.ApiApp.Tests.Repositories;
 
@@ -89,5 +90,25 @@ public class AdminResourceRepositoryTests
             x.ResourceId == resourceDetails.ResourceId
         ));
         result.Should().BeEquivalentTo(resourceDetails);
+    }
+
+    [Fact]
+    public async Task Given_Failure_In_Add_Entity_When_CreateResource_Invoked_Then_It_Should_Throw_Exception()
+    {
+        // Arrange
+        var settings = Substitute.For<StorageAccountSettings>();
+        var tableServiceClient = Substitute.For<TableServiceClient>();
+        var tableClient = Substitute.For<TableClient>();
+        tableServiceClient.GetTableClient(Arg.Any<string>()).Returns(tableClient);
+
+        var repository = new AdminResourceRepository(tableServiceClient, settings);
+
+        tableClient.AddEntityAsync(Arg.Any<AdminResourceDetails>()).ThrowsAsync(new InvalidOperationException());
+
+        // Act
+        Func<Task> func = () => repository.CreateResource(new AdminResourceDetails());
+
+        // Assert
+        await func.Should().ThrowAsync<InvalidOperationException>();
     }
 }
