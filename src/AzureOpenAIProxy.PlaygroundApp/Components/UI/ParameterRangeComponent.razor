@@ -1,6 +1,4 @@
-﻿@typeparam TValue where TValue : System.Numerics.INumber<TValue>
-
-<div id="@Id">
+﻿<div id="@Id">
     <label id=@($"{Id}-label") class="parameter-component-label" for=@($"{Id}-content")>
         @LabelText
 
@@ -21,6 +19,7 @@
                  Style="column-gap:0px">
 
         <FluentSlider Id=@($"{Id}-slider") Class="parameter-component-slider"
+                      TValue="float"
                       Min="@Min" Max="@Max" Step="@Step"
                       @bind-Value=Value @bind-Value:after=AfterSliderChange />
 
@@ -39,22 +38,22 @@
 
 @code {
     [Parameter, EditorRequired]
-    public TValue? Min { get; set; } = default;
+    public float Min { get; set; } = default;
 
     [Parameter, EditorRequired]
-    public TValue? Max { get; set; } = default;
+    public float Max { get; set; } = default;
 
     [Parameter, EditorRequired]
-    public TValue? Step { get; set; } = default;
+    public float Step { get; set; } = default;
 
     [Parameter]
-    public TValue? Value { get; set; }
+    public float Value { get; set; }
 
     [Parameter]
     public string? Id { get; set; }
 
     [Parameter]
-    public EventCallback<TValue> ValueChanged { get; set; }
+    public EventCallback<float> ValueChanged { get; set; }
 
     [Parameter, EditorRequired]
     public string LabelText { get; set; } = string.Empty;
@@ -85,8 +84,8 @@
 
     private async Task AfterTextFieldChange()
     {
-        hasNoError = TValue.TryParse(textFieldValue, null, out var parsed);
-        if (!hasNoError || parsed == null)
+        hasNoError = float.TryParse(textFieldValue, null, out var parsed);
+        if (!hasNoError)
             return;
 
         hasNoError = parsed >= Min! && parsed <= Max!;

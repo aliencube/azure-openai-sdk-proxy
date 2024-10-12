@@ -17,13 +17,13 @@
     <ParameterRangeComponent Id="range-temperature"
                              LabelText="Temperature"
                              TooltipText="Controls randomness. Lowering the temperature means that the model will produce more repetitive and deterministic responses. Increasing the temperature will result in more unexpected or creative responses. Try adjusting temperature or Top P but not both."
-                             Min="0" Max="1" Step="0.01" @bind-Value=@temperatureValue />
+                             Min="0" Max="1" Step="0.01f" @bind-Value=@temperatureValue />
 
     @* Top P Range *@
     <ParameterRangeComponent Id="range-top-p"
                              LabelText="Top P"
                              TooltipText="Similar to temperature, this controls randomness but uses a different method. Lowering Top P will narrow the model’s token selection to likelier tokens. Increasing Top P will let the model choose from tokens with both high and low likelihood. Try adjusting temperature or Top P but not both."
-                             Min="0" Max="1" Step="0.01" @bind-Value=@topPValue />
+                             Min="0" Max="1" Step="0.01f" @bind-Value=@topPValue />
 
     @* Stop Sequence Multi Select *@
     <ParameterMultiselectComponent Id="select-stop-sequence"
@@ -35,26 +35,26 @@
     <ParameterRangeComponent Id="range-frequency-penalty"
                              LabelText="Frequency penalty"
                              TooltipText="Reduce the chance of repeating a token proportionally based on how often it has appeared in the text so far. This decreases the likelihood of repeating the exact same text in a response."
-                             Min="0" Max="2" Step="0.01" @bind-Value=@frequencyPenaltyValue />
+                             Min="0" Max="2" Step="0.01f" @bind-Value=@frequencyPenaltyValue />
 
     @* Presence Penalty Range *@
     <ParameterRangeComponent Id="range-presence-penalty"
                              LabelText="Presence penalty"
                              TooltipText="Reduce the chance of repeating any token that has appeared in the text at all so far. This increases the likelihood of introducing new topics in a response."
-                             Min="0" Max="2" Step="0.01" @bind-Value=@presencePenaltyValue />
+                             Min="0" Max="2" Step="0.01f" @bind-Value=@presencePenaltyValue />
 </FluentLayout>
 
 @code {
     [Parameter]
     public string? Id { get; set; }
 
-    private int pastMessagesValue = 10;
-    private int maxResponseValue = 800;
-    private double temperatureValue = 0.7;
-    private double topPValue = 0.95;
+    private float pastMessagesValue = 10;
+    private float maxResponseValue = 800;
+    private float temperatureValue = 0.7f;
+    private float topPValue = 0.95f;
 
-    private double frequencyPenaltyValue = 0;
-    private double presencePenaltyValue = 0;
+    private float frequencyPenaltyValue = 0;
+    private float presencePenaltyValue = 0;
 
     private ParameterMultiselectComponent? stopSequence;
 }
