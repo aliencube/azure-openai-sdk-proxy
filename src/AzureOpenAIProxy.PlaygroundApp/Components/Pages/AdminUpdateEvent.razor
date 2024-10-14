@@ -1,0 +1,15 @@
+@page "/admin/events/edit"
+
+@using AzureOpenAIProxy.PlaygroundApp.Models;
+
+<PageTitle>Update Event</PageTitle>
+
+<h1>Update Event</h1>
+
+<UpdateEventDetailsComponent Id="admin-update-event" Event = "@Event" @rendermode="InteractiveServer" />
+
+@code {
+    [Parameter]
+    public AdminEventDetails Event { get; set; }
+}
+    

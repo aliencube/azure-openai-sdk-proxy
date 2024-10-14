@@ -1,10 +1,20 @@
 @using AzureOpenAIProxy.PlaygroundApp.Models
 
 <FluentLayout Id="@Id">
-
+@if(Event == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    // Do something
+}
 </FluentLayout>
 
 @code {
     [Parameter]
     public string? Id { get; set; }
+
+    [Parameter]
+    public AdminEventDetails Event { get; set;}
 }
