@@ -37,6 +37,17 @@
 </div>
 
 @code {
+    [Parameter]
+    public string? Id { get; set; }
+
+    // Label Property
+    [Parameter, EditorRequired]
+    public string LabelText { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public string TooltipText { get; set; } = string.Empty;
+
+    // Slider Property
     [Parameter, EditorRequired]
     public float Min { get; set; } = default;
 
@@ -46,23 +57,17 @@
     [Parameter, EditorRequired]
     public float Step { get; set; } = default;
 
+    // Text Field Property
+    public string? textFieldValue { get; set; }
+
+    // Bind Property
     [Parameter]
     public float Value { get; set; }
 
     [Parameter]
-    public string? Id { get; set; }
-
-    [Parameter]
     public EventCallback<float> ValueChanged { get; set; }
 
-    [Parameter, EditorRequired]
-    public string LabelText { get; set; } = string.Empty;
-
-    [Parameter, EditorRequired]
-    public string TooltipText { get; set; } = string.Empty;
-
-    public string? textFieldValue { get; set; }
-
+    // Fields
     private bool hasNoError = true;
     private string errorText = string.Empty;
 

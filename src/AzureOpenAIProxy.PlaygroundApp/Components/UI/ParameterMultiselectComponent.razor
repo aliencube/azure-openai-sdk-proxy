@@ -22,7 +22,8 @@
                             ShowOverlayOnEmptyResults="false"
                             SelectValueOnTab="true"
                             MaximumOptionsSearch="1"
-                            @bind-SelectedOptions=stopSequenceValue
+                            @bind-SelectedOptions=Values
+                            @bind-SelectedOptions:after=OnChangeValues
                             OnOptionsSearch=OnSearch
                             Style="width:95%;padding:5px 0px;margin: 0 auto">
             <OptionTemplate>
@@ -33,26 +34,38 @@
 </div>
 
 @code {
+    [Parameter]
+    public string? Id { get; set; }
+
+    // Label Property
     [Parameter, EditorRequired]
     public string LabelText { get; set; } = string.Empty;
 
     [Parameter, EditorRequired]
     public string TooltipText { get; set; } = string.Empty;
 
+    // Bind Property
     [Parameter]
-    public string? Id { get; set; }
+    public IEnumerable<string>? Values { get; set; }
 
-    public IEnumerable<string> Value => stopSequenceValue;
+    [Parameter]
+    public EventCallback<IEnumerable<string>> ValuesChanged { get; set; }
 
-    private IEnumerable<string> stopSequenceValue = new List<string>();
+    // Fields
     private List<string> searchTextItems = new();
+
+    private async Task OnChangeValues()
+    {
+        await ValuesChanged.InvokeAsync(Values);
+    }
 
     private void OnSearch(OptionsSearchEventArgs<string> e)
     {
         searchTextItems.Clear();
 
         var input = e.Text.Trim();
-        if (string.IsNullOrWhiteSpace(input) || stopSequenceValue.Contains(input))
+        if (string.IsNullOrWhiteSpace(input) || 
+            Values != null && Values.Contains(input))
         {
             return;
         }
