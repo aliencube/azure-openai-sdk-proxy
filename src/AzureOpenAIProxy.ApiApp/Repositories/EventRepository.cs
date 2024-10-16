@@ -10,12 +10,6 @@ namespace AzureOpenAIProxy.ApiApp.Repositories;
 public interface IEventRepository
 {
     /// <summary>
-    /// Get the list of deployment model.
-    /// </summary>
-    /// <returns>Returns the list of deployment models.</returns>
-    Task<List<DeploymentModelDetails>> GetDeploymentModels(Guid eventId);
-
-    /// <summary>
     /// Gets the list of events.
     /// </summary>
     /// <returns>Returns the list of events.</returns>
@@ -28,32 +22,22 @@ public class EventRepository(TableServiceClient tableServiceClient, StorageAccou
     private readonly StorageAccountSettings _storageAccountSettings = storageAccountSettings ?? throw new ArgumentNullException(nameof(storageAccountSettings));
 
     /// <inheritdoc/>
-    public async Task<List<DeploymentModelDetails>> GetDeploymentModels(Guid eventId)
-    {
-        TableClient tableClient = await GetTableClientAsync();
-
-        List<DeploymentModelDetails> deploymentModels = [];
-
-        // 예. eventId로 특정 이벤트 정보 가져오기
-        // var eventDetail = await tableClient.GetEntityAsync<EventDetails>(
-        //     rowKey: eventId.ToString(),
-        //     partitionKey: PartitionKeys.EventDetails
-        // ).ConfigureAwait(false);
-
-        return deploymentModels;
-    }
-
-    /// <inheritdoc/>
+    /// <remarks>
+    /// The results are sorted based on the following criteria:
+    /// Lexical order of event titles.
+    /// </remarks>
     public async Task<List<EventDetails>> GetEvents()
     {
         TableClient tableClient = await GetTableClientAsync();
 
         List<EventDetails> events = [];
 
-        await foreach (EventDetails eventDetails in tableClient.QueryAsync<EventDetails>(e => e.PartitionKey.Equals(PartitionKeys.EventDetails)).ConfigureAwait(false))
+        await foreach(EventDetails eventDetails in tableClient.QueryAsync<EventDetails>(e => e.PartitionKey.Equals(PartitionKeys.EventDetails)).ConfigureAwait(false))
         {
             events.Add(eventDetails);
         }
+
+        events.Sort((e1, e2) => e1.Title.CompareTo(e2.Title));
 
         return events;
     }

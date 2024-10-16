@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 
 using AzureOpenAIProxy.AppHost.Tests.Fixtures;
 
@@ -6,7 +6,7 @@ using FluentAssertions;
 
 namespace AzureOpenAIProxy.AppHost.Tests.PlaygroundApp.Pages;
 
-public class AdminNewEventPageTests(AspireAppHostFixture host) : IClassFixture<AspireAppHostFixture>
+public class EventsPageTests(AspireAppHostFixture host) : IClassFixture<AspireAppHostFixture>
 {
     [Fact]
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_OK()
@@ -16,7 +16,7 @@ public class AdminNewEventPageTests(AspireAppHostFixture host) : IClassFixture<A
         await host.ResourceNotificationService.WaitForResourceAsync("playgroundapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
-        var response = await httpClient.GetAsync("/admin/events/new");
+        var response = await httpClient.GetAsync("/events");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -31,7 +31,7 @@ public class AdminNewEventPageTests(AspireAppHostFixture host) : IClassFixture<A
         await host.ResourceNotificationService.WaitForResourceAsync("playgroundapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
-        var html = await httpClient.GetStringAsync("/admin/events/new");
+        var html = await httpClient.GetStringAsync("/events");
 
         // Assert
         html.Should().Contain(expected);
@@ -46,7 +46,7 @@ public class AdminNewEventPageTests(AspireAppHostFixture host) : IClassFixture<A
         await host.ResourceNotificationService.WaitForResourceAsync("playgroundapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
-        var html = await httpClient.GetStringAsync("/admin/events/new");
+        var html = await httpClient.GetStringAsync("/events");
 
         // Assert
         html.Should().Contain(expected);
@@ -61,7 +61,7 @@ public class AdminNewEventPageTests(AspireAppHostFixture host) : IClassFixture<A
         await host.ResourceNotificationService.WaitForResourceAsync("playgroundapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
         // Act
-        var html = await httpClient.GetStringAsync("/admin/events/new");
+        var html = await httpClient.GetStringAsync("/events");
 
         // Assert
         html.Should().Contain(expected);
