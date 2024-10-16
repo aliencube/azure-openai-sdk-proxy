@@ -31,7 +31,7 @@ public class PlaygroundServiceTests
     public void Given_Instance_When_GetDeploymentModels_Invoked_Then_It_Should_Throw_Exception()
     {
         // Arrange
-        string eventId = "test-id";
+        var eventId = Guid.NewGuid();
         var repository = Substitute.For<IEventRepository>();
         var service = new PlaygroundService(repository);
 
