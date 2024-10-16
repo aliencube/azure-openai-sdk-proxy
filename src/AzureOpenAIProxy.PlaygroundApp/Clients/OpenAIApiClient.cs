@@ -32,8 +32,8 @@ public class OpenAIApiClient(ServiceNamesSettings names, ServicesSettings settin
     /// <inheritdoc />
     public async Task<string> CompleteChatAsync(OpenAIApiClientOptions clientOptions)
     {
-        var service = settings[this._names.Backend!];
-        var endpoint = service.Https.FirstOrDefault() ?? service.Http.First();
+        var service = this._settings[this._names.Backend!];
+        var endpoint = service.Https!.FirstOrDefault() ?? service.Http!.First();
 
         clientOptions.Endpoint = new Uri($"{endpoint!.TrimEnd('/')}/api");
 
@@ -47,7 +47,8 @@ public class OpenAIApiClient(ServiceNamesSettings names, ServicesSettings settin
         };
         var options = new ChatCompletionOptions
         {
-            MaxOutputTokenCount = clientOptions.MaxTokens, Temperature = clientOptions.Temperature,
+            MaxOutputTokenCount = clientOptions.MaxOutputTokenCount,
+            Temperature = clientOptions.Temperature,
         };
 
         var result = await chat.CompleteChatAsync(messages, options).ConfigureAwait(false);
