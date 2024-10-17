@@ -58,19 +58,46 @@ public class AdminEventRepositoryTests
     }
 
     [Fact]
-    public void Given_Instance_When_CreateEvent_Invoked_Then_It_Should_Throw_Exception()
+    public async Task Given_Instance_When_CreateEvent_Invoked_Then_It_Should_Return_Passed_Argument()
     {
         // Arrange
         var settings = Substitute.For<StorageAccountSettings>();
         var tableServiceClient = Substitute.For<TableServiceClient>();
+        var tableClient = Substitute.For<TableClient>();
+        tableServiceClient.GetTableClient(Arg.Any<string>()).Returns(tableClient);
+        tableClient.AddEntityAsync<AdminEventDetails>(Arg.Any<AdminEventDetails>())
+            .Returns(Task.FromResult(default(Response)));
         var eventDetails = new AdminEventDetails();
         var repository = new AdminEventRepository(tableServiceClient, settings);
 
         // Act
-        Func<Task> func = async () => await repository.CreateEvent(eventDetails);
+        var result = await repository.CreateEvent(eventDetails);
 
         // Assert
-        func.Should().ThrowAsync<NotImplementedException>();
+        result.Should().BeEquivalentTo(eventDetails);
+    }
+
+    [Fact]
+    public async Task Given_Failure_In_Add_Entity_When_CreateEvent_Invoked_Then_It_Should_Throw_Exception()
+    {
+        // Arrange
+        var settings = Substitute.For<StorageAccountSettings>();
+        var tableServiceClient = Substitute.For<TableServiceClient>();
+        var repository = new AdminEventRepository(tableServiceClient, settings);
+        var eventDetails = new AdminEventDetails();
+
+        var exception = new InvalidOperationException("Invalid Operation Error : check duplicate, null or empty values");
+
+        var tableClient = Substitute.For<TableClient>();
+        tableServiceClient.GetTableClient(Arg.Any<string>()).Returns(tableClient);
+        tableClient.AddEntityAsync<AdminEventDetails>(Arg.Any<AdminEventDetails>())
+            .ThrowsAsync(exception);
+
+        // Act
+        Func<Task> func = () => repository.CreateEvent(eventDetails);
+
+        // Assert
+        await func.Should().ThrowAsync<InvalidOperationException>();
     }
 
     [Fact]
