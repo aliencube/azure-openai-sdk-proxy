@@ -1,15 +1,105 @@
 @using AzureOpenAIProxy.PlaygroundApp.Models
+@using NodaTime
 
 <FluentLayout Id="@Id">
-@if(EventDetails == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <h1>@EventDetails.EventId</h1>
-    // Do something
-}
+    @if(adminEventDetails == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <FluentHeader>Update Event</FluentHeader>
+        <FluentBodyContent>
+            <section>
+                <h2>Event Infomation</h2>
+
+                <FluentStack Class="update-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                    <FluentLabel For="event-title" Class="update-input-label" >Title</FluentLabel>
+                    <FluentTextField Id="event-title" Name="title" TextFieldType="TextFieldType.Text" @bind-Value="adminEventDetails.Title"/>
+                </FluentStack>
+
+                <FluentStack Class="update-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                    <FluentLabel For="event-summary" Class="update-input-label">Summary</FluentLabel>
+                    <FluentTextField id="event-summary" TextFieldType="TextFieldType.Text" @bind-Value="adminEventDetails.Summary"/>
+                </FluentStack>
+
+                <FluentStack Class="update-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                    <FluentLabel For="event-description" Class="update-input-label">Description</FluentLabel>
+                    <FluentTextArea Id="event-description" Style="width:300px" @bind-Value="adminEventDetails.Description"/>
+                </FluentStack>
+
+                <FluentStack Class="update-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                        <FluentLabel For="event-start-date" Class="update-input-label">Event Start Date</FluentLabel>
+                        <FluentDatePicker Id="event-start-date" Value="@adminEventDetails.DateStart.DateTime" ValueChanged="@(e => adminEventDetails.DateStart = e.Value)" Culture="System.Globalization.CultureInfo.CurrentCulture" />
+                        <FluentTimePicker Id="event-start-time" Value="@adminEventDetails.DateStart.DateTime" ValueChanged="@(e => adminEventDetails.DateStart = e.Value)" />
+                </FluentStack>
+
+                    <FluentStack Class="update-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                        <FluentLabel For="event-end-date" Class="update-input-label">Event End Date</FluentLabel>
+                        <FluentDatePicker Id="event-end-date" Value="@adminEventDetails.DateEnd.DateTime" ValueChanged="@(e => adminEventDetails.DateEnd = e.Value)" Culture="System.Globalization.CultureInfo.CurrentCulture" />
+                        <FluentTimePicker Id="event-end-time" Value="@adminEventDetails.DateEnd.DateTime" ValueChanged="@(e => adminEventDetails.DateEnd = e.Value)" />
+                    </FluentStack>
+
+                    <FluentStack Class="update-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                        <FluentLabel For="event-timezone" Class="update-input-label">Time Zone</FluentLabel>
+                        <FluentSelect Id="event-timezone" @bind-Value="@adminEventDetails.TimeZone" Height="500px" TOption="string">
+                            @foreach (var timeZone in timeZoneList)
+                            {
+                                <FluentOption Value="@timeZone.Id">@timeZone.Id</FluentOption>
+                            }
+                        </FluentSelect>
+                    </FluentStack>
+                </section>
+
+                <section>
+                    <h2>Event Organizer</h2>
+
+                    <FluentStack Class="update-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                        <FluentLabel For="event-organizer-name" Class="update-input-label">Organizer Name</FluentLabel>
+                        <FluentTextField Id="event-organizer-name" TextFieldType="TextFieldType.Text" @bind-Value="adminEventDetails.OrganizerName"/>
+                    </FluentStack>
+
+
+                    <FluentStack Class="update-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                        <FluentLabel For="event-organizer-email" Class="update-input-label">Organizer Email</FluentLabel>
+                        <FluentTextField Id="event-organizer-email" TextFieldType="TextFieldType.Email" @bind-Value="adminEventDetails.OrganizerEmail"/>
+                    </FluentStack>
+                </section>
+            
+                <section>
+                    <h2>Event Coorganizers</h2>
+
+                    <FluentStack Class="update-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                        <FluentLabel For="event-coorgnizer-name" Class="update-input-label">Coorgnizer Name</FluentLabel>
+                        <FluentTextField Id="event-coorgnizer-name" TextFieldType="TextFieldType.Text" @bind-Value="adminEventDetails.CoorganizerName" />
+                    </FluentStack>
+
+                    <FluentStack Class="update-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                        <FluentLabel For="event-coorgnizer-email" Class="update-input-label">Coorgnizer Email</FluentLabel>
+                        <FluentTextField Id="event-coorgnizer-email" TextFieldType="TextFieldType.Email" @bind-Value="adminEventDetails.CoorganizerEmail"/>
+                    </FluentStack>
+                </section>
+
+                <section>
+                    <h2>Event Configuration</h2>
+
+                    <FluentStack Class="update-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                        <FluentLabel For="event-max-token-cap" Class="update-input-label">Max Token Cap</FluentLabel>
+                        <FluentNumberField Id="event-max-token-cap" @bind-Value="adminEventDetails.MaxTokenCap" />
+                    </FluentStack>
+
+                    <FluentStack Class="update-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                        <FluentLabel For="event-daily-request-cap" Class="update-input-label">Daily Request Cap</FluentLabel>
+                        <FluentNumberField Id="event-daily-request-cap" @bind-Value="adminEventDetails.DailyRequestCap"/>
+                    </FluentStack>
+                </section>
+
+                <section class="button-section">
+                    <FluentButton Id="admin-event-detail-update" Appearance="Appearance.Accent" Class="button">Update Event</FluentButton>
+                    <FluentButton Id="admin-event-detail-cancel" Appearance="Appearance.Outline" Class="button">Cancel</FluentButton>
+                </section>
+        </FluentBodyContent>
+    }
 </FluentLayout>
 
 @code {
@@ -19,7 +109,8 @@ else
     [Parameter]
     public Guid EventId { get; set;}
 
-    private AdminEventDetails? EventDetails;
+    private List<DateTimeZone>? timeZoneList = [];
+    private AdminEventDetails? adminEventDetails;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -29,7 +120,7 @@ else
             await Task.Delay(2000);
         
             // Make dummy data
-            EventDetails = new AdminEventDetails
+            adminEventDetails = new AdminEventDetails
             {
                 EventId = EventId,
                 Title = "dummy title",
