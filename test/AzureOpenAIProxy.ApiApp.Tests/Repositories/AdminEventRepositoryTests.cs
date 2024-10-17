@@ -16,6 +16,19 @@ namespace AzureOpenAIProxy.ApiApp.Tests.Repositories;
 
 public class AdminEventRepositoryTests
 {
+    private readonly StorageAccountSettings mockSettings;
+    private readonly TableServiceClient mockTableServiceClient;
+    private readonly TableClient mockTableClient;
+
+    public AdminEventRepositoryTests()
+    {
+        mockSettings = Substitute.For<StorageAccountSettings>();
+        mockTableServiceClient = Substitute.For<TableServiceClient>();
+        mockTableClient = Substitute.For<TableClient>();
+
+        mockTableServiceClient.GetTableClient(Arg.Any<string>()).Returns(mockTableClient);
+    }
+
     [Fact]
     public void Given_ServiceCollection_When_AddAdminEventRepository_Invoked_Then_It_Should_Contain_AdminEventRepository()
     {
@@ -33,11 +46,10 @@ public class AdminEventRepositoryTests
     public void Given_Null_TableServiceClient_When_Creating_AdminEventRepository_Then_It_Should_Throw_Exception()
     {
         // Arrange
-        var settings = Substitute.For<StorageAccountSettings>();
         var tableServiceClient = default(TableServiceClient);
         
         // Act
-        Action action = () => new AdminEventRepository(tableServiceClient, settings);
+        Action action = () => new AdminEventRepository(tableServiceClient, mockSettings);
 
         // Assert
         action.Should().Throw<ArgumentNullException>();
@@ -48,44 +60,39 @@ public class AdminEventRepositoryTests
     {
         // Arrange
         var settings = default(StorageAccountSettings);
-        var tableServiceClient = Substitute.For<TableServiceClient>();
         
         // Act
-        Action action = () => new AdminEventRepository(tableServiceClient, settings);
+        Action action = () => new AdminEventRepository(mockTableServiceClient, settings);
 
         // Assert
         action.Should().Throw<ArgumentNullException>();
     }
 
     [Fact]
-    public void Given_Instance_When_CreateEvent_Invoked_Then_It_Should_Throw_Exception()
+    public async Task Given_Instance_When_CreateEvent_Invoked_Then_It_Should_Return_Created_Event()
     {
         // Arrange
-        var settings = Substitute.For<StorageAccountSettings>();
-        var tableServiceClient = Substitute.For<TableServiceClient>();
         var eventDetails = new AdminEventDetails();
-        var repository = new AdminEventRepository(tableServiceClient, settings);
+        var repository = new AdminEventRepository(mockTableServiceClient, mockSettings);
 
         // Act
-        Func<Task> func = async () => await repository.CreateEvent(eventDetails);
+        await repository.CreateEvent(eventDetails);
 
         // Assert
-        func.Should().ThrowAsync<NotImplementedException>();
+        await mockTableClient.Received(1).AddEntityAsync(eventDetails, default);
     }
 
     [Fact]
-    public void Given_Instance_When_GetEvents_Invoked_Then_It_Should_Throw_Exception()
+    public async Task Given_Instance_When_GetEvents_Invoked_Then_It_Should_Invoke_QueryAsync_Method()
     {
         // Arrange
-        var settings = Substitute.For<StorageAccountSettings>();
-        var tableServiceClient = Substitute.For<TableServiceClient>();
-        var repository = new AdminEventRepository(tableServiceClient, settings);
+        var repository = new AdminEventRepository(mockTableServiceClient, mockSettings);
 
         // Act
-        Func<Task> func = async () => await repository.GetEvents();
+        await repository.GetEvents();
 
         // Assert
-        func.Should().ThrowAsync<NotImplementedException>();
+        mockTableClient.Received(1).QueryAsync<AdminEventDetails>();
     }
 
     [Theory]
@@ -94,16 +101,12 @@ public class AdminEventRepositoryTests
     public async Task Given_Failure_In_Get_Entity_When_GetEvent_Invoked_Then_It_Should_Throw_Exception(int statusCode)
     {
         // Arrange
-        var settings = Substitute.For<StorageAccountSettings>();
-        var tableServiceClient = Substitute.For<TableServiceClient>();
         var eventId = Guid.NewGuid();
-        var repository = new AdminEventRepository(tableServiceClient, settings);
+        var repository = new AdminEventRepository(mockTableServiceClient, mockSettings);
 
         var exception = new RequestFailedException(statusCode, "Request Error", default, default);
 
-        var tableClient = Substitute.For<TableClient>();
-        tableServiceClient.GetTableClient(Arg.Any<string>()).Returns(tableClient);
-        tableClient.GetEntityAsync<AdminEventDetails>(Arg.Any<string>(), Arg.Any<string>())
+        mockTableClient.GetEntityAsync<AdminEventDetails>(Arg.Any<string>(), Arg.Any<string>())
             .ThrowsAsync(exception);
 
         // Act
@@ -119,9 +122,7 @@ public class AdminEventRepositoryTests
     public async Task Given_Exist_EventId_When_GetEvent_Invoked_Then_It_Should_Return_AdminEventDetails(string eventId, string partitionKey)
     {
         // Arrange
-        var settings = Substitute.For<StorageAccountSettings>();
-        var tableServiceClient = Substitute.For<TableServiceClient>();
-        var repository = new AdminEventRepository(tableServiceClient, settings);
+        var repository = new AdminEventRepository(mockTableServiceClient, mockSettings);
 
         var eventDetails = new AdminEventDetails
         {
@@ -131,9 +132,7 @@ public class AdminEventRepositoryTests
 
         var response = Response.FromValue(eventDetails, Substitute.For<Response>());
 
-        var tableClient = Substitute.For<TableClient>();
-        tableServiceClient.GetTableClient(Arg.Any<string>()).Returns(tableClient);
-        tableClient.GetEntityAsync<AdminEventDetails>(partitionKey, eventId)
+        mockTableClient.GetEntityAsync<AdminEventDetails>(partitionKey, eventId)
             .Returns(Task.FromResult(response));
 
         // Act
@@ -144,19 +143,39 @@ public class AdminEventRepositoryTests
     }
 
     [Fact]
-    public void Given_Instance_When_UpdateEvent_Invoked_Then_It_Should_Throw_Exception()
+    public async Task Given_Instance_When_UpdateEvent_Invoked_Then_It_Should_Invoke_UpdateEntityAsync_Method()
     {
         // Arrange
-        var settings = Substitute.For<StorageAccountSettings>();
-        var tableServiceClient = Substitute.For<TableServiceClient>();
         var eventId = Guid.NewGuid();
         var eventDetails = new AdminEventDetails();
-        var repository = new AdminEventRepository(tableServiceClient, settings);
+        var repository = new AdminEventRepository(mockTableServiceClient, mockSettings);
 
         // Act
-        Func<Task> func = async () => await repository.UpdateEvent(eventId, eventDetails);
+        await repository.UpdateEvent(eventId, eventDetails);
 
         // Assert
-        func.Should().ThrowAsync<NotImplementedException>();
+        await mockTableClient.Received(1)
+                    .UpdateEntityAsync<AdminEventDetails>(Arg.Any<AdminEventDetails>(),
+                                                          Arg.Any<Azure.ETag>(),
+                                                          TableUpdateMode.Replace);
+    }
+
+    [Fact]
+    public async Task Given_Instance_When_DeleteEvent_Invoked_Then_It_Should_Invoke_DeleteEntityAsync_Method()
+    {
+        // Arrange
+        var eventDetails = new AdminEventDetails();
+        var repository = new AdminEventRepository(mockTableServiceClient, mockSettings);
+        var eventId = Guid.NewGuid();
+
+        eventDetails.EventId = eventId;
+
+        // Act
+        Guid deletedEventId = await repository.DeleteEvent(eventDetails);
+
+        // Assert
+        deletedEventId.Should().Be(eventId);
+        await mockTableClient.Received(1)
+                             .DeleteEntityAsync(Arg.Any<string>(), Arg.Any<string>());
     }
 }

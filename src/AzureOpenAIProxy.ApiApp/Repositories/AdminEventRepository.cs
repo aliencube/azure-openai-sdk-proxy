@@ -1,4 +1,7 @@
-﻿using Azure.Data.Tables;
+﻿using System.Collections.Specialized;
+using System.Text.Json;
+
+using Azure.Data.Tables;
 
 using AzureOpenAIProxy.ApiApp.Configurations;
 using AzureOpenAIProxy.ApiApp.Extensions;
@@ -38,6 +41,13 @@ public interface IAdminEventRepository
     /// <param name="eventDetails">Event details instance.</param>
     /// <returns>Returns the updated record of the event details.</returns>
     Task<AdminEventDetails> UpdateEvent(Guid eventId, AdminEventDetails eventDetails);
+
+    /// <summary>
+    /// Deletes the event details.
+    /// </summary>
+    /// <param name="eventDetails">Event details instance.</param>
+    /// <returns>Removed EventID of event details instance.</returns>
+    Task<Guid> DeleteEvent(AdminEventDetails eventDetails);
 }
 
 /// <summary>
@@ -51,13 +61,25 @@ public class AdminEventRepository(TableServiceClient tableServiceClient, Storage
     /// <inheritdoc />
     public async Task<AdminEventDetails> CreateEvent(AdminEventDetails eventDetails)
     {
-        throw new NotImplementedException();
+        var tableClient = _tableServiceClient.GetTableClient(_storageAccountSettings.TableStorage.TableName);
+        
+        await tableClient.AddEntityAsync<AdminEventDetails>(eventDetails);
+        
+        return eventDetails;
     }
 
     /// <inheritdoc />
     public async Task<List<AdminEventDetails>> GetEvents()
     {
-        throw new NotImplementedException();
+        var tableClient = await GetTableClientAsync();
+        var eventDetailsList = new List<AdminEventDetails>();
+
+        await foreach (var entity in tableClient.QueryAsync<AdminEventDetails>())
+        {
+            eventDetailsList.Add(entity);
+        }
+
+        return eventDetailsList;
     }
 
     /// <inheritdoc />
@@ -76,7 +98,22 @@ public class AdminEventRepository(TableServiceClient tableServiceClient, Storage
     /// <inheritdoc />
     public async Task<AdminEventDetails> UpdateEvent(Guid eventId, AdminEventDetails eventDetails)
     {
-        throw new NotImplementedException();
+        var tableClient = await GetTableClientAsync();
+
+        eventDetails.EventId = eventId;
+
+        await tableClient.UpdateEntityAsync<AdminEventDetails>(eventDetails, eventDetails.ETag, TableUpdateMode.Replace);
+
+        return eventDetails;
+    }
+
+    public async Task<Guid> DeleteEvent(AdminEventDetails eventDetails)
+    {
+        var tableClient = await GetTableClientAsync();
+
+        await tableClient.DeleteEntityAsync(eventDetails.PartitionKey, eventDetails.RowKey);
+
+        return eventDetails.EventId;
     }
 
     private async Task<TableClient> GetTableClientAsync()
