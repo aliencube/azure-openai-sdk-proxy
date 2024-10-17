@@ -31,7 +31,7 @@ public class AdminEventServiceTests
     }
 
     [Fact]
-    public async Task Given_Instance_When_CreateEvent_Invoked_Then_It_Should_Not_Throw_Exception()
+    public async Task Given_Instance_When_CreateEvent_Invoked_Then_It_Should_Return_Passed_Argument()
     {
         // Arrange
         var eventDetails = new AdminEventDetails();
@@ -42,10 +42,10 @@ public class AdminEventServiceTests
         repository.CreateEvent(Arg.Any<AdminEventDetails>()).Returns(eventDetails);
 
         // Act
-        Func<Task> func = () => service.CreateEvent(eventDetails);
+        var result = await service.CreateEvent(eventDetails);
 
         // Assert
-        await func.Should().NotThrowAsync<InvalidOperationException>();
+        result.Should().BeEquivalentTo(eventDetails);
     }
 
     [Fact]

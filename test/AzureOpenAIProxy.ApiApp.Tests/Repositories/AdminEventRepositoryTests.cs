@@ -58,7 +58,7 @@ public class AdminEventRepositoryTests
     }
 
     [Fact]
-    public async Task Given_Instance_When_CreateEvent_Invoked_Then_It_Should_Not_Throw_Exception()
+    public async Task Given_Instance_When_CreateEvent_Invoked_Then_It_Should_Return_Passed_Argument()
     {
         // Arrange
         var settings = Substitute.For<StorageAccountSettings>();
@@ -70,11 +70,11 @@ public class AdminEventRepositoryTests
         var eventDetails = new AdminEventDetails();
         var repository = new AdminEventRepository(tableServiceClient, settings);
 
-        // Act  
-        Func<Task> func = () => repository.CreateEvent(eventDetails);
+        // Act
+        var result = await repository.CreateEvent(eventDetails);
 
         // Assert
-        await func.Should().NotThrowAsync<InvalidOperationException>();
+        result.Should().BeEquivalentTo(eventDetails);
     }
 
     [Fact]
