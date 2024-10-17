@@ -1,0 +1,14 @@
+@page "/admin/events/edit/{EventId:guid}"
+
+@using AzureOpenAIProxy.PlaygroundApp.Models;
+
+<PageTitle>Update Event</PageTitle>
+
+<h1>Update Event</h1>
+
+<UpdateEventDetailsComponent Id="admin-update-event" EventId = "@EventId" @rendermode="InteractiveServer" />
+
+@code {
+    [Parameter]
+    public Guid EventId { get; set; }
+}
