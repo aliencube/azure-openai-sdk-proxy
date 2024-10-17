@@ -1,5 +1,7 @@
 @using AzureOpenAIProxy.PlaygroundApp.Models
 @using NodaTime
+@using NodaTime.Extensions
+@using System.Globalization
 
 <FluentLayout Id="@Id">
     @if(adminEventDetails == null)
@@ -112,6 +114,18 @@
     private List<DateTimeZone>? timeZoneList = [];
     private AdminEventDetails? adminEventDetails;
 
+    protected override void OnInitialized()
+    {
+        timeZoneList = DateTimeZoneProviders.Tzdb.GetAllZones().ToList();
+
+        CultureInfo customCulture = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+        customCulture.DateTimeFormat.ShortDatePattern = "yyyy-MM-dd";
+        customCulture.DateTimeFormat.ShortTimePattern = "HH:mm";
+
+        CultureInfo.DefaultThreadCurrentCulture = customCulture;
+        CultureInfo.DefaultThreadCurrentUICulture = customCulture;
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if(firstRender)
@@ -128,7 +142,7 @@
                 Description = "dummy description",
                 DateStart = DateTimeOffset.Now,
                 DateEnd = DateTimeOffset.Now.AddDays(7),
-                TimeZone = "KST",
+                TimeZone = "Asia/Seoul",
                 IsActive = true,
                 OrganizerName = $"dummy organizer",
                 OrganizerEmail = $"dummy_user@gmail.com",
