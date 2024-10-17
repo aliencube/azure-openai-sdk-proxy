@@ -3,6 +3,8 @@
 @using NodaTime.Extensions
 @using System.Globalization
 
+@inject NavigationManager NavigationManager
+
 <FluentLayout Id="@Id">
     @if(adminEventDetails == null)
     {
@@ -97,8 +99,8 @@
                 </section>
 
                 <section class="button-section">
-                    <FluentButton Id="admin-event-detail-update" Appearance="Appearance.Accent" Class="button">Update Event</FluentButton>
-                    <FluentButton Id="admin-event-detail-cancel" Appearance="Appearance.Outline" Class="button">Cancel</FluentButton>
+                    <FluentButton Id="admin-event-detail-update" Appearance="Appearance.Accent" Class="button" @onclick="UpdateEvent">Update Event</FluentButton>
+                    <FluentButton Id="admin-event-detail-cancel" Appearance="Appearance.Outline" Class="button" @onclick="CancelUpdate">Cancel</FluentButton>
                 </section>
         </FluentBodyContent>
     }
@@ -130,7 +132,7 @@
     {
         if(firstRender)
         {
-            // TODO: Fetch AdminEventDetails through the /admin/events/{eventId} API.
+            // TODO: GET AdminEventDetails through the /admin/events/{eventId} API.
             await Task.Delay(2000);
         
             // Make dummy data
@@ -154,5 +156,16 @@
 
             await InvokeAsync(StateHasChanged);
         }
+    }
+
+    private async Task UpdateEvent()
+    {
+        // TODO: PUT AdminEventDetails through the /admin/events/{eventId} API.
+        await Task.CompletedTask;
+    }
+
+    private void CancelUpdate()
+    {
+        NavigationManager.NavigateTo("/admin/events", forceLoad: false);
     }
 }
