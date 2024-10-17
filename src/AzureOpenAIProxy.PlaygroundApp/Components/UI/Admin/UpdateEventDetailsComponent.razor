@@ -1,12 +1,13 @@
 @using AzureOpenAIProxy.PlaygroundApp.Models
 
 <FluentLayout Id="@Id">
-@if(Event == null)
+@if(EventDetails == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
+    <h1>@EventDetails.EventId</h1>
     // Do something
 }
 </FluentLayout>
@@ -16,5 +17,37 @@ else
     public string? Id { get; set; }
 
     [Parameter]
-    public AdminEventDetails Event { get; set;}
+    public Guid EventId { get; set;}
+
+    private AdminEventDetails? EventDetails;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            // TODO: Fetch AdminEventDetails through the /admin/events/{eventId} API.
+            await Task.Delay(2000);
+        
+            // Make dummy data
+            EventDetails = new AdminEventDetails
+            {
+                EventId = EventId,
+                Title = "dummy title",
+                Summary = "dummy summary",
+                Description = "dummy description",
+                DateStart = DateTimeOffset.Now,
+                DateEnd = DateTimeOffset.Now.AddDays(7),
+                TimeZone = "KST",
+                IsActive = true,
+                OrganizerName = $"dummy organizer",
+                OrganizerEmail = $"dummy_user@gmail.com",
+                CoorganizerName = $"dummy coorganizer",
+                CoorganizerEmail = $"dummy_supprot@gmail.com",
+                MaxTokenCap = 10000,
+                DailyRequestCap = 1000
+            };
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
 }

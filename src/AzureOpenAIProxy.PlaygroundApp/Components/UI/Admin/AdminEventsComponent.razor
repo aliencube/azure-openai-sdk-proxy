@@ -94,6 +94,6 @@
 
     private void NavigateToEdit(Guid eventId)
     {
-        NavigationManager.NavigateTo("/admin/events/edit");
+        NavigationManager.NavigateTo($"/admin/events/edit/{eventId}");
     }
 }
