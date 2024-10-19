@@ -1,6 +1,8 @@
 @page "/playground"
 @rendermode InteractiveServer
 
+@using AzureOpenAIProxy.PlaygroundApp.Models
+
 <PageTitle>Playground Page</PageTitle>
 
 <FluentLayout>
@@ -8,7 +10,10 @@
 
     <FluentGrid Spacing="0" AdaptiveRendering="true" Justify="JustifyContent.FlexStart">
         <FluentGridItem Class="config-grid" xs="12" sm="12" md="4" lg="4" xl="4" xxl="4" Style="border:1px solid lightgrey">
-            <ConfigWindowComponent Id="config-window" OnSystemMessageChanged="SetSystemMessage" @rendermode="InteractiveServer" />
+            <ConfigWindowComponent Id="config-window"
+                                   OnSystemMessageChanged="SetSystemMessage"
+                                   OnChatParametersChanged="SetChatParameters"
+                                   @rendermode="InteractiveServer" />
         </FluentGridItem>
 
         <FluentGridItem Class="chat-grid" xs="12" sm="12" md="8" lg="8" xl="8" xxl="8" Style="border:1px solid lightgrey">
@@ -19,10 +24,18 @@
 
 @code {
     private string? systemMessage;
+    private ChatParameters? chatParameters;
 
     private async Task SetSystemMessage(string systemMessage)
     {
         this.systemMessage = systemMessage;
+
+        await Task.CompletedTask;
+    }
+
+    private async Task SetChatParameters(ChatParameters parameters)
+    {
+        this.chatParameters = parameters;
 
         await Task.CompletedTask;
     }

@@ -1,10 +1,12 @@
+@using AzureOpenAIProxy.PlaygroundApp.Models
+
 <FluentStack Id="@Id" Style="width: 100%;" Orientation="Orientation.Vertical" VerticalAlignment="VerticalAlignment.Top">
     <FluentTabs Id="config-tabs" Style="width: 100%;" ActiveTabId="system-message-tab" OnTabChange="ChangeTab">
         <FluentTab Id="system-message-tab" Label="System message">
             <SystemMessageTabComponent Id="system-message-tab-component" OnSystemMessageChanged="SetSystemMessage" />
         </FluentTab>
         <FluentTab Id="parameters-tab" Label="Parameters">
-            <ParametersTabComponent />
+            <ParametersTabComponent OnParametersChanged="OnChatParametersChanged" />
         </FluentTab>
     </FluentTabs>
 </FluentStack>
@@ -19,6 +21,9 @@
     [Parameter]
     public EventCallback<string> OnSystemMessageChanged { get; set; }
 
+    [Parameter]
+    public EventCallback<ChatParameters> OnChatParametersChanged { get; set; }
+
     private async Task ChangeTab(FluentTab tab)
     {
         this.selectedTab = tab;
@@ -29,7 +34,7 @@
     private async Task SetSystemMessage(string systemMessage)
     {
         this.systemMessage = systemMessage;
-        
+
         await OnSystemMessageChanged.InvokeAsync(systemMessage);
     }
 }
