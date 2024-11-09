@@ -1,19 +1,52 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    @if (this._isAdmin == true)
-    {
-        <div class="sidebar">
-            <NavMenu />
-        </div>
-    }
+<FluentLayout Style="margin-top: 10px;">
 
-    <main>
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
+    <FluentHeader>
+        Azure OpenAI Proxy Playground
+        <div style="margin-left: auto;">
+            <FluentButton IconEnd="@(new Icons.Regular.Size20.Person().WithColor("Blue"))">
+                Login
+            </FluentButton>
+        </div>
+    </FluentHeader>
+
+    <FluentStack Orientation="Orientation.Horizontal" Width="100%">
+        <div>
+            <FluentNavMenu Width="250">
+                <FluentNavLink Icon="@(new Icons.Regular.Size24.Globe())" Href="/">AOAI Proxy Playground
+                </FluentNavLink>
+                <FluentNavLink Icon="@(new Icons.Regular.Size24.Home())" Href="/">Home</FluentNavLink>
+                @if (this._isAdmin == true)
+                {
+                    <FluentNavLink Icon="@(new Icons.Regular.Size24.Board())" Href="/admin">Admin Dashboard</FluentNavLink>
+                }
+            </FluentNavMenu>
+        </div>
+
+        <div style="width: 100%;">
+            <div>
+                @Body
+            </div>
+        </div>
+    </FluentStack>
+</FluentLayout>
+
+@* <div class="page">
+<AdminTopListBar />
+@if (this._isAdmin == true)
+{
+<div class="sidebar">
+<NavMenu />
 </div>
+}
+
+<main>
+<article class="content px-4">
+@Body
+</article>
+</main>
+</div> *@
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.
