@@ -1,0 +1,76 @@
+﻿<div id="@Id">
+    <label id=@($"{Id}-label") for=@($"{Id}-content")
+           class="parameter-child-label"
+           style="display:inline-block;padding-left:5px;">
+        @LabelText
+
+        @* Tooltip Image *@
+        <FluentIcon Id=@($"{Id}-anchor") Value="@(new Icons.Regular.Size12.Info())" />
+        <FluentTooltip Id=@($"{Id}-tooltip")
+                       Anchor=@($"{Id}-anchor")
+                       Position="TooltipPosition.End"
+                       UseTooltipService="false"
+                       MaxWidth="250px"
+                       Style="line-break:anywhere">
+            @TooltipText
+        </FluentTooltip>
+    </label>
+
+    <div id=@($"{Id}-content")>
+        <FluentAutocomplete Id=@($"{Id}-textfield")
+                            TOption="string" Multiple="true" AutoComplete="false"
+                            ShowOverlayOnEmptyResults="false"
+                            SelectValueOnTab="true"
+                            MaximumOptionsSearch="1"
+                            @bind-SelectedOptions=Values
+                            @bind-SelectedOptions:after=OnChangeValues
+                            OnOptionsSearch=OnSearch
+                            Style="width:95%;padding:5px 0px;margin: 0 auto">
+            <OptionTemplate>
+                <FluentLabel>Create "@(context)"</FluentLabel>
+            </OptionTemplate>
+        </FluentAutocomplete>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string? Id { get; set; }
+
+    // Label Property
+    [Parameter, EditorRequired]
+    public string LabelText { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public string TooltipText { get; set; } = string.Empty;
+
+    // Bind Property
+    [Parameter]
+    public IEnumerable<string>? Values { get; set; }
+
+    [Parameter]
+    public EventCallback<IEnumerable<string>> ValuesChanged { get; set; }
+
+    // Fields
+    private List<string> searchTextItems = new();
+
+    private async Task OnChangeValues()
+    {
+        await ValuesChanged.InvokeAsync(Values);
+    }
+
+    private void OnSearch(OptionsSearchEventArgs<string> e)
+    {
+        searchTextItems.Clear();
+
+        var input = e.Text.Trim();
+        if (string.IsNullOrWhiteSpace(input) || 
+            Values != null && Values.Contains(input))
+        {
+            return;
+        }
+
+        searchTextItems.Add(input);
+        e.Items = searchTextItems;
+    }
+}

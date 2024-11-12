@@ -5,7 +5,10 @@
     <ApiKeyInputComponent Id="api-key" OnKeyInput="SetApiKey" @rendermode="InteractiveServer" />
     <DeploymentModelListComponent Id="deployment-model-list" OnUserOptionSelected="SetDeploymentModel" @rendermode="InteractiveServer" />
     <FluentDivider />
-    <ConfigTabComponent id="config-tab" OnSystemMessageChanged="SetSystemMessage" @rendermode="InteractiveServer" />
+    <ConfigTabComponent id="config-tab"
+                        OnSystemMessageChanged="SetSystemMessage"
+                        OnChatParametersChanged="OnChatParametersChanged"
+                        @rendermode="InteractiveServer" />
 </FluentStack>
 
 @code {
@@ -18,6 +21,9 @@
 
     [Parameter]
     public EventCallback<string> OnSystemMessageChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<ChatParameters> OnChatParametersChanged { get; set; }
 
     private async Task SetApiKey(string apiKey)
     {
@@ -36,7 +42,7 @@
     private async Task SetSystemMessage(string systemMessage)
     {
         this.systemMessage = systemMessage;
-        
+
         await OnSystemMessageChanged.InvokeAsync(systemMessage);
     }
 }

@@ -1,0 +1,103 @@
+﻿<div id="@Id">
+    <label id=@($"{Id}-label") class="parameter-component-label" for=@($"{Id}-content")>
+        @LabelText
+
+        @* Tooltip Image *@
+        <FluentIcon Id=@($"{Id}-anchor") Value="@(new Icons.Regular.Size12.Info())" />
+        <FluentTooltip Id=@($"{Id}-tooltip")
+                       Anchor=@($"{Id}-anchor")
+                       Position="TooltipPosition.End"
+                       UseTooltipService="false"
+                       MaxWidth="250px"
+                       Style="line-break:anywhere">
+            @TooltipText
+        </FluentTooltip>
+    </label>
+
+    <FluentStack Id=@($"{Id}-content")
+                 Orientation="Orientation.Horizontal"
+                 Style="column-gap:0px">
+
+        <FluentSlider Id=@($"{Id}-slider") Class="parameter-component-slider"
+                      TValue="float"
+                      Min="@Min" Max="@Max" Step="@Step"
+                      @bind-Value=Value @bind-Value:after=AfterSliderChange />
+
+        <FluentTextField Id=@($"{Id}-textfield") Class="parameter-component-textfield"
+                         @bind-Value=textFieldValue @bind-Value:after=AfterTextFieldChange />
+
+    </FluentStack>
+
+    @if (!hasNoError)
+    {
+        <FluentCard Class="parameter-component-error">
+            @errorText
+        </FluentCard>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string? Id { get; set; }
+
+    // Label Property
+    [Parameter, EditorRequired]
+    public string LabelText { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public string TooltipText { get; set; } = string.Empty;
+
+    // Slider Property
+    [Parameter, EditorRequired]
+    public float Min { get; set; } = default;
+
+    [Parameter, EditorRequired]
+    public float Max { get; set; } = default;
+
+    [Parameter, EditorRequired]
+    public float Step { get; set; } = default;
+
+    // Text Field Property
+    public string? textFieldValue { get; set; }
+
+    // Bind Property
+    [Parameter]
+    public float Value { get; set; }
+
+    [Parameter]
+    public EventCallback<float> ValueChanged { get; set; }
+
+    // Fields
+    private bool hasNoError = true;
+    private string errorText = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        textFieldValue = Value!.ToString();
+        errorText = $"Only numbers between {Min} and {Max} are permitted";
+
+        base.OnInitialized();
+    }
+
+    private async Task AfterSliderChange()
+    {
+        hasNoError = true;
+        textFieldValue = Value!.ToString();
+
+        await ValueChanged.InvokeAsync(Value);
+    }
+
+    private async Task AfterTextFieldChange()
+    {
+        hasNoError = float.TryParse(textFieldValue, null, out var parsed);
+        if (!hasNoError)
+            return;
+
+        hasNoError = parsed >= Min! && parsed <= Max!;
+        if (!hasNoError)
+            return;
+
+        this.Value = parsed;
+        await ValueChanged.InvokeAsync(Value);
+    }
+}

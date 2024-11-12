@@ -1,0 +1,87 @@
+﻿@using System.Linq
+
+@using AzureOpenAIProxy.PlaygroundApp.Models
+
+<FluentLayout Id="@Id" Style="font-size:12px;font-weight:bold;">
+    @* Past Messages Range *@
+    <ParameterRangeComponent Id="range-past-messages"
+                             LabelText="Past messages included"
+                             TooltipText="Select the number of past messages to include in each new API request. This helps give the model context for new user queries. Setting this number to 10 will include 5 user queries and 5 system responses."
+                             Min="1" Max="20" Step="1"
+                             @bind-Value=@(parameters.pastMessages)
+                             @bind-Value:after=HandleParametersChanged />
+
+    @* Max Response Range *@
+    <ParameterRangeComponent Id="range-max-response"
+                             LabelText="Max response"
+                             TooltipText="Set a limit on the number of tokens per model response. The API supports a maximum of MaxTokensPlaceholderDoNotTranslate tokens shared between the prompt (including system message, examples, message history, and user query) and the model's response. One token is roughly 4 characters for typical English text."
+                             Min="1" Max="16000" Step="1"
+                             @bind-Value=@(parameters.maxResponse)
+                             @bind-Value:after=HandleParametersChanged />
+
+    @* Temperature Range *@
+    <ParameterRangeComponent Id="range-temperature"
+                             LabelText="Temperature"
+                             TooltipText="Controls randomness. Lowering the temperature means that the model will produce more repetitive and deterministic responses. Increasing the temperature will result in more unexpected or creative responses. Try adjusting temperature or Top P but not both."
+                             Min="0" Max="1" Step="0.01f"
+                             @bind-Value=@(parameters.temperature)
+                             @bind-Value:after=HandleParametersChanged />
+
+    @* Top P Range *@
+    <ParameterRangeComponent Id="range-top-p"
+                             LabelText="Top P"
+                             TooltipText="Similar to temperature, this controls randomness but uses a different method. Lowering Top P will narrow the model’s token selection to likelier tokens. Increasing Top P will let the model choose from tokens with both high and low likelihood. Try adjusting temperature or Top P but not both."
+                             Min="0" Max="1" Step="0.01f"
+                             @bind-Value=@(parameters.topP)
+                             @bind-Value:after=HandleParametersChanged />
+
+    @* Stop Sequence Multi Select *@
+    <ParameterMultiselectComponent Id="select-stop-sequence"
+                                   LabelText="Stop sequence"
+                                   TooltipText="Make the model end its response at a desired point. The model response will end before the specified sequence, so it won't contain the stop sequence text. For ChatGPT, using <|im_end|> ensures that the model response doesn't generate a follow-up user query. You can include as many as four stop sequences."
+                                   @bind-Values=@(parameters.stopSequence)
+                                   @bind-Values:after=HandleParametersChanged />
+
+    @* Frequency Penalty Range *@
+    <ParameterRangeComponent Id="range-frequency-penalty"
+                             LabelText="Frequency penalty"
+                             TooltipText="Reduce the chance of repeating a token proportionally based on how often it has appeared in the text so far. This decreases the likelihood of repeating the exact same text in a response."
+                             Min="0" Max="2" Step="0.01f"
+                             @bind-Value=@(parameters.frequencyPenalty)
+                             @bind-Value:after=HandleParametersChanged />
+
+    @* Presence Penalty Range *@
+    <ParameterRangeComponent Id="range-presence-penalty"
+                             LabelText="Presence penalty"
+                             TooltipText="Reduce the chance of repeating any token that has appeared in the text at all so far. This increases the likelihood of introducing new topics in a response."
+                             Min="0" Max="2" Step="0.01f"
+                             @bind-Value=@(parameters.presencePenalty)
+                             @bind-Value:after=HandleParametersChanged />
+</FluentLayout>
+
+@code {
+    [Parameter]
+    public string? Id { get; set; }
+
+    [Parameter]
+    public EventCallback<ChatParameters> OnParametersChanged { get; set; }
+
+    public ChatParameters parameters = new();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        parameters.pastMessages = 10;
+        parameters.maxResponse = 800;
+        parameters.temperature = 0.7f;
+        parameters.topP = 0.95f;
+        parameters.frequencyPenalty = 0;
+        parameters.presencePenalty = 0;
+    }
+
+    public async Task HandleParametersChanged()
+    {
+        await OnParametersChanged.InvokeAsync(parameters);
+    }
+}
