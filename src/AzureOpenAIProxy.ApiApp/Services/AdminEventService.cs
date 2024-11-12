@@ -47,9 +47,13 @@ public class AdminEventService(IAdminEventRepository repository) : IAdminEventSe
     /// <inheritdoc />
     public async Task<AdminEventDetails> CreateEvent(AdminEventDetails eventDetails)
     {
-        var result = await this._repository.CreateEvent(eventDetails).ConfigureAwait(false);
-
-        return result;
+        // Validate
+        eventDetails.PartitionKey = PartitionKeys.EventDetails;
+        eventDetails.RowKey = eventDetails.EventId.ToString();
+        
+        // Save
+        var response = await this._repository.CreateEvent(eventDetails).ConfigureAwait(false);
+        return response;
     }
 
     /// <inheritdoc />

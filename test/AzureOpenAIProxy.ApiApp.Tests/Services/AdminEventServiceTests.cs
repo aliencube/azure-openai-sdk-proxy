@@ -6,6 +6,8 @@ using AzureOpenAIProxy.ApiApp.Services;
 
 using FluentAssertions;
 
+using Microsoft.AspNetCore.Authentication;
+
 using Microsoft.Extensions.DependencyInjection;
 
 using NSubstitute;
@@ -29,18 +31,39 @@ public class AdminEventServiceTests
     }
 
     [Fact]
-    public void Given_Instance_When_CreateEvent_Invoked_Then_It_Should_Throw_Exception()
+    public async Task Given_Instance_When_CreateEvent_Invoked_Then_It_Should_Return_Passed_Argument()
+    {
+        // Arrange
+        var eventDetails = new AdminEventDetails();
+
+        var repository = Substitute.For<IAdminEventRepository>();
+        var service = new AdminEventService(repository);
+
+        repository.CreateEvent(Arg.Any<AdminEventDetails>()).Returns(eventDetails);
+
+        // Act
+        var result = await service.CreateEvent(eventDetails);
+
+        // Assert
+        result.Should().BeEquivalentTo(eventDetails);
+    }
+
+    [Fact]
+    public async Task Given_Failure_In_Add_Entity_When_CreateEvent_Invoked_Then_It_Should_Throw_Exception()
     {
         // Arrange
         var eventDetails = new AdminEventDetails();
         var repository = Substitute.For<IAdminEventRepository>();
         var service = new AdminEventService(repository);
 
+        var exception = new InvalidOperationException("Invalid Operation Error : check duplicate, null or empty values");
+        repository.CreateEvent(Arg.Any<AdminEventDetails>()).ThrowsAsync(exception);
+
         // Act
-        Func<Task> func = async () => await service.CreateEvent(eventDetails);
+        Func<Task> func = () => service.CreateEvent(eventDetails);
 
         // Assert
-        func.Should().ThrowAsync<NotImplementedException>();
+        await func.Should().ThrowAsync<InvalidOperationException>();
     }
 
     [Fact]

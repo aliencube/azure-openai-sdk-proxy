@@ -51,7 +51,14 @@ public class AdminEventRepository(TableServiceClient tableServiceClient, Storage
     /// <inheritdoc />
     public async Task<AdminEventDetails> CreateEvent(AdminEventDetails eventDetails)
     {
-        throw new NotImplementedException();
+        // 테이블 클라이언트
+        TableClient tableClient = await GetTableClientAsync();
+
+        // 데이터 저장
+        await tableClient.AddEntityAsync(eventDetails).ConfigureAwait(false);
+
+        // 저장한 엔티티 반환
+        return eventDetails;
     }
 
     /// <inheritdoc />

@@ -1,5 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
+using Azure;
+using Azure.Data.Tables;
+
 namespace AzureOpenAIProxy.ApiApp.Models;
 
 /// <summary>
