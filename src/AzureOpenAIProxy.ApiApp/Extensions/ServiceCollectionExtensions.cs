@@ -145,7 +145,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<TableServiceClient>(sp => {
             var configuration = sp.GetService<IConfiguration>()
-                ?? throw new InvalidOperationException($"{nameof(IConfiguration)} service is not registerd.");
+                ?? throw new InvalidOperationException($"{nameof(IConfiguration)} service is not registered.");
             
             var settings = configuration.GetSection(AzureSettings.Name).GetSection(KeyVaultSettings.Name).Get<KeyVaultSettings>()
                 ?? throw new InvalidOperationException($"{nameof(KeyVaultSettings)} could not be retrieved from the configuration.");
