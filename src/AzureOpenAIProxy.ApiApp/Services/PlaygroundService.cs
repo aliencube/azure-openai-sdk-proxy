@@ -11,7 +11,7 @@ public interface IPlaygroundService
     /// Get the list of deployment model.
     /// </summary>
     /// <returns>Returns the list of deployment models.</returns>
-    Task<List<DeploymentModelDetails>> GetDeploymentModels(string eventId);
+    Task<List<DeploymentModelDetails>> GetDeploymentModels(Guid eventId);
 
     /// <summary>
     /// Get the list of events.
@@ -23,9 +23,14 @@ public interface IPlaygroundService
 public class PlaygroundService(IEventRepository eventRepository) : IPlaygroundService
 {
     private readonly IEventRepository _eventRepository = eventRepository ?? throw new ArgumentNullException(nameof(eventRepository));
+    
     /// <inheritdoc/>
-    public async Task<List<DeploymentModelDetails>> GetDeploymentModels(string eventId)
+    public async Task<List<DeploymentModelDetails>> GetDeploymentModels(Guid eventId)
     {
+        // var result = await _eventRepository.GetDeploymentModels(eventId).ConfigureAwait(false);
+        
+        // return result;
+
         throw new NotImplementedException();
     }
 
