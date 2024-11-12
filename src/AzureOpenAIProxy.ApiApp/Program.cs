@@ -24,9 +24,11 @@ builder.Services.AddTableStorageService();
 
 // Add admin services
 builder.Services.AddAdminEventService();
+builder.Services.AddAdminResourceService();
 
 // Add admin repositories
 builder.Services.AddAdminEventRepository();
+builder.Services.AddAdminResourceRepository();
 
 // Add playground services
 builder.Services.AddPlaygroundService();
