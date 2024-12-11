@@ -6,7 +6,7 @@ using FluentAssertions;
 
 namespace AzureOpenAIProxy.AppHost.Tests.PlaygroundApp.Pages;
 
-public class AdminPageTests(AspireAppHostFixture host) : IClassFixture<AspireAppHostFixture>
+public class AdminUpdateEventPageTests(AspireAppHostFixture host) : IClassFixture<AspireAppHostFixture>
 {
     [Fact]
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_OK()
@@ -15,8 +15,11 @@ public class AdminPageTests(AspireAppHostFixture host) : IClassFixture<AspireApp
         using var httpClient = host.App!.CreateHttpClient("playgroundapp");
         await host.ResourceNotificationService.WaitForResourceAsync("playgroundapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
+        var eventId = Guid.NewGuid();
+        var expectedUrl = $"/admin/events/edit/{eventId}";
+
         // Act
-        var response = await httpClient.GetAsync("/admin");
+        var response = await httpClient.GetAsync(expectedUrl);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -30,8 +33,11 @@ public class AdminPageTests(AspireAppHostFixture host) : IClassFixture<AspireApp
         using var httpClient = host.App!.CreateHttpClient("playgroundapp");
         await host.ResourceNotificationService.WaitForResourceAsync("playgroundapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
+        var eventId = Guid.NewGuid();
+        var expectedUrl = $"/admin/events/edit/{eventId}";
+
         // Act
-        var html = await httpClient.GetStringAsync("/admin");
+        var html = await httpClient.GetStringAsync(expectedUrl);
 
         // Assert
         html.Should().Contain(expected);
@@ -45,8 +51,11 @@ public class AdminPageTests(AspireAppHostFixture host) : IClassFixture<AspireApp
         using var httpClient = host.App!.CreateHttpClient("playgroundapp");
         await host.ResourceNotificationService.WaitForResourceAsync("playgroundapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
+        var eventId = Guid.NewGuid();
+        var expectedUrl = $"/admin/events/edit/{eventId}";
+
         // Act
-        var html = await httpClient.GetStringAsync("/admin");
+        var html = await httpClient.GetStringAsync(expectedUrl);
 
         // Assert
         html.Should().Contain(expected);
@@ -60,8 +69,11 @@ public class AdminPageTests(AspireAppHostFixture host) : IClassFixture<AspireApp
         using var httpClient = host.App!.CreateHttpClient("playgroundapp");
         await host.ResourceNotificationService.WaitForResourceAsync("playgroundapp", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
 
+        var eventId = Guid.NewGuid();
+        var expectedUrl = $"/admin/events/edit/{eventId}";
+
         // Act
-        var html = await httpClient.GetStringAsync("/admin");
+        var html = await httpClient.GetStringAsync(expectedUrl);
 
         // Assert
         html.Should().Contain(expected);

@@ -1,5 +1,7 @@
 @using AzureOpenAIProxy.PlaygroundApp.Models
 
+@inject NavigationManager NavigationManager
+
 <FluentLayout Id="@Id">
     @if (eventDetails == null)
     {
@@ -21,7 +23,7 @@
                     <AdminEventIsActiveComponent IsActive="@(((AdminEventDetails)@context).IsActive)" />
                 </TemplateColumn>
                 <TemplateColumn Class="fluent-datagrid-cell" Title="Actions" Align="@Align.Center">
-                    <FluentButton aria-label="Edit item" IconEnd="@(new Icons.Regular.Size16.Edit())" />
+                    <FluentButton aria-label="Edit item" IconEnd="@(new Icons.Regular.Size16.Edit())" @onclick="@(() => NavigateToEdit(((AdminEventDetails)@context).EventId))" />
                     <FluentButton aria-label="Delete item" IconEnd="@(new Icons.Regular.Size16.Delete())" />
                 </TemplateColumn>
             </FluentDataGrid>
@@ -89,4 +91,9 @@
 
     private string? AriaCurrentValue(int pageIndex)
     => pagination.CurrentPageIndex == pageIndex ? "page" : null;
+
+    private void NavigateToEdit(Guid eventId)
+    {
+        NavigationManager.NavigateTo($"/admin/events/edit/{eventId}");
+    }
 }

@@ -53,7 +53,7 @@ public class AdminNewEventPageTests(AspireAppHostFixture host) : IClassFixture<A
     }
 
     [Theory]
-    [InlineData("<div class=\"fluent-tooltip-provider\" style=\"display: fixed;\"></div>")]
+    [InlineData("<div class=\"fluent-tooltip-provider\" style=\"position: fixed; z-index: 9999;\"></div>")]
     public async Task Given_Resource_When_Invoked_Endpoint_Then_It_Should_Return_HTML_Elements(string expected)
     {
         // Arrange
