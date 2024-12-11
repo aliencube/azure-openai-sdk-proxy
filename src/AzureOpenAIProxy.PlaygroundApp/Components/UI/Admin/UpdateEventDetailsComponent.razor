@@ -19,12 +19,12 @@
 
                 <FluentStack Class="update-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
                     <FluentLabel For="event-title" Class="update-input-label" >Title</FluentLabel>
-                    <FluentTextField Id="event-title" Name="title" TextFieldType="TextFieldType.Text" @bind-Value="adminEventDetails.Title"/>
+                    <FluentTextField Id="event-title" Name="title" TextFieldType="TextFieldType.Text" @bind-Value="adminEventDetails.Title" Required/>
                 </FluentStack>
 
                 <FluentStack Class="update-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
                     <FluentLabel For="event-summary" Class="update-input-label">Summary</FluentLabel>
-                    <FluentTextField id="event-summary" TextFieldType="TextFieldType.Text" @bind-Value="adminEventDetails.Summary"/>
+                    <FluentTextField id="event-summary" TextFieldType="TextFieldType.Text" @bind-Value="adminEventDetails.Summary" Required/>
                 </FluentStack>
 
                 <FluentStack Class="update-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
@@ -46,7 +46,7 @@
 
                     <FluentStack Class="update-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
                         <FluentLabel For="event-timezone" Class="update-input-label">Time Zone</FluentLabel>
-                        <FluentSelect Id="event-timezone" @bind-Value="@adminEventDetails.TimeZone" Height="500px" TOption="string">
+                        <FluentSelect Id="event-timezone" @bind-Value="@adminEventDetails.TimeZone" Height="500px" TOption="string" Required>
                             @foreach (var timeZone in timeZoneList)
                             {
                                 <FluentOption Value="@timeZone.Id">@timeZone.Id</FluentOption>
@@ -60,13 +60,13 @@
 
                     <FluentStack Class="update-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
                         <FluentLabel For="event-organizer-name" Class="update-input-label">Organizer Name</FluentLabel>
-                        <FluentTextField Id="event-organizer-name" TextFieldType="TextFieldType.Text" @bind-Value="adminEventDetails.OrganizerName"/>
+                        <FluentTextField Id="event-organizer-name" TextFieldType="TextFieldType.Text" @bind-Value="adminEventDetails.OrganizerName" Required/>
                     </FluentStack>
 
 
                     <FluentStack Class="update-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
                         <FluentLabel For="event-organizer-email" Class="update-input-label">Organizer Email</FluentLabel>
-                        <FluentTextField Id="event-organizer-email" TextFieldType="TextFieldType.Email" @bind-Value="adminEventDetails.OrganizerEmail"/>
+                        <FluentTextField Id="event-organizer-email" TextFieldType="TextFieldType.Email" @bind-Value="adminEventDetails.OrganizerEmail" Required/>
                     </FluentStack>
                 </section>
             
@@ -75,12 +75,12 @@
 
                     <FluentStack Class="update-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
                         <FluentLabel For="event-coorgnizer-name" Class="update-input-label">Coorgnizer Name</FluentLabel>
-                        <FluentTextField Id="event-coorgnizer-name" TextFieldType="TextFieldType.Text" @bind-Value="adminEventDetails.CoorganizerName" />
+                        <FluentTextField Id="event-coorgnizer-name" TextFieldType="TextFieldType.Text" @bind-Value="adminEventDetails.CoorganizerName" Required />
                     </FluentStack>
 
                     <FluentStack Class="update-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
                         <FluentLabel For="event-coorgnizer-email" Class="update-input-label">Coorgnizer Email</FluentLabel>
-                        <FluentTextField Id="event-coorgnizer-email" TextFieldType="TextFieldType.Email" @bind-Value="adminEventDetails.CoorganizerEmail"/>
+                        <FluentTextField Id="event-coorgnizer-email" TextFieldType="TextFieldType.Email" @bind-Value="adminEventDetails.CoorganizerEmail" Required/>
                     </FluentStack>
                 </section>
 
@@ -89,12 +89,12 @@
 
                     <FluentStack Class="update-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
                         <FluentLabel For="event-max-token-cap" Class="update-input-label">Max Token Cap</FluentLabel>
-                        <FluentNumberField Id="event-max-token-cap" @bind-Value="adminEventDetails.MaxTokenCap" />
+                        <FluentNumberField Id="event-max-token-cap" @bind-Value="adminEventDetails.MaxTokenCap" Required />
                     </FluentStack>
 
                     <FluentStack Class="update-fluent-stack" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
                         <FluentLabel For="event-daily-request-cap" Class="update-input-label">Daily Request Cap</FluentLabel>
-                        <FluentNumberField Id="event-daily-request-cap" @bind-Value="adminEventDetails.DailyRequestCap"/>
+                        <FluentNumberField Id="event-daily-request-cap" @bind-Value="adminEventDetails.DailyRequestCap" Required/>
                     </FluentStack>
                 </section>
 
@@ -133,7 +133,9 @@
         if(firstRender)
         {
             // TODO: GET AdminEventDetails through the /admin/events/{eventId} API.
-            await Task.Delay(2000);
+            await Task.Delay(1000);
+            var timezoneId = GetIanaTimezoneId();
+            var currentTime = GetCurrentDateTimeOffset(timezoneId);
         
             // Make dummy data
             adminEventDetails = new AdminEventDetails
@@ -142,9 +144,9 @@
                 Title = "dummy title",
                 Summary = "dummy summary",
                 Description = "dummy description",
-                DateStart = DateTimeOffset.Now,
-                DateEnd = DateTimeOffset.Now.AddDays(7),
-                TimeZone = "Asia/Seoul",
+                DateStart = currentTime.AddHours(1).AddMinutes(-currentTime.Minute),
+                DateEnd = currentTime.AddDays(1).AddHours(1).AddMinutes(-currentTime.Minute),
+                TimeZone = timezoneId,
                 IsActive = true,
                 OrganizerName = $"dummy organizer",
                 OrganizerEmail = $"dummy_user@gmail.com",
@@ -167,5 +169,27 @@
     private void CancelUpdate()
     {
         NavigationManager.NavigateTo("/admin/events", forceLoad: false);
+    }
+
+    private string GetIanaTimezoneId()
+    {
+        string timezoneId = TimeZoneInfo.Local.Id;
+
+        if (OperatingSystem.IsWindows())
+        {
+            if (TimeZoneInfo.TryConvertWindowsIdToIanaId(timezoneId, out var ianaTimezoneId))
+            {
+                timezoneId = ianaTimezoneId;
+            }
+        }
+
+        return timezoneId;
+    }
+
+    private DateTimeOffset GetCurrentDateTimeOffset(string timezoneId)
+    {
+        var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timezoneId);
+
+        return TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, timeZoneInfo);
     }
 }
